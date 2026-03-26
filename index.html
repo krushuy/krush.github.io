@@ -1516,7 +1516,7 @@
       try {
         await signInWithEmailAndPassword(auth, email, password);
         showSuccess("Bienvenido de vuelta!", "Ya estas dentro de Krush!");
-        setTimeout(closeModal, 2000);
+        setTimeout(() => window.location.href = 'app.html', 1500);
       } catch (e) {
         showError(getErrorMsg(e.code));
         btn.disabled = false; btn.textContent = "Entrar a Krush";
@@ -1534,7 +1534,7 @@
         const cred = await createUserWithEmailAndPassword(auth, email, password);
         if (name) await updateProfile(cred.user, { displayName: name });
         showSuccess("Bienvenido" + (name ? ", " + name : "") + "!", "Tu cuenta fue creada. Encontra tu Krush!");
-        setTimeout(closeModal, 2500);
+        setTimeout(() => window.location.href = 'app.html', 1500);
       } catch (e) {
         showError(getErrorMsg(e.code));
         btn.disabled = false; btn.textContent = "Crear cuenta gratis";
