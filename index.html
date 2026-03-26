@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Krush — Encontrá tu match en Uruguay</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --k-red: #E8273A;
+      --k-red-dark: #B01E2C;
+      --k-red-soft: #FF4D62;
+      --k-red-glow: rgba(232,39,58,0.15);
+      --k-pink: #FF8FA3;
+      --bg: #0A0608;
+      --bg2: #110A0C;
+      --bg3: #160C0F;
+      --card: #1A0F12;
+      --card2: #221318;
+      --border: #2E1A1F;
+      --border2: #3D2229;
+      --text: #FAF0F2;
+      --text-soft: #C4A8AE;
+      --text-muted: #7A5A62;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 56px;
+      transition: all 0.4s;
+    }
+
+    nav.scrolled {
+      background: rgba(10,6,8,0.95);
+      backdrop-filter: blur(20px);
+      border-bottom: 0.5px solid var(--border);
+      padding: 14px 56px;
+    }
+
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-size: 26px;
+      font-weight: 800;
+      color: #fff;
+      text-decoration: none;
+      letter-spacing: -0.5px;
+    }
+
+    .nav-logo span { color: var(--k-red); }
+
+    .nav-links { display: flex; align-items: center; gap: 36px; list-style: none; }
+
+    .nav-links a {
+      font-size: 13px;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--text); }
+
+    .nav-right { display: flex; align-items: center; gap: 12px; }
+
+    .btn-nav-ghost {
+      font-size: 13px;
+      color: var(--text-soft);
+      text-decoration: none;
+      padding: 8px 16px;
+      transition: color 0.2s;
+    }
+
+    .btn-nav-ghost:hover { color: #fff; }
+
+    .btn-nav-primary {
+      font-size: 13px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+      color: #fff;
+      background: var(--k-red);
+      border: none;
+      border-radius: 8px;
+      padding: 9px 20px;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .btn-nav-primary:hover { background: var(--k-red-soft); transform: translateY(-1px); }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      padding: 100px 56px 60px;
+      gap: 60px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 60px 60px;
+      opacity: 0.3;
+      mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 20%, transparent 80%);
+    }
+
+    .hero-left { position: relative; z-index: 2; }
+
+    .hero-flag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      background: var(--card);
+      border: 0.5px solid var(--border2);
+      border-radius: 6px;
+      font-size: 11px;
+      color: var(--text-muted);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 28px;
+      opacity: 0;
+      animation: fadeUp 0.7s ease 0.2s forwards;
+    }
+
+    .hero-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(52px, 7vw, 88px);
+      font-weight: 800;
+      line-height: 0.92;
+      letter-spacing: -3px;
+      color: #fff;
+      margin-bottom: 12px;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.35s forwards;
+    }
+
+    .hero-title .accent { color: var(--k-red); }
+
+    .hero-title .italic {
+      font-family: 'Instrument Serif', serif;
+      font-style: italic;
+      font-weight: 400;
+      color: var(--text-soft);
+    }
+
+    .hero-desc {
+      font-size: 16px;
+      color: var(--text-soft);
+      line-height: 1.65;
+      max-width: 420px;
+      margin-bottom: 40px;
+      font-weight: 300;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.5s forwards;
+    }
+
+    .hero-desc strong { color: var(--text); font-weight: 400; }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.65s forwards;
+    }
+
+    .btn-big {
+      padding: 15px 36px;
+      background: var(--k-red);
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      font-size: 15px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.3s;
+    }
+
+    .btn-big:hover {
+      background: var(--k-red-soft);
+      transform: translateY(-2px);
+      box-shadow: 0 16px 48px rgba(232,39,58,0.35);
+    }
+
+    .btn-big-ghost {
+      padding: 15px 28px;
+      background: transparent;
+      border: 0.5px solid var(--border2);
+      border-radius: 10px;
+      color: var(--text-soft);
+      font-size: 15px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      text-decoration: none;
+      transition: all 0.3s;
+    }
+
+    .btn-big-ghost:hover { border-color: var(--text-muted); color: var(--text); }
+
+    .hero-trust {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 28px;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.8s forwards;
+    }
+
+    .trust-avatars { display: flex; }
+
+    .trust-av {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      border: 2px solid var(--bg);
+      margin-left: -8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      font-family: 'Syne', sans-serif;
+    }
+
+    .trust-av:first-child { margin-left: 0; }
+
+    .trust-text { font-size: 12px; color: var(--text-muted); line-height: 1.4; }
+    .trust-text strong { color: var(--text-soft); font-weight: 400; }
+
+    /* HERO RIGHT */
+    .hero-right {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      justify-content: center;
+      opacity: 0;
+      animation: fadeUp 1s ease 0.5s forwards;
+    }
+
+    .phone-mockup {
+      width: 280px;
+      background: var(--card);
+      border: 0.5px solid var(--border2);
+      border-radius: 36px;
+      overflow: hidden;
+      box-shadow: 0 40px 100px rgba(0,0,0,0.6), 0 0 0 0.5px var(--border);
+    }
+
+    .phone-notch {
+      height: 28px;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .notch-pill { width: 80px; height: 6px; background: var(--bg3); border-radius: 3px; }
+
+    .profile-card-phone {
+      position: relative;
+      height: 360px;
+      background: linear-gradient(180deg, var(--bg3) 0%, #2A0A12 100%);
+      overflow: hidden;
+    }
+
+    .profile-bg-art {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 30% 20%, rgba(232,39,58,0.2) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(255,143,163,0.1) 0%, transparent 40%);
+    }
+
+    .profile-info {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 20px;
+      background: linear-gradient(to top, rgba(10,6,8,0.95) 0%, transparent 100%);
+    }
+
+    .profile-name-phone {
+      font-family: 'Syne', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+
+    .profile-tags-phone { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+
+    .ptag {
+      padding: 3px 10px;
+      background: rgba(255,255,255,0.08);
+      border: 0.5px solid rgba(255,255,255,0.12);
+      border-radius: 20px;
+      font-size: 10px;
+      color: var(--text-soft);
+    }
+
+    .profile-percent {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 10px;
+      background: rgba(232,39,58,0.15);
+      border: 0.5px solid rgba(232,39,58,0.3);
+      border-radius: 20px;
+      font-size: 10px;
+      color: var(--k-red-soft);
+    }
+
+    .swipe-btns {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      padding: 16px 20px;
+      background: var(--card);
+    }
+
+    .swipe-btn {
+      width: 52px; height: 52px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+      border: 0.5px solid var(--border2);
+      background: var(--bg3);
+    }
+
+    .swipe-btn.like {
+      width: 60px; height: 60px;
+      background: var(--k-red);
+      border: none;
+      box-shadow: 0 8px 24px rgba(232,39,58,0.4);
+      font-size: 24px;
+    }
+
+    .match-notif {
+      margin: 0 14px 10px;
+      padding: 12px 14px;
+      background: linear-gradient(135deg, rgba(232,39,58,0.12), rgba(232,39,58,0.05));
+      border: 0.5px solid rgba(232,39,58,0.25);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .match-notif-text { font-size: 11px; color: var(--text-soft); }
+    .match-notif-text strong { color: var(--k-red-soft); font-weight: 500; display: block; font-size: 12px; }
+
+    .locked-badge {
+      margin: 0 14px 14px;
+      padding: 10px 14px;
+      background: var(--bg3);
+      border: 0.5px solid var(--border);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .lb-left { font-size: 11px; color: var(--text-muted); }
+    .lb-left span { color: var(--k-red-soft); font-weight: 500; display: block; font-size: 12px; margin-bottom: 1px; }
+
+    .lb-btn {
+      padding: 5px 12px;
+      background: var(--k-red);
+      border: none;
+      border-radius: 6px;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 500;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .float-badge {
+      position: absolute;
+      background: var(--card2);
+      border: 0.5px solid var(--border2);
+      border-radius: 12px;
+      padding: 10px 14px;
+      animation: floatUpDown 4s ease-in-out infinite;
+    }
+
+    .float-badge-1 { top: 28%; right: -44px; animation-delay: 0s; }
+    .float-badge-2 { top: 58%; left: -52px; animation-delay: -2s; }
+
+    @keyframes floatUpDown {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    .fb-label { font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 3px; }
+    .fb-val { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; color: #fff; }
+    .fb-val span { color: var(--k-red); }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* MARQUEE */
+    .marquee-section {
+      border-top: 0.5px solid var(--border);
+      border-bottom: 0.5px solid var(--border);
+      padding: 16px 0;
+      overflow: hidden;
+      background: var(--bg2);
+    }
+
+    .marquee-track {
+      display: flex;
+      gap: 48px;
+      animation: marquee 22s linear infinite;
+      width: max-content;
+    }
+
+    .marquee-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      white-space: nowrap;
+      font-family: 'Syne', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .marquee-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--k-red); }
+
+    @keyframes marquee {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    /* SECTIONS */
+    .features-section { padding: 100px 56px; }
+    .freemium-section { padding: 100px 56px; background: var(--bg2); border-top: 0.5px solid var(--border); }
+    .how-section { padding: 100px 56px; }
+    .testi-section { padding: 80px 56px; border-top: 0.5px solid var(--border); background: var(--bg2); }
+    .cta-section { padding: 120px 56px; text-align: center; position: relative; overflow: hidden; }
+
+    .section-eyebrow {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--k-red);
+      margin-bottom: 16px;
+    }
+
+    .section-h {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(32px, 4.5vw, 56px);
+      font-weight: 800;
+      letter-spacing: -2px;
+      line-height: 1;
+      color: #fff;
+      margin-bottom: 14px;
+    }
+
+    .section-h .dim { color: var(--text-muted); }
+
+    .section-p {
+      font-size: 15px;
+      color: var(--text-soft);
+      line-height: 1.65;
+      max-width: 400px;
+      margin-bottom: 56px;
+    }
+
+    /* BENTO */
+    .bento {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-rows: auto auto;
+      gap: 12px;
+    }
+
+    .bento-card {
+      background: var(--card);
+      border: 0.5px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      transition: border-color 0.3s, background 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .bento-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 0% 0%, var(--k-red-glow), transparent 60%);
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+
+    .bento-card:hover { border-color: var(--border2); background: var(--card2); }
+    .bento-card:hover::after { opacity: 1; }
+    .bento-card.wide { grid-column: span 2; }
+
+    .bento-icon {
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      background: rgba(232,39,58,0.1);
+      border: 0.5px solid rgba(232,39,58,0.2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+      margin-bottom: 18px;
+      position: relative; z-index: 1;
+    }
+
+    .bento-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 8px;
+      letter-spacing: -0.5px;
+      position: relative; z-index: 1;
+    }
+
+    .bento-desc { font-size: 13px; color: var(--text-muted); line-height: 1.6; position: relative; z-index: 1; }
+
+    .bento-stat {
+      font-family: 'Syne', sans-serif;
+      font-size: 56px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1;
+      letter-spacing: -3px;
+      margin: 12px 0 4px;
+      position: relative; z-index: 1;
+    }
+
+    .bento-stat span { color: var(--k-red); }
+
+    .bento-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 14px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      position: relative; z-index: 1;
+    }
+
+    .pill-free { background: rgba(255,255,255,0.05); border: 0.5px solid var(--border2); color: var(--text-muted); }
+    .pill-gold { background: rgba(232,39,58,0.1); border: 0.5px solid rgba(232,39,58,0.25); color: var(--k-red-soft); }
+
+    /* PLANS */
+    .plans-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+      margin-top: 56px;
+      max-width: 900px;
+    }
+
+    .plan {
+      background: var(--card);
+      border: 0.5px solid var(--border);
+      border-radius: 20px;
+      padding: 32px 28px;
+      position: relative;
+      transition: transform 0.3s;
+    }
+
+    .plan:hover { transform: translateY(-4px); }
+
+    .plan.hot { background: var(--card2); border-color: var(--k-red-dark); }
+
+    .hot-label {
+      position: absolute;
+      top: -11px; left: 28px;
+      background: var(--k-red);
+      color: #fff;
+      font-size: 9px;
+      font-weight: 700;
+      font-family: 'Syne', sans-serif;
+      letter-spacing: 1.5px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      text-transform: uppercase;
+    }
+
+    .plan-name {
+      font-family: 'Syne', sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -0.5px;
+      margin-bottom: 4px;
+    }
+
+    .plan-tagline { font-size: 12px; color: var(--text-muted); margin-bottom: 20px; }
+
+    .plan-price {
+      font-family: 'Syne', sans-serif;
+      font-size: 44px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -2px;
+      line-height: 1;
+    }
+
+    .plan-price.red { color: var(--k-red-soft); }
+    .plan-currency { font-size: 16px; color: var(--text-muted); vertical-align: super; font-family: 'DM Sans', sans-serif; font-weight: 300; }
+    .plan-period { font-size: 12px; color: var(--text-muted); font-family: 'DM Sans', sans-serif; margin-top: 4px; }
+    .plan-usd { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
+    .plan-divider { height: 0.5px; background: var(--border); margin: 20px 0; }
+
+    .plan-feats { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+
+    .plan-feats li {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-soft);
+      line-height: 1.4;
+    }
+
+    .fi-check { color: var(--k-red-soft); flex-shrink: 0; }
+    .fi-lock { color: var(--border2); flex-shrink: 0; }
+
+    .plan-cta {
+      width: 100%;
+      padding: 13px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.25s;
+      text-align: center;
+    }
+
+    .cta-ghost { background: transparent; border: 0.5px solid var(--border2); color: var(--text-soft); }
+    .cta-ghost:hover { border-color: var(--text-muted); color: var(--text); }
+
+    .cta-red { background: var(--k-red); border: none; color: #fff; }
+    .cta-red:hover { background: var(--k-red-soft); box-shadow: 0 8px 32px rgba(232,39,58,0.4); transform: translateY(-1px); }
+
+    /* HOW */
+    .how-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      margin-top: 60px;
+      position: relative;
+    }
+
+    .how-grid::before {
+      content: '';
+      position: absolute;
+      top: 24px;
+      left: 12.5%; right: 12.5%;
+      height: 0.5px;
+      background: var(--border);
+    }
+
+    .how-step { padding: 0 24px; }
+
+    .step-circle {
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      background: var(--card);
+      border: 0.5px solid var(--border2);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Syne', sans-serif;
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--k-red-soft);
+      margin-bottom: 20px;
+      position: relative; z-index: 1;
+      transition: all 0.3s;
+    }
+
+    .how-step:hover .step-circle { background: var(--k-red); border-color: var(--k-red); color: #fff; }
+
+    .step-name { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 8px; letter-spacing: -0.3px; }
+    .step-desc { font-size: 12px; color: var(--text-muted); line-height: 1.6; }
+
+    /* TESTIMONIALS */
+    .testi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 48px; }
+
+    .testi-card {
+      background: var(--card);
+      border: 0.5px solid var(--border);
+      border-radius: 14px;
+      padding: 22px;
+      transition: border-color 0.3s;
+    }
+
+    .testi-card:hover { border-color: var(--border2); }
+
+    .testi-stars { color: var(--k-red); font-size: 12px; letter-spacing: 2px; margin-bottom: 10px; }
+
+    .testi-quote {
+      font-family: 'Instrument Serif', serif;
+      font-style: italic;
+      font-size: 15px;
+      color: var(--text-soft);
+      line-height: 1.6;
+      margin-bottom: 14px;
+    }
+
+    .testi-author { display: flex; align-items: center; gap: 10px; }
+
+    .testi-av {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      font-family: 'Syne', sans-serif;
+      flex-shrink: 0;
+    }
+
+    .testi-name { font-size: 13px; color: var(--text); font-weight: 400; }
+    .testi-city { font-size: 11px; color: var(--text-muted); }
+
+    /* CTA FINAL */
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      width: 800px; height: 400px;
+      background: radial-gradient(ellipse, rgba(232,39,58,0.08) 0%, transparent 65%);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .cta-bg-text {
+      position: absolute;
+      font-family: 'Syne', sans-serif;
+      font-size: 200px;
+      font-weight: 800;
+      color: rgba(232,39,58,0.03);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      letter-spacing: -10px;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
+    .cta-h {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(40px, 6vw, 80px);
+      font-weight: 800;
+      letter-spacing: -3px;
+      color: #fff;
+      line-height: 0.95;
+      margin-bottom: 20px;
+      position: relative; z-index: 1;
+    }
+
+    .cta-h span { color: var(--k-red); }
+
+    .cta-sub { font-size: 15px; color: var(--text-muted); margin-bottom: 40px; position: relative; z-index: 1; }
+
+    .cta-form {
+      display: flex;
+      gap: 10px;
+      max-width: 420px;
+      margin: 0 auto;
+      position: relative; z-index: 1;
+    }
+
+    .cta-email {
+      flex: 1;
+      padding: 14px 18px;
+      background: var(--card);
+      border: 0.5px solid var(--border2);
+      border-radius: 10px;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .cta-email::placeholder { color: var(--text-muted); }
+    .cta-email:focus { border-color: var(--k-red-dark); }
+
+    .cta-submit {
+      padding: 14px 28px;
+      background: var(--k-red);
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      font-size: 14px;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.25s;
+      white-space: nowrap;
+    }
+
+    .cta-submit:hover { background: var(--k-red-soft); box-shadow: 0 8px 32px rgba(232,39,58,0.4); }
+    .cta-note { font-size: 11px; color: var(--text-muted); margin-top: 14px; position: relative; z-index: 1; }
+
+    /* FOOTER */
+    footer {
+      border-top: 0.5px solid var(--border);
+      padding: 36px 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-logo { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; color: var(--text-muted); letter-spacing: -0.5px; }
+    .footer-logo span { color: var(--k-red); }
+
+    .footer-links { display: flex; gap: 28px; list-style: none; }
+
+    .footer-links a { font-size: 12px; color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--text-soft); }
+
+    .footer-right { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--text-muted); }
+
+    /* REVEAL */
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      nav, nav.scrolled { padding: 16px 20px; }
+      .nav-links { display: none; }
+      .hero { grid-template-columns: 1fr; padding: 90px 20px 60px; gap: 40px; }
+      .hero-right { order: -1; }
+      .phone-mockup { width: 240px; }
+      .float-badge { display: none; }
+      .features-section, .freemium-section, .how-section, .testi-section, .cta-section { padding: 60px 20px; }
+      .bento { grid-template-columns: 1fr; }
+      .bento-card.wide { grid-column: span 1; }
+      .plans-container { grid-template-columns: 1fr; max-width: 360px; }
+      .how-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+      .how-grid::before { display: none; }
+      .testi-grid { grid-template-columns: 1fr; }
+      .cta-form { flex-direction: column; }
+      footer { flex-direction: column; gap: 20px; text-align: center; padding: 28px 20px; }
+      .footer-links { flex-wrap: wrap; justify-content: center; gap: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav id="nav">
+    <a href="#" class="nav-logo">Kr<span>u</span>sh</a>
+    <ul class="nav-links">
+      <li><a href="#features">Funciones</a></li>
+      <li><a href="#planes">Planes</a></li>
+      <li><a href="#como">Cómo funciona</a></li>
+    </ul>
+    <div class="nav-right">
+      <a href="#" class="btn-nav-ghost">Entrar</a>
+      <a href="#" class="btn-nav-primary">Crear cuenta</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-left">
+      <div class="hero-flag">🇺🇾 Hecho en Uruguay · Para uruguayos</div>
+
+      <h1 class="hero-title">
+        Encontrá<br>
+        tu <span class="accent">Krush</span><br>
+        <span class="italic">de verdad</span>
+      </h1>
+
+      <p class="hero-desc">
+        La primera red social de citas <strong>100% uruguaya</strong>. Conocé personas reales cerca tuyo, chateá gratis y desbloqueá lo mejor con Krush Gold.
+      </p>
+
+      <div class="hero-actions">
+        <a href="#" class="btn-big">Empezar gratis</a>
+        <a href="#planes" class="btn-big-ghost">Ver planes</a>
+      </div>
+
+      <div class="hero-trust">
+        <div class="trust-avatars">
+          <div class="trust-av" style="background:linear-gradient(135deg,#3A1A2A,#1A2A3A);">M</div>
+          <div class="trust-av" style="background:linear-gradient(135deg,#1A3A1A,#2A1A3A);">V</div>
+          <div class="trust-av" style="background:linear-gradient(135deg,#2A2A1A,#1A1A3A);">R</div>
+          <div class="trust-av" style="background:linear-gradient(135deg,#3A1A1A,#1A3A2A);">L</div>
+        </div>
+        <div class="trust-text"><strong>+12.000 uruguayos</strong> ya están en Krush</div>
+      </div>
+    </div>
+
+    <div class="hero-right">
+      <div class="float-badge float-badge-1">
+        <div class="fb-label">Matches hoy</div>
+        <div class="fb-val"><span>247</span> 🔥</div>
+      </div>
+      <div class="float-badge float-badge-2">
+        <div class="fb-label">Compatibilidad</div>
+        <div class="fb-val"><span>94</span>%</div>
+      </div>
+
+      <div class="phone-mockup">
+        <div class="phone-notch"><div class="notch-pill"></div></div>
+        <div>
+          <div class="profile-card-phone">
+            <div class="profile-bg-art"></div>
+            <div style="position:absolute;top:16px;left:16px;right:16px;display:flex;justify-content:space-between;align-items:center;">
+              <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:#fff;letter-spacing:-0.5px;">Krush</div>
+            </div>
+            <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:100px;height:100px;border-radius:50%;background:linear-gradient(135deg,#3A1A2A,rgba(232,39,58,0.13));border:2px solid rgba(232,39,58,0.3);display:flex;align-items:center;justify-content:center;font-size:40px;">💃</div>
+            <div class="profile-info">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+                <div class="profile-name-phone">Valentina, 24</div>
+                <div class="profile-percent">💘 94%</div>
+              </div>
+              <div style="font-size:11px;color:var(--text-muted);margin-bottom:8px;">📍 Pocitos, Montevideo</div>
+              <div class="profile-tags-phone">
+                <div class="ptag">🎵 Cumbia</div>
+                <div class="ptag">☕ Mate</div>
+                <div class="ptag">🏖️ Punta</div>
+              </div>
+            </div>
+          </div>
+          <div class="swipe-btns">
+            <div class="swipe-btn">✕</div>
+            <div class="swipe-btn like">💘</div>
+            <div class="swipe-btn">⭐</div>
+          </div>
+          <div class="match-notif">
+            <div style="font-size:18px;">🎉</div>
+            <div class="match-notif-text"><strong>¡Es un match!</strong>Vos y Valentina se gustaron</div>
+          </div>
+          <div class="locked-badge">
+            <div class="lb-left"><span>🔒 3 te dieron like</span>Desbloqueá con Gold</div>
+            <div class="lb-btn">Gold</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MARQUEE -->
+  <div class="marquee-section">
+    <div class="marquee-track">
+      <div class="marquee-item"><div class="marquee-dot"></div>Hecho en Uruguay</div>
+      <div class="marquee-item"><div class="marquee-dot"></div>Gratis para empezar</div>
+      <div class="marquee-item"><div class="marquee-dot"></div>Matches reales</div>
+      <div class="marquee-item"><div class="marquee-dot"></div>Sin bots ni perfiles falsos</div>
+      <div class="marquee-item"><div class="marquee-dot"></div>Gold en pesos uruguayos</div>
+      <div class="marquee-item"><div class="marquee-dot"></div>Privacidad garantizada</div>
+      <div class="marquee-item"><div class="marquee-dot"></div>Comunidades locales</div>
+      <div class="marquee-item"><div class="marquee-dot"></div>Hecho en Uruguay</div>
+      <div class="marquee-item"><div class="marquee-dot"></div>Gratis para empezar</div>
+      <div class="marquee-item"><div class="marquee-dot"></div>Matches reales</div>
+      <div class="marquee-item"><div class="marquee-dot"></div>Sin bots ni perfiles falsos</div>
+      <div class="marquee-item"><div class="marquee-dot"></div>Gold en pesos uruguayos</div>
+      <div class="marquee-item"><div class="marquee-dot"></div>Privacidad garantizada</div>
+      <div class="marquee-item"><div class="marquee-dot"></div>Comunidades locales</div>
+    </div>
+  </div>
+
+  <!-- FEATURES -->
+  <section class="features-section" id="features">
+    <div class="reveal">
+      <div class="section-eyebrow">✦ Funciones</div>
+      <h2 class="section-h">Todo lo que<br><span class="dim">necesitás,</span> acá</h2>
+      <p class="section-p">Diseñado para conexiones reales en Uruguay. Sin algoritmos raros, sin perfiles falsos.</p>
+    </div>
+    <div class="bento reveal">
+      <div class="bento-card wide">
+        <div class="bento-icon">💘</div>
+        <div class="bento-title">Match inteligente</div>
+        <div class="bento-desc">El algoritmo analiza personalidad, intereses y compatibilidad real con personas cerca tuyo en Uruguay.</div>
+        <div class="bento-stat">94<span>%</span></div>
+        <div style="font-size:11px;color:var(--text-muted);">compatibilidad promedio</div>
+        <div class="bento-pill pill-free">✓ Gratis</div>
+      </div>
+      <div class="bento-card">
+        <div class="bento-icon">💬</div>
+        <div class="bento-title">Chat gratis</div>
+        <div class="bento-desc">5 mensajes diarios sin pagar. Suficiente para romper el hielo con alguien especial.</div>
+        <div class="bento-pill pill-free">✓ Gratis</div>
+      </div>
+      <div class="bento-card">
+        <div class="bento-icon">👁</div>
+        <div class="bento-title">Quién te vio</div>
+        <div class="bento-desc">Mirá quién visitó tu perfil y quién te dio like. Exclusivo Gold.</div>
+        <div class="bento-pill pill-gold">★ Gold</div>
+      </div>
+      <div class="bento-card">
+        <div class="bento-icon">🔒</div>
+        <div class="bento-title">Privacidad total</div>
+        <div class="bento-desc">Modo invisible, bloqueos y reportes. Vos controlás quién te ve y cuándo.</div>
+        <div class="bento-pill pill-free">✓ Gratis</div>
+      </div>
+      <div class="bento-card wide">
+        <div class="bento-icon">⭐</div>
+        <div class="bento-title">Super Like · Destacate entre todos</div>
+        <div class="bento-desc">Mandá un Super Like para que la persona sepa que te interesa antes del match. 5 por día con Gold, ilimitados con Platinum.</div>
+        <div class="bento-pill pill-gold">★ Gold</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PLANS -->
+  <section class="freemium-section" id="planes">
+    <div class="reveal">
+      <div class="section-eyebrow">★ Planes</div>
+      <h2 class="section-h">Empezá gratis.<br><span class="dim">Crecé con Gold.</span></h2>
+      <p class="section-p">Precios en pesos uruguayos. Sin sorpresas, sin dólares. Cancelás cuando querés.</p>
+    </div>
+    <div class="plans-container reveal">
+
+      <div class="plan">
+        <div class="plan-name">Básico</div>
+        <div class="plan-tagline">Para explorar sin pagar</div>
+        <div style="margin-bottom:20px;">
+          <div class="plan-price"><span class="plan-currency">$</span>0</div>
+          <div class="plan-period">Gratis para siempre</div>
+        </div>
+        <div class="plan-divider"></div>
+        <ul class="plan-feats">
+          <li><span class="fi-check">✓</span> 5 mensajes por día</li>
+          <li><span class="fi-check">✓</span> Matches ilimitados</li>
+          <li><span class="fi-check">✓</span> Ver perfiles cercanos</li>
+          <li><span class="fi-lock">🔒</span> <span style="color:var(--text-muted)">Ver quién te dio like</span></li>
+          <li><span class="fi-lock">🔒</span> <span style="color:var(--text-muted)">Mensajes ilimitados</span></li>
+          <li><span class="fi-lock">🔒</span> <span style="color:var(--text-muted)">Modo invisible</span></li>
+        </ul>
+        <button class="plan-cta cta-ghost">Crear cuenta gratis</button>
+      </div>
+
+      <div class="plan hot">
+        <div class="hot-label">MÁS POPULAR</div>
+        <div class="plan-name" style="color:var(--k-red-soft);">Krush Gold</div>
+        <div class="plan-tagline">La experiencia completa</div>
+        <div style="margin-bottom:20px;">
+          <div class="plan-price red"><span class="plan-currency" style="color:var(--k-red-soft);">$</span>390</div>
+          <div class="plan-period">pesos uruguayos / mes</div>
+          <div class="plan-usd">≈ U$S 9.90 / mes</div>
+        </div>
+        <div class="plan-divider" style="background:var(--border2);"></div>
+        <ul class="plan-feats">
+          <li><span class="fi-check">✓</span> Mensajes ilimitados</li>
+          <li><span class="fi-check">✓</span> Ver quién te dio like</li>
+          <li><span class="fi-check">✓</span> Quién visitó tu perfil</li>
+          <li><span class="fi-check">✓</span> Modo invisible</li>
+          <li><span class="fi-check">✓</span> 5 Super Likes por día</li>
+          <li><span class="fi-check">✓</span> Prioridad en búsquedas</li>
+        </ul>
+        <button class="plan-cta cta-red">Activar Gold ahora</button>
+      </div>
+
+      <div class="plan">
+        <div class="plan-name">Platinum</div>
+        <div class="plan-tagline">Para los más exigentes</div>
+        <div style="margin-bottom:20px;">
+          <div class="plan-price"><span class="plan-currency">$</span>790</div>
+          <div class="plan-period">pesos uruguayos / mes</div>
+          <div class="plan-usd">≈ U$S 19.90 / mes</div>
+        </div>
+        <div class="plan-divider"></div>
+        <ul class="plan-feats">
+          <li><span class="fi-check">✓</span> Todo lo de Gold</li>
+          <li><span class="fi-check">✓</span> Super Likes ilimitados</li>
+          <li><span class="fi-check">✓</span> Boost de perfil diario</li>
+          <li><span class="fi-check">✓</span> Videollamadas en la app</li>
+          <li><span class="fi-check">✓</span> Historial de matches</li>
+          <li><span class="fi-check">✓</span> Soporte prioritario</li>
+        </ul>
+        <button class="plan-cta cta-ghost">Elegir Platinum</button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- HOW -->
+  <section class="how-section" id="como">
+    <div class="reveal" style="text-align:center;">
+      <div class="section-eyebrow">◈ Cómo funciona</div>
+      <h2 class="section-h">Simple como<br><span class="dim">un mate</span></h2>
+    </div>
+    <div class="how-grid reveal">
+      <div class="how-step">
+        <div class="step-circle">01</div>
+        <div class="step-name">Creá tu perfil</div>
+        <div class="step-desc">En 2 minutos. Fotos, intereses, lo que buscás. Nada de formularios kilométricos.</div>
+      </div>
+      <div class="how-step">
+        <div class="step-circle">02</div>
+        <div class="step-name">Explorá perfiles</div>
+        <div class="step-desc">Personas reales cerca tuyo en Uruguay. El algoritmo muestra los más compatibles primero.</div>
+      </div>
+      <div class="how-step">
+        <div class="step-circle">03</div>
+        <div class="step-name">Conectá gratis</div>
+        <div class="step-desc">5 mensajes por día sin pagar. Perfectos para presentarte y ver si hay onda.</div>
+      </div>
+      <div class="how-step">
+        <div class="step-circle">04</div>
+        <div class="step-name">Activá Gold</div>
+        <div class="step-desc">Cuando encontrás a alguien especial, Gold elimina todos los límites por $390 UYU al mes.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="testi-section">
+    <div class="reveal" style="text-align:center;">
+      <div class="section-eyebrow">💬 Lo que dicen</div>
+      <h2 class="section-h" style="font-size:clamp(28px,4vw,48px);">Historias <span class="dim">reales</span><br>de uruguayos</h2>
+    </div>
+    <div class="testi-grid reveal">
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-quote">"Conocí a mi novia en Krush. Vivía a 10 cuadras y no lo sabíamos. Gracias Krush 💘"</div>
+        <div class="testi-author">
+          <div class="testi-av" style="background:linear-gradient(135deg,#3A1A2A,#1A2A3A);">M</div>
+          <div><div class="testi-name">Marcos D.</div><div class="testi-city">Pocitos · Gold</div></div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-quote">"Me encanta que sea en pesos. Las otras apps cobran en dólares y es un garrón. Acá no."</div>
+        <div class="testi-author">
+          <div class="testi-av" style="background:linear-gradient(135deg,#1A3A1A,#2A1A3A);">L</div>
+          <div><div class="testi-name">Lucía M.</div><div class="testi-city">Punta Carretas · Platinum</div></div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-quote">"Probé Tinder y Badoo. Krush es otra cosa. Los perfiles son reales y la gente responde."</div>
+        <div class="testi-author">
+          <div class="testi-av" style="background:linear-gradient(135deg,#2A1A1A,#1A2A3A);">R</div>
+          <div><div class="testi-name">Rodrigo S.</div><div class="testi-city">Salto · Gold</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA FINAL -->
+  <section class="cta-section">
+    <div class="cta-bg-text">KRUSH</div>
+    <div class="reveal">
+      <h2 class="cta-h">Tu <span>Krush</span><br>te está esperando</h2>
+      <p class="cta-sub">Gratis para siempre · Gold desde $390 UYU al mes</p>
+      <div class="cta-form">
+        <input type="email" class="cta-email" placeholder="Tu correo electrónico">
+        <button class="cta-submit">Empezar</button>
+      </div>
+      <p class="cta-note">Sin tarjeta de crédito · Cancelás cuando querés · 🇺🇾 Hecho en Uruguay</p>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-logo">Kr<span>u</span>sh</div>
+    <ul class="footer-links">
+      <li><a href="#">Funciones</a></li>
+      <li><a href="#">Planes</a></li>
+      <li><a href="#">Privacidad</a></li>
+      <li><a href="#">Términos</a></li>
+      <li><a href="#">Contacto</a></li>
+    </ul>
+    <div class="footer-right">🇺🇾 <span>© 2025 Krush Uruguay</span></div>
+  </footer>
+
+  <script>
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 50));
+
+    const reveals = document.querySelectorAll('.reveal');
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.1 });
+    reveals.forEach(r => obs.observe(r));
+  </script>
+</body>
+</html>
