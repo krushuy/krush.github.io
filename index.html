@@ -857,6 +857,179 @@
     .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s ease; }
     .reveal.visible { opacity: 1; transform: translateY(0); }
 
+    /* AUTH MODAL */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(8px);
+      z-index: 999;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.active { display: flex; }
+
+    .modal {
+      background: var(--card);
+      border: 0.5px solid var(--border2);
+      border-radius: 20px;
+      padding: 40px 36px;
+      width: 100%;
+      max-width: 400px;
+      margin: 20px;
+      position: relative;
+      animation: fadeUp 0.3s ease forwards;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 16px; right: 16px;
+      background: var(--bg3);
+      border: 0.5px solid var(--border);
+      border-radius: 50%;
+      width: 32px; height: 32px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      color: var(--text-muted);
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+    .modal-close:hover { color: var(--text); border-color: var(--border2); }
+
+    .modal-logo {
+      font-family: 'Syne', sans-serif;
+      font-size: 28px;
+      font-weight: 800;
+      color: #fff;
+      text-align: center;
+      margin-bottom: 6px;
+    }
+    .modal-logo span { color: var(--k-red); }
+
+    .modal-subtitle {
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 28px;
+    }
+
+    .modal-tabs {
+      display: flex;
+      background: var(--bg3);
+      border-radius: 10px;
+      padding: 4px;
+      margin-bottom: 24px;
+    }
+
+    .modal-tab {
+      flex: 1;
+      padding: 9px;
+      border: none;
+      background: transparent;
+      border-radius: 8px;
+      color: var(--text-muted);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .modal-tab.active {
+      background: var(--k-red);
+      color: #fff;
+    }
+
+    .auth-input {
+      width: 100%;
+      padding: 13px 16px;
+      background: var(--bg3);
+      border: 0.5px solid var(--border2);
+      border-radius: 10px;
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      outline: none;
+      margin-bottom: 12px;
+      transition: border-color 0.2s;
+    }
+    .auth-input::placeholder { color: var(--text-muted); }
+    .auth-input:focus { border-color: var(--k-red-dark); }
+
+    .auth-btn {
+      width: 100%;
+      padding: 14px;
+      background: var(--k-red);
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      font-family: 'Syne', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 4px;
+      transition: all 0.25s;
+    }
+    .auth-btn:hover { background: var(--k-red-soft); box-shadow: 0 8px 24px rgba(232,39,58,0.35); }
+    .auth-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .auth-error {
+      background: rgba(232,39,58,0.1);
+      border: 0.5px solid rgba(232,39,58,0.3);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 12px;
+      color: var(--k-red-soft);
+      margin-bottom: 12px;
+      display: none;
+    }
+    .auth-error.show { display: block; }
+
+    .auth-success {
+      text-align: center;
+      padding: 20px 0;
+    }
+    .auth-success .success-icon { font-size: 48px; margin-bottom: 12px; }
+    .auth-success h3 { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 8px; }
+    .auth-success p { font-size: 13px; color: var(--text-muted); }
+
+    /* USER NAV */
+    .user-nav {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .user-avatar {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: var(--k-red);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Syne', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .user-email-nav {
+      font-size: 12px;
+      color: var(--text-muted);
+      max-width: 120px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .btn-logout {
+      font-size: 12px;
+      color: var(--text-muted);
+      background: none;
+      border: 0.5px solid var(--border);
+      border-radius: 6px;
+      padding: 6px 12px;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      transition: all 0.2s;
+    }
+    .btn-logout:hover { border-color: var(--border2); color: var(--text); }
+
     /* RESPONSIVE */
     @media (max-width: 900px) {
       nav, nav.scrolled { padding: 16px 20px; }
@@ -888,10 +1061,40 @@
       <li><a href="#como">Cómo funciona</a></li>
     </ul>
     <div class="nav-right">
-      <a href="#" class="btn-nav-ghost">Entrar</a>
-      <a href="#" class="btn-nav-primary">Crear cuenta</a>
+      <a href="#" class="btn-nav-ghost" onclick="openModal('login');return false;">Entrar</a>
+      <a href="#" class="btn-nav-primary" onclick="openModal('register');return false;">Crear cuenta</a>
     </div>
   </nav>
+
+  <!-- AUTH MODAL -->
+  <div class="modal-overlay" id="modal-overlay" onclick="handleOverlayClick(event)">
+    <div class="modal">
+      <div class="modal-close" onclick="closeModal()">✕</div>
+      <div class="modal-logo">Kr<span>u</span>sh</div>
+      <div class="modal-subtitle">La red social 🇺🇾 hecha para uruguayos</div>
+      <div class="modal-tabs">
+        <button class="modal-tab active" id="tab-login" onclick="switchTab('login')">Entrar</button>
+        <button class="modal-tab" id="tab-register" onclick="switchTab('register')">Crear cuenta</button>
+      </div>
+      <div id="auth-error" class="auth-error"></div>
+      <div id="form-login">
+        <input class="auth-input" type="email" id="login-email" placeholder="Correo electrónico">
+        <input class="auth-input" type="password" id="login-password" placeholder="Contraseña">
+        <button class="auth-btn" id="btn-login" onclick="doLogin()">Entrar a Krush</button>
+      </div>
+      <div id="form-register" style="display:none;">
+        <input class="auth-input" type="text" id="reg-name" placeholder="Tu nombre">
+        <input class="auth-input" type="email" id="reg-email" placeholder="Correo electrónico">
+        <input class="auth-input" type="password" id="reg-password" placeholder="Contraseña (mínimo 6 caracteres)">
+        <button class="auth-btn" id="btn-register" onclick="doRegister()">Crear cuenta gratis</button>
+      </div>
+      <div id="auth-success" class="auth-success" style="display:none;">
+        <div class="success-icon">💘</div>
+        <h3 id="success-title">¡Bienvenido a Krush!</h3>
+        <p id="success-msg">Tu cuenta fue creada. ¡Empezá a buscar tu match!</p>
+      </div>
+    </div>
+  </div>
 
   <!-- HERO -->
   <section class="hero">
@@ -1199,15 +1402,134 @@
     <div class="footer-right">🇺🇾 <span>© 2025 Krush Uruguay</span></div>
   </footer>
 
-  <script>
-    const nav = document.getElementById('nav');
-    window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 50));
+  <!-- FIREBASE SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-    const reveals = document.querySelectorAll('.reveal');
+    const firebaseConfig = {
+      apiKey: "AIzaSyD7wDuUvGwkwb6ekSfgqLpPdRucfHgV6Tk",
+      authDomain: "krush-8d3cf.firebaseapp.com",
+      projectId: "krush-8d3cf",
+      storageBucket: "krush-8d3cf.firebasestorage.app",
+      messagingSenderId: "760726538346",
+      appId: "1:760726538346:web:5e7cf7c8c97dc75184a213"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    const nav = document.getElementById("nav");
+    window.addEventListener("scroll", () => nav.classList.toggle("scrolled", window.scrollY > 50));
+
+    const reveals = document.querySelectorAll(".reveal");
     const obs = new IntersectionObserver(entries => {
-      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add("visible"); });
     }, { threshold: 0.1 });
     reveals.forEach(r => obs.observe(r));
+
+    onAuthStateChanged(auth, (user) => {
+      const navRight = document.getElementById("nav-right");
+      if (user) {
+        const initial = (user.displayName || user.email).charAt(0).toUpperCase();
+        const emailShort = user.email.length > 18 ? user.email.substring(0, 18) + "..." : user.email;
+        navRight.innerHTML = '<div class="user-nav"><div class="user-avatar">' + initial + '</div><span class="user-email-nav">' + emailShort + '</span><button class="btn-logout" id="btn-logout">Salir</button></div>';
+        document.getElementById("btn-logout").onclick = () => signOut(auth);
+      } else {
+        navRight.innerHTML = '<a href="#" class="btn-nav-ghost" onclick="openModal(\'login\');return false;">Entrar</a><a href="#" class="btn-nav-primary" onclick="openModal(\'register\');return false;">Crear cuenta</a>';
+      }
+    });
+
+    document.querySelector(".cta-submit").addEventListener("click", () => openModal("register"));
+    document.querySelectorAll(".plan-cta").forEach(btn => btn.addEventListener("click", () => openModal("register")));
+
+    window.doLogin = async () => {
+      const email = document.getElementById("login-email").value;
+      const password = document.getElementById("login-password").value;
+      const btn = document.getElementById("btn-login");
+      showError("");
+      btn.disabled = true; btn.textContent = "Entrando...";
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        showSuccess("Bienvenido de vuelta!", "Ya estas dentro de Krush!");
+        setTimeout(closeModal, 2000);
+      } catch (e) {
+        showError(getErrorMsg(e.code));
+        btn.disabled = false; btn.textContent = "Entrar a Krush";
+      }
+    };
+
+    window.doRegister = async () => {
+      const name = document.getElementById("reg-name").value;
+      const email = document.getElementById("reg-email").value;
+      const password = document.getElementById("reg-password").value;
+      const btn = document.getElementById("btn-register");
+      showError("");
+      btn.disabled = true; btn.textContent = "Creando cuenta...";
+      try {
+        const cred = await createUserWithEmailAndPassword(auth, email, password);
+        if (name) await updateProfile(cred.user, { displayName: name });
+        showSuccess("Bienvenido" + (name ? ", " + name : "") + "!", "Tu cuenta fue creada. Encontra tu Krush!");
+        setTimeout(closeModal, 2500);
+      } catch (e) {
+        showError(getErrorMsg(e.code));
+        btn.disabled = false; btn.textContent = "Crear cuenta gratis";
+      }
+    };
+
+    function getErrorMsg(code) {
+      const msgs = {
+        "auth/email-already-in-use": "Ya existe una cuenta con ese correo.",
+        "auth/invalid-email": "El correo no es valido.",
+        "auth/weak-password": "La contrasena debe tener al menos 6 caracteres.",
+        "auth/user-not-found": "No encontramos esa cuenta.",
+        "auth/wrong-password": "Contrasena incorrecta.",
+        "auth/invalid-credential": "Correo o contrasena incorrectos.",
+        "auth/too-many-requests": "Demasiados intentos. Espera unos minutos."
+      };
+      return msgs[code] || "Ocurrio un error. Intenta de nuevo.";
+    }
+
+    function showError(msg) {
+      const el = document.getElementById("auth-error");
+      el.textContent = msg;
+      el.classList.toggle("show", !!msg);
+    }
+
+    function showSuccess(title, msg) {
+      document.getElementById("form-login").style.display = "none";
+      document.getElementById("form-register").style.display = "none";
+      document.getElementById("auth-error").classList.remove("show");
+      document.getElementById("success-title").textContent = title;
+      document.getElementById("success-msg").textContent = msg;
+      document.getElementById("auth-success").style.display = "block";
+    }
+  </script>
+
+  <script>
+    function openModal(tab) {
+      document.getElementById("modal-overlay").classList.add("active");
+      switchTab(tab || "login");
+      document.getElementById("auth-success").style.display = "none";
+      document.getElementById("form-login").style.display = "";
+      document.getElementById("form-register").style.display = "none";
+      document.getElementById("auth-error").classList.remove("show");
+    }
+    function closeModal() {
+      document.getElementById("modal-overlay").classList.remove("active");
+    }
+    function handleOverlayClick(e) {
+      if (e.target === document.getElementById("modal-overlay")) closeModal();
+    }
+    function switchTab(tab) {
+      document.getElementById("tab-login").classList.toggle("active", tab === "login");
+      document.getElementById("tab-register").classList.toggle("active", tab === "register");
+      document.getElementById("form-login").style.display = tab === "login" ? "" : "none";
+      document.getElementById("form-register").style.display = tab === "register" ? "" : "none";
+      document.getElementById("auth-success").style.display = "none";
+      document.getElementById("auth-error").classList.remove("show");
+    }
+    document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
   </script>
 </body>
 </html>
