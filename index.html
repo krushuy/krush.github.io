@@ -1,33 +1,63 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ConnectMe – Firebase RealTime</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ConnectMe PRO FULL</title>
+
+<style>
+body{margin:0;font-family:Arial;background:#f0f2f5}
+header{background:#1877f2;color:white;padding:15px;font-size:20px}
+.container{max-width:700px;margin:auto;padding:10px}
+.card{background:white;padding:15px;border-radius:10px;margin-bottom:10px}
+input,textarea{width:100%;padding:10px;margin:5px 0}
+button{padding:10px;background:#1877f2;color:white;border:none;border-radius:5px;cursor:pointer}
+.story{display:inline-block;width:80px;height:120px;background:#ddd;border-radius:10px;margin:5px;text-align:center}
+.chat{position:fixed;bottom:0;right:0;width:300px;background:white;border:1px solid #ccc}
+.messages{height:200px;overflow:auto;padding:10px}
+</style>
 </head>
 <body>
 
-<h2>🔥 ConnectMe con Firebase (Base funcional)</h2>
+<header>🔥 ConnectMe PRO</header>
 
-<input type="email" id="email" placeholder="Email"><br><br>
-<input type="password" id="pass" placeholder="Password"><br><br>
+<div class="container">
+
+<div class="card">
+<h3>Login / Registro</h3>
+<input id="email" placeholder="Email">
+<input id="pass" type="password" placeholder="Password">
 <button onclick="register()">Registrarse</button>
 <button onclick="login()">Login</button>
 <button onclick="logout()">Logout</button>
+</div>
 
-<hr>
+<div class="card">
+<h3>Historias (24h)</h3>
+<input type="file" id="storyImg">
+<button onclick="uploadStory()">Subir Historia</button>
+<div id="stories"></div>
+</div>
 
+<div class="card">
+<h3>Crear Post</h3>
 <input type="file" id="img">
+<textarea id="text" placeholder="Escribe algo..."></textarea>
 <button onclick="uploadImage()">Subir Imagen</button>
-
-<hr>
-
-<textarea id="postText" placeholder="Escribe algo..."></textarea>
 <button onclick="createPost()">Publicar</button>
+</div>
 
-<div id="posts"></div>
+<div id="feed"></div>
 
-<!-- Firebase -->
+</div>
+
+<div class="chat">
+<div class="messages" id="messages"></div>
+<input id="msgInput" placeholder="mensaje...">
+<button onclick="sendMsg()">Enviar</button>
+</div>
+
+<!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
@@ -39,75 +69,92 @@ const firebaseConfig = {
   authDomain: "TU_PROYECTO.firebaseapp.com",
   projectId: "TU_PROYECTO",
   storageBucket: "TU_PROYECTO.appspot.com",
-  messagingSenderId: "XXX",
-  appId: "XXX"
 };
 
 firebase.initializeApp(firebaseConfig);
-
 const auth = firebase.auth();
 const db = firebase.firestore();
 const storage = firebase.storage();
 
-// REGISTER
-function register(){
-  const email = document.getElementById('email').value;
-  const pass = document.getElementById('pass').value;
-  auth.createUserWithEmailAndPassword(email, pass)
-  .then(()=>alert('Registrado'))
-  .catch(e=>alert(e.message));
-}
+// AUTH
+function register(){auth.createUserWithEmailAndPassword(email.value, pass.value)}
+function login(){auth.signInWithEmailAndPassword(email.value, pass.value)}
+function logout(){auth.signOut()}
 
-// LOGIN
-function login(){
-  const email = document.getElementById('email').value;
-  const pass = document.getElementById('pass').value;
-  auth.signInWithEmailAndPassword(email, pass)
-  .then(()=>alert('Logeado'))
-  .catch(e=>alert(e.message));
-}
-
-// LOGOUT
-function logout(){
-  auth.signOut();
-}
-
-// SUBIR IMAGEN
-let imageURL = "";
+// IMAGE
+let imgURL="";
 async function uploadImage(){
-  const file = document.getElementById('img').files[0];
-  const ref = storage.ref('posts/' + Date.now());
+  const file = img.files[0];
+  const ref = storage.ref('posts/'+Date.now());
   await ref.put(file);
-  imageURL = await ref.getDownloadURL();
-  alert('Imagen subida');
+  imgURL = await ref.getDownloadURL();
+  alert('Imagen lista');
 }
 
-// CREAR POST
+// POST
 function createPost(){
-  const text = document.getElementById('postText').value;
+  if(!auth.currentUser) return alert('Login');
   db.collection('posts').add({
-    text,
-    image: imageURL,
+    text: text.value,
+    image: imgURL,
     user: auth.currentUser.email,
+    userId: auth.currentUser.uid,
     time: Date.now()
-  });
+  })
 }
 
-// TIEMPO REAL
+// FEED REALTIME
  db.collection('posts').orderBy('time','desc')
- .onSnapshot(snapshot=>{
-   document.getElementById('posts').innerHTML = "";
-   snapshot.forEach(doc=>{
-     const p = doc.data();
-     document.getElementById('posts').innerHTML += `
-       <div style="border:1px solid #ccc;margin:10px;padding:10px">
-         <b>${p.user}</b><br>
-         ${p.text}<br>
-         ${p.image ? `<img src="${p.image}" width="200">` : ""}
-       </div>
-     `;
-   });
- });
+ .onSnapshot(snap=>{
+   feed.innerHTML="";
+   snap.forEach(doc=>{
+     let p=doc.data();
+     feed.innerHTML+=`<div class="card"><b>${p.user}</b><br>${p.text}<br>${p.image?`<img src="${p.image}">`:""}</div>`;
+   })
+ })
+
+// STORIES
+async function uploadStory(){
+  const file = storyImg.files[0];
+  const ref = storage.ref('stories/'+Date.now());
+  await ref.put(file);
+  const url = await ref.getDownloadURL();
+
+  db.collection('stories').add({
+    img:url,
+    user:auth.currentUser.email,
+    time:Date.now()
+  })
+}
+
+// AUTO BORRAR HISTORIAS 24H
+ db.collection('stories').onSnapshot(snap=>{
+   stories.innerHTML="";
+   snap.forEach(doc=>{
+     let s=doc.data();
+     if(Date.now()-s.time < 86400000){
+       stories.innerHTML+=`<div class="story"><img src="${s.img}" width="100%"></div>`;
+     }
+   })
+ })
+
+// CHAT GLOBAL SIMPLE
+function sendMsg(){
+  db.collection('chat').add({
+    text:msgInput.value,
+    user:auth.currentUser.email,
+    time:Date.now()
+  })
+}
+
+ db.collection('chat').orderBy('time')
+ .onSnapshot(snap=>{
+   messages.innerHTML="";
+   snap.forEach(doc=>{
+     let m=doc.data();
+     messages.innerHTML+=`<div><b>${m.user}:</b> ${m.text}</div>`;
+   })
+ })
 
 </script>
 
