@@ -8,25 +8,25 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{--k:#E8273A;--k2:#FF4D62;--bg:#F0F2F5;--white:#fff;--border:#E4E6EB;--text:#050505;--text2:#65676B;--text3:#8A8D91;--hover:#F2F2F2}
-html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,sans-serif;font-size:15px;overflow-x:hidden}
 
 /* NAVBAR */
-.navbar{position:fixed;top:0;left:0;right:0;height:56px;background:var(--white);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 12px;z-index:300;box-shadow:0 2px 4px rgba(0,0,0,0.08)}
-.nav-logo{font-size:26px;font-weight:700;color:var(--k);text-decoration:none;letter-spacing:-1px}
-.nav-search{display:flex;align-items:center;background:var(--bg);border-radius:20px;padding:7px 13px;gap:8px;width:210px}
+.navbar{position:fixed;top:0;left:0;right:0;height:56px;background:var(--white);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 12px;z-index:300;box-shadow:0 1px 4px rgba(0,0,0,0.1)}
+.nav-logo{font-size:26px;font-weight:700;color:var(--k);text-decoration:none;letter-spacing:-1px;cursor:pointer}
+.nav-search{display:flex;align-items:center;background:var(--bg);border-radius:20px;padding:7px 13px;gap:8px;width:200px}
 .nav-search input{border:none;background:transparent;outline:none;font-size:14px;color:var(--text);width:100%;font-family:'Inter',sans-serif}
-.nav-center{display:flex;align-items:center;gap:2px}
-.nav-tab{display:flex;align-items:center;justify-content:center;width:88px;height:48px;border-radius:8px;color:var(--text3);font-size:22px;transition:all .15s;border-bottom:3px solid transparent;cursor:pointer;border:none;background:none}
-.nav-tab:hover{background:var(--hover);color:var(--text2)}
-.nav-tab.active{color:var(--k);border-bottom:3px solid var(--k)}
+.nav-center{display:flex;align-items:center}
+.ntab{display:flex;align-items:center;justify-content:center;width:88px;height:48px;border-radius:8px;color:var(--text3);font-size:22px;border:none;background:none;cursor:pointer;border-bottom:3px solid transparent;transition:all .15s;position:relative}
+.ntab:hover{background:var(--hover)}
+.ntab.active{color:var(--k);border-bottom:3px solid var(--k)}
+.nbadge{position:absolute;top:6px;right:14px;background:var(--k);color:#fff;font-size:10px;font-weight:700;border-radius:10px;padding:1px 5px;min-width:16px;text-align:center}
 .nav-right{display:flex;align-items:center;gap:8px}
 .btn-nav{background:var(--k);color:#fff;border:none;border-radius:6px;padding:8px 14px;font-size:14px;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;transition:background .15s;white-space:nowrap}
 .btn-nav:hover{background:var(--k2)}
 .btn-nav.ghost{background:var(--hover);color:var(--text)}
 .btn-nav.ghost:hover{background:var(--border)}
 .user-chip{display:flex;align-items:center;gap:8px}
-.nav-av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--k),#FF8FA3);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#fff;flex-shrink:0;overflow:hidden;cursor:pointer;background-size:cover;background-position:center}
+.nav-av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--k),#FF8FA3);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#fff;flex-shrink:0;cursor:pointer;background-size:cover;background-position:center}
 .btn-logout{background:var(--hover);border:none;border-radius:6px;padding:7px 12px;font-size:13px;font-weight:600;color:var(--text2);cursor:pointer;font-family:'Inter',sans-serif}
 .btn-logout:hover{background:var(--border)}
 
@@ -36,7 +36,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,sa
 .sidebar-left::-webkit-scrollbar,.sidebar-right::-webkit-scrollbar{display:none}
 
 /* LEFT SIDEBAR */
-.s-item{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:8px;cursor:pointer;transition:background .15s;font-size:15px;font-weight:500;color:var(--text);text-decoration:none;border:none;background:none;width:100%;font-family:'Inter',sans-serif}
+.s-item{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:8px;cursor:pointer;transition:background .15s;font-size:15px;font-weight:500;color:var(--text);border:none;background:none;width:100%;font-family:'Inter',sans-serif;text-align:left}
 .s-item:hover{background:var(--hover)}
 .s-item.active{background:#FEE2E5;color:var(--k)}
 .s-icon{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
@@ -44,20 +44,24 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,sa
 .s-sec{padding:8px 12px;font-size:17px;font-weight:700}
 .s-footer{padding:8px 12px;font-size:12px;color:var(--text3);line-height:1.7}
 
-/* FEED */
-.feed{padding:16px 12px;max-width:680px;margin:0 auto;width:100%}
+/* MAIN CONTENT AREA */
+.main-content{padding:16px 12px;max-width:680px;margin:0 auto;width:100%}
+
+/* SECTION VIEWS */
+.view{display:none}.view.active{display:block}
 
 /* LOCKED */
 .feed-locked{display:none;flex-direction:column;align-items:center;justify-content:center;padding:80px 20px;text-align:center}
+.feed-locked.show{display:flex}
 .feed-locked-icon{font-size:72px;margin-bottom:20px}
 .feed-locked h2{font-size:24px;font-weight:700;margin-bottom:8px}
 .feed-locked p{font-size:15px;color:var(--text2);margin-bottom:28px;max-width:360px;line-height:1.5}
-.feed-locked-btns{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.btns-row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
 
 /* CREATE POST */
 .create-post{background:var(--white);border-radius:8px;border:1px solid var(--border);padding:12px 16px;margin-bottom:16px}
 .cp-top{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px}
-.cp-av{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--k),#FF8FA3);display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:15px;flex-shrink:0;overflow:hidden;cursor:pointer;background-size:cover;background-position:center}
+.cp-av{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--k),#FF8FA3);display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:15px;flex-shrink:0;cursor:pointer;background-size:cover;background-position:center}
 .cp-input{flex:1;background:var(--bg);border:none;border-radius:12px;padding:10px 14px;font-size:15px;color:var(--text);font-family:'Inter',sans-serif;outline:none;resize:none;min-height:42px;line-height:1.4}
 .cp-input::placeholder{color:var(--text2)}
 .cp-div{height:1px;background:var(--border);margin:0 -16px 8px}
@@ -81,7 +85,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,sa
 .post-menu-wrap{position:relative}
 .post-menu-btn{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:20px;color:var(--text2);border:none;background:none;transition:background .15s}
 .post-menu-btn:hover{background:var(--hover)}
-.post-menu-dd{display:none;position:absolute;right:0;top:40px;background:var(--white);border:1px solid var(--border);border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,0.15);min-width:160px;z-index:50;overflow:hidden}
+.post-menu-dd{display:none;position:absolute;right:0;top:40px;background:var(--white);border:1px solid var(--border);border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,.15);min-width:180px;z-index:50;overflow:hidden}
 .post-menu-dd.open{display:block}
 .post-menu-item{padding:11px 16px;cursor:pointer;font-size:14px;font-weight:600;transition:background .15s}
 .post-menu-item:hover{background:var(--hover)}
@@ -92,20 +96,16 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,sa
 .rpill{width:20px;height:20px;border-radius:50%;font-size:12px;display:flex;align-items:center;justify-content:center;margin-right:-3px;border:2px solid var(--white)}
 .post-divider{height:1px;background:var(--border);margin:0 12px}
 .post-actions{display:flex;padding:4px 8px}
-.pact{flex:1;display:flex;align-items:center;justify-content:center;gap:5px;padding:8px 4px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:600;color:var(--text2);transition:all .15s;border:none;background:none;font-family:'Inter',sans-serif;position:relative}
+.pact{flex:1;display:flex;align-items:center;justify-content:center;gap:5px;padding:8px 4px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:600;color:var(--text2);border:none;background:none;font-family:'Inter',sans-serif;transition:all .15s;position:relative}
 .pact:hover{background:var(--hover)}
 .pact.reacted{color:var(--k)}
-
-/* REACTION POPUP */
-.react-popup{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--white);border-radius:50px;box-shadow:0 4px 16px rgba(0,0,0,0.2);padding:8px 12px;display:none;gap:6px;z-index:200;white-space:nowrap}
+.react-popup{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--white);border-radius:50px;box-shadow:0 4px 16px rgba(0,0,0,.2);padding:8px 12px;display:none;gap:6px;z-index:200;white-space:nowrap}
 .react-popup.open{display:flex}
 .react-opt{font-size:28px;cursor:pointer;transition:transform .15s;line-height:1}
 .react-opt:hover{transform:scale(1.4) translateY(-6px)}
-
-/* COMMENTS */
 .comments-sec{padding:8px 16px 12px;border-top:1px solid var(--border);display:none}
 .comments-sec.open{display:block}
-.cm-input-row{display:flex;gap:8px;align-items:flex-start;margin-bottom:10px}
+.cm-input-row{display:flex;gap:8px;align-items:center;margin-bottom:10px}
 .cm-av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--k),#FF8FA3);display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:13px;flex-shrink:0;background-size:cover;background-position:center}
 .cm-input-wrap{flex:1;background:var(--bg);border-radius:20px;padding:8px 14px;display:flex;align-items:center;gap:8px}
 .cm-input{border:none;background:transparent;outline:none;font-size:14px;font-family:'Inter',sans-serif;width:100%;color:var(--text)}
@@ -119,11 +119,80 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,sa
 .cm-action{cursor:pointer;font-weight:600}
 .cm-action:hover{text-decoration:underline}
 
+/* MATCHES / EXPLORE */
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.section-title{font-size:20px;font-weight:700}
+.profile-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.profile-card{background:var(--white);border-radius:12px;border:1px solid var(--border);overflow:hidden;cursor:pointer;transition:transform .15s,box-shadow .15s}
+.profile-card:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,0,0,.1)}
+.profile-card-cover{height:120px;display:flex;align-items:center;justify-content:center;font-size:48px;position:relative}
+.profile-card-av{position:absolute;bottom:-20px;left:16px;width:44px;height:44px;border-radius:50%;border:3px solid var(--white);background:linear-gradient(135deg,var(--k),#FF8FA3);display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:16px;background-size:cover;background-position:center}
+.profile-card-body{padding:26px 16px 14px}
+.profile-card-name{font-size:15px;font-weight:700}
+.profile-card-sub{font-size:13px;color:var(--text3);margin-bottom:10px}
+.profile-card-actions{display:flex;gap:8px}
+.btn-like{flex:1;background:#FEE2E5;color:var(--k);border:none;border-radius:6px;padding:7px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:background .15s}
+.btn-like:hover{background:#FECDD3}
+.btn-like.liked{background:var(--k);color:#fff}
+.btn-msg{flex:1;background:var(--hover);color:var(--text);border:none;border-radius:6px;padding:7px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:background .15s}
+.btn-msg:hover{background:var(--border)}
+
+/* MATCHES PAGE */
+.match-card{background:var(--white);border-radius:10px;border:1px solid var(--border);padding:16px;display:flex;align-items:center;gap:14px;margin-bottom:10px;cursor:pointer;transition:background .15s}
+.match-card:hover{background:var(--hover)}
+.match-av{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--k),#FF8FA3);display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:20px;flex-shrink:0;border:3px solid var(--k);background-size:cover;background-position:center}
+.match-info{flex:1}
+.match-name{font-size:16px;font-weight:700}
+.match-sub{font-size:13px;color:var(--text3)}
+.match-action{background:var(--k);color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif}
+
+/* MESSAGES */
+.msg-list-item{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;cursor:pointer;transition:background .15s;margin-bottom:4px}
+.msg-list-item:hover{background:var(--hover)}
+.msg-list-item.active{background:#FEE2E5}
+.msg-av{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--k),#FF8FA3);display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:18px;flex-shrink:0;position:relative;background-size:cover;background-position:center}
+.online-dot{position:absolute;bottom:1px;right:1px;width:12px;height:12px;border-radius:50%;background:#31A24C;border:2px solid var(--white)}
+.msg-info{flex:1;min-width:0}
+.msg-name{font-size:15px;font-weight:600}
+.msg-preview{font-size:13px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.msg-preview.unread{font-weight:700;color:var(--text)}
+.msg-meta{text-align:right;flex-shrink:0}
+.msg-time{font-size:12px;color:var(--text3)}
+.msg-unread-badge{background:var(--k);color:#fff;font-size:11px;font-weight:700;border-radius:10px;min-width:18px;height:18px;display:flex;align-items:center;justify-content:center;margin-left:auto;margin-top:2px;padding:0 4px}
+
+/* CHAT */
+.chat-view{display:none;flex-direction:column;height:calc(100vh - 110px);background:var(--white);border-radius:10px;border:1px solid var(--border);overflow:hidden}
+.chat-view.open{display:flex}
+.chat-header{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border);flex-shrink:0}
+.chat-back{background:none;border:none;cursor:pointer;font-size:20px;color:var(--text2);padding:4px}
+.chat-back:hover{color:var(--k)}
+.chat-messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;scrollbar-width:thin}
+.chat-bubble{max-width:70%;padding:10px 14px;border-radius:18px;font-size:15px;line-height:1.4;word-break:break-word}
+.chat-bubble.mine{background:var(--k);color:#fff;border-bottom-right-radius:4px;align-self:flex-end}
+.chat-bubble.theirs{background:var(--bg);color:var(--text);border-bottom-left-radius:4px;align-self:flex-start}
+.chat-bubble-time{font-size:11px;opacity:.6;margin-top:3px;text-align:right}
+.chat-input-row{display:flex;align-items:center;gap:8px;padding:10px 14px;border-top:1px solid var(--border);flex-shrink:0}
+.chat-inp{flex:1;background:var(--bg);border:none;border-radius:20px;padding:10px 16px;font-size:15px;font-family:'Inter',sans-serif;outline:none;color:var(--text)}
+.chat-inp::placeholder{color:var(--text3)}
+.chat-send{background:var(--k);color:#fff;border:none;border-radius:50%;width:38px;height:38px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s}
+.chat-send:hover{background:var(--k2)}
+
+/* NOTIFICATIONS */
+.notif-item{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;border-radius:10px;cursor:pointer;transition:background .15s;margin-bottom:4px;position:relative}
+.notif-item:hover{background:var(--hover)}
+.notif-item.unread{background:#FEF2F2}
+.notif-av{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--k),#FF8FA3);display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:16px;flex-shrink:0;background-size:cover;background-position:center;position:relative}
+.notif-badge{position:absolute;bottom:-2px;right:-2px;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;border:2px solid var(--white)}
+.notif-body{flex:1}
+.notif-text{font-size:14px;line-height:1.4}
+.notif-time{font-size:12px;color:var(--text3);margin-top:3px}
+.notif-unread-dot{width:10px;height:10px;border-radius:50%;background:var(--k);flex-shrink:0;margin-top:4px}
+
 /* RIGHT SIDEBAR */
 .widget{background:var(--white);border-radius:8px;border:1px solid var(--border);margin-bottom:12px;overflow:hidden}
 .widget-title{padding:14px 16px 8px;font-size:17px;font-weight:700}
 .pw{padding:20px 16px;display:flex;flex-direction:column;align-items:center;text-align:center}
-.pw-av{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--k),#FF8FA3);display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:700;color:#fff;margin-bottom:4px;border:3px solid var(--k);overflow:hidden;cursor:pointer;transition:opacity .15s;flex-shrink:0;background-size:cover;background-position:center}
+.pw-av{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--k),#FF8FA3);display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:700;color:#fff;margin-bottom:4px;border:3px solid var(--k);cursor:pointer;transition:opacity .15s;flex-shrink:0;background-size:cover;background-position:center}
 .pw-av:hover{opacity:.85}
 .pw-hint{font-size:11px;color:var(--text3);margin-bottom:8px;cursor:pointer}
 .pw-hint:hover{text-decoration:underline}
@@ -139,7 +208,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,sa
 /* AUTH MODAL */
 .overlay{display:none;position:fixed;inset:0;background:rgba(255,255,255,0.85);backdrop-filter:blur(4px);z-index:500;align-items:center;justify-content:center}
 .overlay.open{display:flex}
-.modal{background:var(--white);border-radius:10px;box-shadow:0 4px 24px rgba(0,0,0,0.2);width:100%;max-width:440px;margin:20px;overflow:hidden;animation:popIn .2s ease}
+.modal{background:var(--white);border-radius:10px;box-shadow:0 4px 24px rgba(0,0,0,.2);width:100%;max-width:440px;margin:20px;overflow:hidden;animation:popIn .2s ease}
 .mh{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border)}
 .mh-title{font-size:20px;font-weight:700}
 .mx{width:36px;height:36px;border-radius:50%;background:var(--hover);border:none;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text2)}
@@ -173,13 +242,13 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,sa
 /* EDIT PROFILE MODAL */
 .ep-ov{display:none;position:fixed;inset:0;background:rgba(255,255,255,0.85);backdrop-filter:blur(4px);z-index:500;align-items:center;justify-content:center}
 .ep-ov.open{display:flex}
-.ep-m{background:var(--white);border-radius:10px;box-shadow:0 4px 24px rgba(0,0,0,0.2);width:100%;max-width:460px;margin:20px;animation:popIn .2s ease;overflow:hidden;max-height:90vh;overflow-y:auto}
-.ep-h{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--white);z-index:1}
+.ep-m{background:var(--white);border-radius:10px;box-shadow:0 4px 24px rgba(0,0,0,.2);width:100%;max-width:460px;margin:20px;animation:popIn .2s ease;overflow:hidden;max-height:90vh;overflow-y:auto}
+.ep-h{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);background:var(--white)}
 .ep-b{padding:20px;display:flex;flex-direction:column;gap:14px}
 .ep-lab{font-size:13px;font-weight:600;color:var(--text2);margin-bottom:4px}
 .ep-inp{width:100%;padding:11px 14px;border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'Inter',sans-serif;font-size:15px;outline:none;transition:border-color .15s}
 .ep-inp:focus{border-color:var(--k);box-shadow:0 0 0 2px rgba(232,39,58,.15)}
-.ep-f{display:flex;gap:8px;padding:16px 20px;border-top:1px solid var(--border);position:sticky;bottom:0;background:var(--white)}
+.ep-f{display:flex;gap:8px;padding:16px 20px;border-top:1px solid var(--border);background:var(--white)}
 .ep-save{flex:1;padding:11px;background:var(--k);border:none;border-radius:6px;color:#fff;font-family:'Inter',sans-serif;font-size:15px;font-weight:700;cursor:pointer}
 .ep-save:hover{background:var(--k2)}
 .ep-cancel{padding:11px 18px;background:var(--hover);border:none;border-radius:6px;color:var(--text);font-family:'Inter',sans-serif;font-size:15px;font-weight:600;cursor:pointer}
@@ -187,13 +256,22 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,sa
 .ep-ok{background:#D1FAE5;border:1px solid #6EE7B7;border-radius:6px;padding:10px 14px;font-size:13px;color:#065F46;display:none}
 .ep-ok.show{display:block}
 
+/* EMPTY STATE */
+.empty-state{text-align:center;padding:60px 20px}
+.empty-state .ei{font-size:64px;margin-bottom:16px}
+.empty-state h3{font-size:18px;font-weight:700;margin-bottom:8px}
+.empty-state p{font-size:14px;color:var(--text2);line-height:1.5}
+
 /* TOAST */
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(16px);background:#1a1a1a;color:#fff;padding:11px 22px;border-radius:8px;font-size:14px;font-weight:600;z-index:9999;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-/* RESPONSIVE */
+/* PILLS */
+.pill{display:inline-flex;align-items:center;gap:4px;background:var(--bg);border-radius:20px;padding:4px 12px;font-size:13px;font-weight:600;color:var(--text2);cursor:pointer;border:1px solid var(--border);transition:all .15s}
+.pill:hover,.pill.active{background:#FEE2E5;color:var(--k);border-color:#FECDD3}
+
 @media(max-width:1100px){.layout{grid-template-columns:240px 1fr 0}.sidebar-right{display:none}}
-@media(max-width:768px){.layout{grid-template-columns:1fr}.sidebar-left{display:none}.nav-center{display:none}.feed{padding:8px}}
+@media(max-width:768px){.layout{grid-template-columns:1fr}.sidebar-left{display:none}.nav-center{display:none}.main-content{padding:8px}}
 </style>
 </head>
 <body>
@@ -201,17 +279,14 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,sa
 <!-- NAVBAR -->
 <nav class="navbar">
   <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0">
-    <a href="#" class="nav-logo">Krush</a>
-    <div class="nav-search">
-      <span style="color:var(--text3);font-size:14px">🔍</span>
-      <input type="text" placeholder="Buscar en Krush...">
-    </div>
+    <span class="nav-logo" onclick="goTo('feed')">Krush</span>
+    <div class="nav-search"><span style="color:var(--text3);font-size:14px">🔍</span><input type="text" placeholder="Buscar en Krush..." id="search-inp" oninput="handleSearch(this.value)"></div>
   </div>
   <div class="nav-center">
-    <button class="nav-tab active" title="Inicio">🏠</button>
-    <button class="nav-tab" onclick="toast('💘 Matches próximamente')">💘</button>
-    <button class="nav-tab" onclick="toast('💬 Mensajes próximamente')">💬</button>
-    <button class="nav-tab" onclick="toast('🔔 Notificaciones próximamente')">🔔</button>
+    <button class="ntab active" id="ntab-feed" onclick="goTo('feed')" title="Inicio">🏠</button>
+    <button class="ntab" id="ntab-matches" onclick="goTo('matches')" title="Matches">💘</button>
+    <button class="ntab" id="ntab-messages" onclick="goTo('messages')" title="Mensajes">💬<span class="nbadge" id="msg-badge" style="display:none">0</span></button>
+    <button class="ntab" id="ntab-notifs" onclick="goTo('notifs')" title="Notificaciones">🔔<span class="nbadge" id="notif-badge" style="display:none">0</span></button>
   </div>
   <div class="nav-right" id="nav-right">
     <button class="btn-nav ghost" onclick="openAuth('login')">Entrar</button>
@@ -249,9 +324,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,sa
         <div class="mlink"><a onclick="switchTab('login')">¿Ya tenés cuenta? Entrá</a></div>
       </div>
       <div id="auth-ok" style="display:none" class="aok">
-        <div class="aok-ico">💘</div>
-        <h3 id="ok-t">¡Bienvenido!</h3>
-        <p id="ok-m">Sesión iniciada.</p>
+        <div class="aok-ico">💘</div><h3 id="ok-t">¡Bienvenido!</h3><p id="ok-m">Sesión iniciada.</p>
       </div>
     </div>
   </div>
@@ -260,10 +333,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,sa
 <!-- EDIT PROFILE MODAL -->
 <div class="ep-ov" id="ep-ov" onclick="if(event.target===this)closeEP()">
   <div class="ep-m">
-    <div class="ep-h">
-      <span style="font-size:18px;font-weight:700">✏️ Editar perfil</span>
-      <button class="mx" onclick="closeEP()">✕</button>
-    </div>
+    <div class="ep-h"><span style="font-size:18px;font-weight:700">✏️ Editar perfil</span><button class="mx" onclick="closeEP()">✕</button></div>
     <div class="ep-b">
       <div class="ep-ok" id="ep-ok">✅ ¡Perfil actualizado!</div>
       <div style="display:flex;flex-direction:column;align-items:center;gap:6px">
@@ -273,6 +343,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,sa
       </div>
       <div><div class="ep-lab">Nombre</div><input class="ep-inp" type="text" id="ep-name" placeholder="Tu nombre"></div>
       <div><div class="ep-lab">Ciudad</div><input class="ep-inp" type="text" id="ep-city" placeholder="Ej: Montevideo, Canelones..."></div>
+      <div><div class="ep-lab">Edad</div><input class="ep-inp" type="number" id="ep-age" placeholder="Tu edad" min="18" max="99"></div>
       <div><div class="ep-lab">¿Qué buscás?</div>
         <select class="ep-inp" id="ep-look">
           <option value="">Seleccioná...</option>
@@ -306,45 +377,44 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,sa
       </button>
       <div class="s-div"></div>
     </div>
-    <button class="s-item active"><div class="s-icon" style="background:linear-gradient(135deg,var(--k),#FF8FA3)">🏠</div>Inicio</button>
-    <button class="s-item" onclick="toast('💘 Próximamente')"><div class="s-icon" style="background:#FEE2E5">💘</div>Matches</button>
-    <button class="s-item" onclick="toast('💬 Próximamente')"><div class="s-icon" style="background:linear-gradient(135deg,#1877F2,#42B0FF)">💬</div>Mensajes</button>
-    <button class="s-item" onclick="toast('⭐ Próximamente')"><div class="s-icon" style="background:linear-gradient(135deg,#00B09B,#96C93D)">⭐</div>Likes recibidos</button>
-    <button class="s-item" onclick="toast('🔔 Próximamente')"><div class="s-icon" style="background:linear-gradient(135deg,#7B2FBE,#C77DFF)">🔔</div>Notificaciones</button>
-    <button class="s-item" onclick="toast('🏆 Próximamente')"><div class="s-icon" style="background:linear-gradient(135deg,#F7971E,#FFD200)">🏆</div>Krush Gold</button>
+    <button class="s-item active" id="si-feed" onclick="goTo('feed')"><div class="s-icon" style="background:linear-gradient(135deg,var(--k),#FF8FA3)">🏠</div>Inicio</button>
+    <button class="s-item" id="si-matches" onclick="goTo('matches')"><div class="s-icon" style="background:#FEE2E5">💘</div>Matches</button>
+    <button class="s-item" id="si-messages" onclick="goTo('messages')"><div class="s-icon" style="background:linear-gradient(135deg,#1877F2,#42B0FF)">💬</div>Mensajes</button>
+    <button class="s-item" id="si-likes" onclick="goTo('likes')"><div class="s-icon" style="background:linear-gradient(135deg,#00B09B,#96C93D)">⭐</div>Likes recibidos</button>
+    <button class="s-item" id="si-notifs" onclick="goTo('notifs')"><div class="s-icon" style="background:linear-gradient(135deg,#7B2FBE,#C77DFF)">🔔</div>Notificaciones</button>
+    <button class="s-item" id="si-gold" onclick="goTo('gold')"><div class="s-icon" style="background:linear-gradient(135deg,#F7971E,#FFD200)">🏆</div>Krush Gold</button>
     <div class="s-div"></div>
     <div class="s-sec">Explorar</div>
-    <button class="s-item" onclick="toast('📍 Próximamente')"><div class="s-icon" style="background:#E4E6EB">📍</div>Cerca tuyo</button>
-    <button class="s-item" onclick="toast('🎯 Próximamente')"><div class="s-icon" style="background:#E4E6EB">🎯</div>Compatibles</button>
-    <button class="s-item" onclick="toast('🇺🇾 Próximamente')"><div class="s-icon" style="background:#E4E6EB">🇺🇾</div>Por ciudad</button>
+    <button class="s-item" id="si-nearby" onclick="goTo('nearby')"><div class="s-icon" style="background:#E4E6EB">📍</div>Cerca tuyo</button>
+    <button class="s-item" id="si-compatible" onclick="goTo('compatible')"><div class="s-icon" style="background:#E4E6EB">🎯</div>Compatibles</button>
+    <button class="s-item" id="si-city" onclick="goTo('city')"><div class="s-icon" style="background:#E4E6EB">🇺🇾</div>Por ciudad</button>
     <div class="s-div"></div>
     <div class="s-footer">Privacidad · Términos · Ayuda<br>Krush Uruguay © 2025 · Hecho con 💘 en Uruguay</div>
   </aside>
 
-  <!-- FEED -->
-  <main class="feed">
-    <!-- LOCKED -->
+  <!-- MAIN CONTENT -->
+  <main class="main-content">
+
+    <!-- LOCKED (shown when not logged in) -->
     <div class="feed-locked" id="feed-locked">
       <div class="feed-locked-icon">🔒</div>
-      <h2>Iniciá sesión para ver el feed</h2>
+      <h2>Iniciá sesión para continuar</h2>
       <p>Más de 12.000 uruguayos activos te están esperando. Registrate gratis o entrá con tu cuenta.</p>
-      <div class="feed-locked-btns">
+      <div class="btns-row">
         <button class="btn-nav" onclick="openAuth('register')">Crear cuenta gratis</button>
         <button class="btn-nav ghost" onclick="openAuth('login')">Ya tengo cuenta</button>
       </div>
     </div>
 
-    <!-- FEED CONTENT -->
-    <div id="feed-content" style="display:none">
-      <!-- CREATE POST -->
+    <!-- ── FEED ── -->
+    <div class="view active" id="view-feed">
       <div class="create-post">
         <div class="cp-top">
           <div class="cp-av" id="cp-av">G</div>
           <textarea class="cp-input" id="cp-txt" placeholder="¿Qué estás buscando?" rows="1" oninput="autoResize(this)"></textarea>
         </div>
         <div id="cp-img-wrap" class="cp-img-wrap" style="display:none">
-          <img id="cp-img" src="" alt="">
-          <button class="cp-img-rm" onclick="removePostImg()">✕</button>
+          <img id="cp-img" src="" alt=""><button class="cp-img-rm" onclick="removePostImg()">✕</button>
         </div>
         <div id="feeling-row" style="display:none;padding:8px 0;flex-wrap:wrap;gap:6px">
           <span style="font-size:13px;font-weight:600;color:var(--text2);width:100%;display:block;margin-bottom:4px">¿Cómo te sentís?</span>
@@ -364,9 +434,126 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,sa
           <button class="cp-pub" onclick="publishPost()">Publicar</button>
         </div>
       </div>
-      <!-- POSTS -->
       <div id="posts-list"></div>
     </div>
+
+    <!-- ── MATCHES ── -->
+    <div class="view" id="view-matches">
+      <div class="section-header">
+        <div class="section-title">💘 Mis Matches</div>
+      </div>
+      <div id="matches-list">
+        <div class="empty-state">
+          <div class="ei">💘</div>
+          <h3>Aún no tenés matches</h3>
+          <p>Cuando alguien te dé like y vos también le des like, aparece acá. ¡Explorá y empezá a dar likes!</p>
+          <br><button class="btn-nav" onclick="goTo('nearby')" style="margin-top:8px">Explorar perfiles</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── MESSAGES ── -->
+    <div class="view" id="view-messages">
+      <div id="msgs-list-view">
+        <div class="section-header"><div class="section-title">💬 Mensajes</div></div>
+        <div id="conversations-list">
+          <div class="empty-state">
+            <div class="ei">💬</div>
+            <h3>No tenés mensajes todavía</h3>
+            <p>Cuando matchees con alguien vas a poder enviarle mensajes. ¡Explorá perfiles!</p>
+            <br><button class="btn-nav" onclick="goTo('nearby')" style="margin-top:8px">Explorar perfiles</button>
+          </div>
+        </div>
+      </div>
+      <div class="chat-view" id="chat-view">
+        <div class="chat-header">
+          <button class="chat-back" onclick="closeChat()">←</button>
+          <div class="msg-av" id="chat-av" style="width:38px;height:38px;font-size:14px">?</div>
+          <div style="flex:1;margin-left:8px">
+            <div style="font-size:15px;font-weight:700" id="chat-name">Chat</div>
+            <div style="font-size:12px;color:var(--text3)">En línea</div>
+          </div>
+        </div>
+        <div class="chat-messages" id="chat-messages"></div>
+        <div class="chat-input-row">
+          <input class="chat-inp" id="chat-inp" placeholder="Escribí un mensaje..." onkeydown="if(event.key==='Enter')sendMsg()">
+          <button class="chat-send" onclick="sendMsg()">➤</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── LIKES RECIBIDOS ── -->
+    <div class="view" id="view-likes">
+      <div class="section-header"><div class="section-title">⭐ Likes recibidos</div></div>
+      <div id="likes-received-list">
+        <div class="empty-state">
+          <div class="ei">⭐</div>
+          <h3>Aún no recibiste likes</h3>
+          <p>Completá tu perfil para que más personas te encuentren y te den like.</p>
+          <br><button class="btn-nav" onclick="openEP()" style="margin-top:8px">Completar perfil</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── NOTIFICATIONS ── -->
+    <div class="view" id="view-notifs">
+      <div class="section-header">
+        <div class="section-title">🔔 Notificaciones</div>
+        <button onclick="markAllRead()" style="font-size:13px;font-weight:600;color:var(--k);background:none;border:none;cursor:pointer">Marcar todo leído</button>
+      </div>
+      <div id="notifs-list">
+        <div class="empty-state"><div class="ei">🔔</div><h3>Sin notificaciones</h3><p>Cuando alguien interactúe con vos, aparece acá.</p></div>
+      </div>
+    </div>
+
+    <!-- ── GOLD ── -->
+    <div class="view" id="view-gold">
+      <div class="section-header"><div class="section-title">🏆 Krush Gold</div></div>
+      <div style="background:linear-gradient(135deg,var(--k),#FF8FA3);border-radius:12px;padding:28px 24px;color:#fff;text-align:center;margin-bottom:16px;position:relative;overflow:hidden">
+        <div style="font-size:48px;margin-bottom:12px">⭐</div>
+        <h2 style="font-size:22px;font-weight:700;margin-bottom:8px">Krush Gold</h2>
+        <p style="opacity:.9;margin-bottom:20px;font-size:15px">Desbloqueá todas las funciones premium y encontrá a tu persona más rápido</p>
+        <div style="font-size:28px;font-weight:700;margin-bottom:4px">$390 UYU/mes</div>
+        <div style="font-size:13px;opacity:.8;margin-bottom:20px">≈ $10 USD · sin contrato</div>
+        <button onclick="toast('💳 Pagos próximamente — ¡estamos trabajando en eso!')" style="background:#fff;color:var(--k);border:none;border-radius:8px;padding:13px 32px;font-size:16px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif">Activar Gold</button>
+      </div>
+      <div id="gold-features" style="display:grid;grid-template-columns:1fr 1fr;gap:10px"></div>
+    </div>
+
+    <!-- ── NEARBY / COMPATIBLE / CITY ── -->
+    <div class="view" id="view-nearby">
+      <div class="section-header">
+        <div class="section-title">📍 Cerca tuyo</div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px" id="nearby-filters">
+        <span class="pill active" onclick="filterProfiles('all',this)">Todos</span>
+        <span class="pill" onclick="filterProfiles('mujer',this)">Mujeres</span>
+        <span class="pill" onclick="filterProfiles('hombre',this)">Hombres</span>
+        <span class="pill" onclick="filterProfiles('seria',this)">Relación seria</span>
+        <span class="pill" onclick="filterProfiles('casual',this)">Algo casual</span>
+      </div>
+      <div class="profile-grid" id="nearby-grid"></div>
+    </div>
+
+    <div class="view" id="view-compatible">
+      <div class="section-header"><div class="section-title">🎯 Compatibles</div></div>
+      <p style="color:var(--text2);font-size:14px;margin-bottom:16px">Basado en lo que buscás en tu perfil</p>
+      <div class="profile-grid" id="compatible-grid"></div>
+    </div>
+
+    <div class="view" id="view-city">
+      <div class="section-header"><div class="section-title">🇺🇾 Por ciudad</div></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px" id="city-filters">
+        <span class="pill active" onclick="filterCity('all',this)">Todas</span>
+        <span class="pill" onclick="filterCity('Montevideo',this)">Montevideo</span>
+        <span class="pill" onclick="filterCity('Canelones',this)">Canelones</span>
+        <span class="pill" onclick="filterCity('Salto',this)">Salto</span>
+        <span class="pill" onclick="filterCity('Paysandú',this)">Paysandú</span>
+        <span class="pill" onclick="filterCity('Rivera',this)">Rivera</span>
+      </div>
+      <div class="profile-grid" id="city-grid"></div>
+    </div>
+
   </main>
 
   <!-- RIGHT SIDEBAR -->
@@ -379,8 +566,8 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,sa
         <div class="pw-sub" id="pw-sub">Uruguay · Plan Gratis</div>
         <div class="pw-stats">
           <div class="pw-stat"><div class="pw-n" id="pw-pc">0</div><div class="pw-l">Posts</div></div>
-          <div class="pw-stat"><div class="pw-n">0</div><div class="pw-l">Matches</div></div>
-          <div class="pw-stat"><div class="pw-n">0</div><div class="pw-l">Likes</div></div>
+          <div class="pw-stat"><div class="pw-n" id="pw-mc">0</div><div class="pw-l">Matches</div></div>
+          <div class="pw-stat"><div class="pw-n" id="pw-lc">0</div><div class="pw-l">Likes</div></div>
         </div>
         <button class="pw-btn" onclick="openEP()">✏️ Editar perfil</button>
       </div>
@@ -396,12 +583,12 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,sa
         <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)">
           <div style="width:38px;height:38px;border-radius:8px;background:linear-gradient(135deg,var(--k),#FF8FA3);display:flex;align-items:center;justify-content:center;font-size:18px">⭐</div>
           <div style="flex:1"><div style="font-size:14px;font-weight:600">Gold</div><div style="font-size:12px;color:var(--text3)">$390 UYU/mes</div></div>
-          <button onclick="toast('⭐ Krush Gold próximamente')" style="background:var(--k);color:#fff;border:none;border-radius:6px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif">Activar</button>
+          <button onclick="goTo('gold')" style="background:var(--k);color:#fff;border:none;border-radius:6px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif">Ver</button>
         </div>
         <div style="display:flex;align-items:center;gap:12px;padding:10px 0">
           <div style="width:38px;height:38px;border-radius:8px;background:linear-gradient(135deg,#667EEA,#764BA2);display:flex;align-items:center;justify-content:center;font-size:18px">💎</div>
           <div style="flex:1"><div style="font-size:14px;font-weight:600">Platinum</div><div style="font-size:12px;color:var(--text3)">$750 UYU/mes</div></div>
-          <button onclick="toast('💎 Krush Platinum próximamente')" style="background:var(--k);color:#fff;border:none;border-radius:6px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif">Activar</button>
+          <button onclick="goTo('gold')" style="background:var(--k);color:#fff;border:none;border-radius:6px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif">Ver</button>
         </div>
       </div>
     </div>
@@ -429,22 +616,30 @@ const gphoto = uid => localStorage.getItem('kph-'+uid)||'';
 const esc = s => { const d=document.createElement('div'); d.textContent=s||''; return d.innerHTML; };
 const timeAgo = ts => {
   const s=Math.floor((Date.now()-ts)/1000);
-  if(s<60) return 'ahora mismo';
-  if(s<3600) return Math.floor(s/60)+' min';
-  if(s<86400) return Math.floor(s/3600)+'h';
+  if(s<60)return 'ahora mismo';
+  if(s<3600)return Math.floor(s/60)+' min';
+  if(s<86400)return Math.floor(s/3600)+'h';
   return Math.floor(s/86400)+'d';
 };
-
 function setAv(el, uid, fallback){
+  if(!el)return;
   const ph=gphoto(uid);
   if(ph){ el.style.backgroundImage=`url(${ph})`; el.style.backgroundSize='cover'; el.style.backgroundPosition='center'; el.textContent=''; }
   else { el.style.backgroundImage=''; el.textContent=fallback; }
 }
+function getPosts(uid){ return JSON.parse(localStorage.getItem('kposts-'+uid)||'[]'); }
+function savePosts(uid,p){ localStorage.setItem('kposts-'+uid,JSON.stringify(p)); }
+function getConvs(uid){ return JSON.parse(localStorage.getItem('kconvs-'+uid)||'[]'); }
+function saveConvs(uid,c){ localStorage.setItem('kconvs-'+uid,JSON.stringify(c)); }
+function getNotifs(uid){ return JSON.parse(localStorage.getItem('knotifs-'+uid)||'[]'); }
+function saveNotifs(uid,n){ localStorage.setItem('knotifs-'+uid,JSON.stringify(n)); }
+function addNotif(uid, notif){ const n=getNotifs(uid); n.unshift({...notif,id:Date.now(),read:false}); saveNotifs(uid,n.slice(0,50)); updateNotifBadge(uid); }
+function updateNotifBadge(uid){ const n=getNotifs(uid).filter(x=>!x.read).length; const b=document.getElementById('notif-badge'); if(b){b.textContent=n;b.style.display=n?'':'none';} }
+function updateMsgBadge(uid){ const convs=getConvs(uid); const n=convs.filter(c=>c.unread>0).length; const b=document.getElementById('msg-badge'); if(b){b.textContent=n;b.style.display=n?'':'none';} }
 
 // ── UPDATE UI ──
 function updateUI(user){
   const locked=document.getElementById('feed-locked');
-  const content=document.getElementById('feed-content');
   const pwEl=document.getElementById('pw');
   const slMe=document.getElementById('sl-me');
   const navRight=document.getElementById('nav-right');
@@ -462,8 +657,7 @@ function updateUI(user){
     document.getElementById('btn-lo').onclick=()=>signOut(auth);
     setAv(document.getElementById('nav-av'), user.uid, init);
 
-    locked.style.display='none';
-    content.style.display='block';
+    locked.classList.remove('show');
     slMe.style.display='block';
     pwEl.style.display='block';
 
@@ -477,11 +671,27 @@ function updateUI(user){
     cpAv.textContent=init;
     setAv(cpAv, user.uid, init);
 
+    const posts=getPosts(user.uid);
+    document.getElementById('pw-pc').textContent=posts.length;
     renderPosts(user);
+    updateNotifBadge(user.uid);
+    updateMsgBadge(user.uid);
+
+    // build Gold features if empty
+    buildGoldFeatures();
+    // build explore grids
+    buildExploreGrids(user);
+    // render conversations
+    renderConversations(user);
+    // render notifications
+    renderNotifs(user);
+    // render likes received
+    renderLikesReceived(user);
+    // render matches
+    renderMatches(user);
   } else {
     navRight.innerHTML=`<button class="btn-nav ghost" onclick="openAuth('login')">Entrar</button><button class="btn-nav" onclick="openAuth('register')">Crear cuenta</button>`;
-    locked.style.display='flex';
-    content.style.display='none';
+    locked.classList.add('show');
     pwEl.style.display='none';
     slMe.style.display='none';
     document.getElementById('posts-list').innerHTML='';
@@ -492,13 +702,13 @@ onAuthStateChanged(auth, updateUI);
 // ── AUTH ──
 window.doGoogle=async()=>{
   const p=new GoogleAuthProvider();
-  try{ await signInWithPopup(auth,p); showOk('¡Bienvenido a Krush!','Sesión con Google iniciada.'); setTimeout(closeAuth,1500); }
+  try{ await signInWithPopup(auth,p); showOk('¡Bienvenido a Krush!','Sesión con Google iniciada.'); setTimeout(closeAuth,1400); }
   catch(e){ if(e.code!=='auth/popup-closed-by-user') showErr(errMsg(e.code)); }
 };
 window.doLogin=async()=>{
   const e=document.getElementById('li-em').value, p=document.getElementById('li-pw').value, b=document.getElementById('li-btn');
   showErr(''); b.disabled=true; b.textContent='Entrando...';
-  try{ await signInWithEmailAndPassword(auth,e,p); showOk('¡Bienvenido de vuelta!','Ya estás dentro.'); setTimeout(closeAuth,1500); }
+  try{ await signInWithEmailAndPassword(auth,e,p); showOk('¡Bienvenido de vuelta!','Ya estás dentro.'); setTimeout(closeAuth,1400); }
   catch(err){ showErr(errMsg(err.code)); b.disabled=false; b.textContent='Entrar a Krush'; }
 };
 window.doRegister=async()=>{
@@ -508,19 +718,20 @@ window.doRegister=async()=>{
     const c=await createUserWithEmailAndPassword(auth,e,p);
     if(n) await updateProfile(c.user,{displayName:n});
     showOk('¡Bienvenido'+(n?', '+n:'')+'!','Tu cuenta fue creada.');
-    setTimeout(closeAuth,1500);
+    setTimeout(closeAuth,1400);
   }catch(err){ showErr(errMsg(err.code)); b.disabled=false; b.textContent='Crear cuenta gratis'; }
 };
-function errMsg(c){ return({'auth/email-already-in-use':'Ya existe una cuenta con ese correo.','auth/invalid-email':'Correo no válido.','auth/weak-password':'Contraseña de al menos 6 caracteres.','auth/user-not-found':'No encontramos esa cuenta.','auth/wrong-password':'Contraseña incorrecta.','auth/invalid-credential':'Correo o contraseña incorrectos.','auth/too-many-requests':'Demasiados intentos. Esperá unos minutos.'}[c]||'Ocurrió un error.'); }
+function errMsg(c){ return({'auth/email-already-in-use':'Ya existe esa cuenta.','auth/invalid-email':'Correo no válido.','auth/weak-password':'Mínimo 6 caracteres.','auth/user-not-found':'No encontramos esa cuenta.','auth/wrong-password':'Contraseña incorrecta.','auth/invalid-credential':'Correo o contraseña incorrectos.','auth/too-many-requests':'Demasiados intentos.'}[c]||'Ocurrió un error.'); }
 function showErr(m){ const el=document.getElementById('aerr'); el.textContent=m; el.className='aerr'+(m?' show':''); }
 function showOk(t,m){ ['f-login','f-register'].forEach(id=>document.getElementById(id).style.display='none'); showErr(''); document.getElementById('ok-t').textContent=t; document.getElementById('ok-m').textContent=m; document.getElementById('auth-ok').style.display='block'; }
 
-// ── EDIT PROFILE ──
+// ── PROFILE ──
 window.openEP=()=>{
   const user=auth.currentUser; if(!user)return;
   const p=gp(user.uid);
   document.getElementById('ep-name').value=user.displayName||p.name||'';
   document.getElementById('ep-city').value=p.city||'';
+  document.getElementById('ep-age').value=p.age||'';
   document.getElementById('ep-look').value=p.looking||'';
   document.getElementById('ep-bio').value=p.bio||'';
   document.getElementById('ep-ok').className='ep-ok';
@@ -532,16 +743,15 @@ window.saveProfile=async()=>{
   const user=auth.currentUser; if(!user)return;
   const name=document.getElementById('ep-name').value.trim();
   const city=document.getElementById('ep-city').value.trim();
+  const age=document.getElementById('ep-age').value;
   try{
     if(name) await updateProfile(user,{displayName:name});
-    sp(user.uid,{name,city,looking:document.getElementById('ep-look').value,bio:document.getElementById('ep-bio').value.trim()});
+    sp(user.uid,{name,city,age,looking:document.getElementById('ep-look').value,bio:document.getElementById('ep-bio').value.trim()});
     updateUI(auth.currentUser);
     const ok=document.getElementById('ep-ok'); ok.className='ep-ok show';
-    setTimeout(()=>{ok.className='ep-ok';closeEP();},1800);
+    setTimeout(()=>{ok.className='ep-ok';closeEP();},1600);
   }catch(err){ toast('Error: '+err.message); }
 };
-
-// ── PROFILE PHOTO ──
 window.handleProfilePhoto=(e)=>{
   const f=e.target.files[0]; if(!f)return;
   const reader=new FileReader();
@@ -560,17 +770,10 @@ const REACTIONS=['❤️','👍','😂','😮','😢','😡'];
 const RLABELS=['Me encanta','Me gusta','Me divierte','Me asombra','Me entristece','Me enoja'];
 const RCOLORS=['#E8273A','#1877F2','#F7B731','#F7B731','#5B84F0','#E8273A'];
 
-function getPosts(uid){ return JSON.parse(localStorage.getItem('kposts-'+uid)||'[]'); }
-function savePosts(uid,posts){ localStorage.setItem('kposts-'+uid, JSON.stringify(posts)); }
-
 function renderPosts(user){
-  const list=document.getElementById('posts-list');
-  list.innerHTML='';
-  const posts=getPosts(user.uid);
-  document.getElementById('pw-pc').textContent=posts.length;
-  posts.forEach(post=>list.appendChild(buildCard(post,user)));
+  const list=document.getElementById('posts-list'); list.innerHTML='';
+  getPosts(user.uid).forEach(p=>list.appendChild(buildCard(p,user)));
 }
-
 window.publishPost=()=>{
   const user=auth.currentUser; if(!user)return;
   const text=document.getElementById('cp-txt').value.trim();
@@ -579,194 +782,414 @@ window.publishPost=()=>{
   if(!text&&!img){ toast('✏️ Escribí algo o agregá una foto'); return; }
   const p=gp(user.uid);
   const name=user.displayName||p.name||user.email.split('@')[0];
-  const post={ id:Date.now(), uid:user.uid, name, city:p.city||'Uruguay', text, img, time:Date.now(), comments:[], reactions:{}, myReaction:null };
-  const posts=getPosts(user.uid);
-  posts.unshift(post);
-  savePosts(user.uid,posts);
+  const post={ id:Date.now(), uid:user.uid, name, city:p.city||'Uruguay', text, img, time:Date.now(), comments:[], reactions:{} };
+  const posts=getPosts(user.uid); posts.unshift(post); savePosts(user.uid,posts);
   const list=document.getElementById('posts-list');
-  const card=buildCard(post,user);
-  list.insertBefore(card,list.firstChild);
-  document.getElementById('cp-txt').value='';
-  removePostImg();
+  list.insertBefore(buildCard(post,user),list.firstChild);
+  document.getElementById('cp-txt').value=''; removePostImg();
   document.getElementById('feeling-row').style.display='none';
   document.getElementById('pw-pc').textContent=posts.length;
   toast('✅ ¡Publicación creada!');
 };
 
-function buildCard(post, user){
+function buildCard(post,user){
   const init=(post.name||'?').charAt(0).toUpperCase();
   const ph=gphoto(post.uid);
   const total=Object.values(post.reactions||{}).reduce((a,b)=>a+b,0);
   const topR=REACTIONS.filter((_,i)=>(post.reactions||{})[i]>0).slice(0,3);
-  const pillsHtml=topR.map(e=>{ const i=REACTIONS.indexOf(e); return`<span class="rpill" style="background:${RCOLORS[i]}">${e}</span>`; }).join('');
-
+  const pills=topR.map(e=>{const i=REACTIONS.indexOf(e);return`<span class="rpill" style="background:${RCOLORS[i]}">${e}</span>`;}).join('');
+  const myR=post.myReaction; const reacted=myR!=null?'reacted':'';
   const div=document.createElement('div');
-  div.className='post-card';
-  div.dataset.id=post.id;
-  div.dataset.uid=post.uid;
-
-  const myR=post.myReaction;
-  const reactIcon=myR!=null?REACTIONS[myR]:'👍';
-  const reactLabel=myR!=null?RLABELS[myR]:'Me gusta';
-  const reacted=myR!=null?'reacted':'';
-
+  div.className='post-card'; div.dataset.id=post.id; div.dataset.uid=post.uid;
   div.innerHTML=`
     <div class="post-header">
-      <div class="post-av" style="background:${ph?`url(${ph}) center/cover`:'linear-gradient(135deg,var(--k),#FF8FA3)'}">
-        ${ph?'':init}
-      </div>
-      <div class="post-meta">
-        <div class="post-name">${esc(post.name)}</div>
-        <div class="post-sub">${esc(post.city)} · ${timeAgo(post.time)} 🌐</div>
-      </div>
+      <div class="post-av" style="background:${ph?`url(${ph}) center/cover`:'linear-gradient(135deg,var(--k),#FF8FA3)'}">${ph?'':init}</div>
+      <div class="post-meta"><div class="post-name">${esc(post.name)}</div><div class="post-sub">${esc(post.city)} · ${timeAgo(post.time)} 🌐</div></div>
       <div class="post-menu-wrap">
         <button class="post-menu-btn" onclick="toggleMenu(this)">···</button>
-        <div class="post-menu-dd" id="dd-${post.id}">
-          <div class="post-menu-item" style="color:var(--k)" onclick="deletePost('${post.id}','${post.uid}',this)">🗑️ Eliminar publicación</div>
+        <div class="post-menu-dd">
+          <div class="post-menu-item" style="color:var(--k)" onclick="deletePost('${post.id}','${post.uid}',this)">🗑️ Eliminar</div>
         </div>
       </div>
     </div>
     ${post.text?`<div class="post-body">${esc(post.text)}</div>`:''}
-    ${post.img?`<img class="post-img" src="${post.img}" alt="foto">`:''}
+    ${post.img?`<img class="post-img" src="${post.img}" alt="">`:''}
     <div class="post-stats">
-      <div class="rpills">${pillsHtml}<span style="margin-left:${topR.length?4:0}px">${total?total+' reacciones':'Sé el primero en reaccionar'}</span></div>
+      <div class="rpills">${pills}<span style="margin-left:${topR.length?4:0}px">${total?total+' reacciones':'Sé el primero'}</span></div>
       <span style="cursor:pointer" onclick="toggleComments(this)">${(post.comments||[]).length} comentarios</span>
     </div>
     <div class="post-divider"></div>
     <div class="post-actions">
-      <button class="pact ${reacted}" style="position:relative"
-        onmouseenter="openReactPopup(this)" onmouseleave="closeReactPopup(this,400)">
-        <div class="react-popup" onmouseenter="clearReactClose(this.parentElement)" onmouseleave="closeReactPopup(this.parentElement,200)">
+      <button class="pact ${reacted}" style="position:relative" onmouseenter="openRP(this)" onmouseleave="closeRP(this,400)">
+        <div class="react-popup" onmouseenter="clearRC(this.parentElement)" onmouseleave="closeRP(this.parentElement,200)">
           ${REACTIONS.map((e,i)=>`<span class="react-opt" title="${RLABELS[i]}" onclick="doReact(this,${i})">${e}</span>`).join('')}
         </div>
-        <span class="ri">${reactIcon}</span><span class="rl">${reactLabel}</span>
+        <span class="ri">${myR!=null?REACTIONS[myR]:'👍'}</span><span class="rl">${myR!=null?RLABELS[myR]:'Me gusta'}</span>
       </button>
       <button class="pact" onclick="toggleComments(this)">💬 Comentar</button>
       <button class="pact" onclick="doShare()">↗️ Compartir</button>
     </div>
     <div class="comments-sec" id="cs-${post.id}">
       <div class="cm-input-row">
-        <div class="cm-av" id="cav-${post.id}" style="${ph?`background-image:url(${gphoto(user.uid)});background-size:cover;background-position:center`:''}">
-          ${ph?'':init}
-        </div>
+        <div class="cm-av" id="cav-${post.id}"></div>
         <div class="cm-input-wrap">
-          <input class="cm-input" placeholder="Comentá algo..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();submitComment('${post.id}','${post.uid}',this)}">
+          <input class="cm-input" placeholder="Comentá algo..." onkeydown="if(event.key==='Enter'){event.preventDefault();submitComment('${post.id}','${post.uid}',this)}">
           <button class="cm-send" onclick="submitComment('${post.id}','${post.uid}',this.previousElementSibling)">➤</button>
         </div>
       </div>
       <div id="cl-${post.id}"></div>
     </div>`;
-
-  // fix comment input avatar with logged user photo
   const cavEl=div.querySelector(`#cav-${post.id}`);
-  const myPhoto=gphoto(user.uid);
-  if(myPhoto&&cavEl){ cavEl.style.backgroundImage=`url(${myPhoto})`; cavEl.style.backgroundSize='cover'; cavEl.style.backgroundPosition='center'; cavEl.textContent=''; }
-
-  // render existing comments
-  const clEl=div.querySelector(`#cl-${post.id}`);
-  (post.comments||[]).forEach(c=>clEl.appendChild(buildComment(c)));
-
+  cavEl.textContent=(user.displayName||user.email).charAt(0).toUpperCase();
+  setAv(cavEl, user.uid, (user.displayName||user.email).charAt(0).toUpperCase());
+  (post.comments||[]).forEach(c=>div.querySelector(`#cl-${post.id}`).appendChild(buildComment(c)));
   return div;
 }
-
 function buildComment(c){
+  const div=document.createElement('div'); div.className='cm-item';
+  const ph=gphoto(c.uid); const init=(c.name||'?').charAt(0).toUpperCase();
+  div.innerHTML=`<div class="cm-av"></div><div>
+    <div class="cm-bubble"><div class="cm-name">${esc(c.name)}</div><div class="cm-text">${esc(c.text)}</div></div>
+    <div class="cm-meta"><span>${timeAgo(c.time)}</span><span class="cm-action" onclick="toast('❤️')">Me gusta</span><span class="cm-action" onclick="toast('💬 Próximamente')">Responder</span></div></div>`;
+  const av=div.querySelector('.cm-av'); av.textContent=init; setAv(av,c.uid,init);
+  return div;
+}
+window.openRP=(btn)=>{ clearTimeout(btn._ct); btn.querySelector('.react-popup').classList.add('open'); };
+window.closeRP=(btn,d)=>{ btn._ct=setTimeout(()=>btn.querySelector('.react-popup').classList.remove('open'),d); };
+window.clearRC=(btn)=>clearTimeout(btn._ct);
+window.doReact=(el,idx)=>{
+  const btn=el.closest('.pact'); const card=el.closest('.post-card');
+  const pid=card.dataset.id, puid=card.dataset.uid;
+  const user=auth.currentUser; if(!user)return;
+  const posts=getPosts(puid); const post=posts.find(p=>String(p.id)===String(pid)); if(!post)return;
+  if(!post.reactions)post.reactions={};
+  const prev=post.myReaction;
+  if(prev===idx){ delete post.myReaction; post.reactions[idx]=(post.reactions[idx]||1)-1; if(!post.reactions[idx])delete post.reactions[idx]; }
+  else { if(prev!=null&&post.reactions[prev]){post.reactions[prev]--;if(!post.reactions[prev])delete post.reactions[prev];} post.myReaction=idx; post.reactions[idx]=(post.reactions[idx]||0)+1; }
+  savePosts(puid,posts);
+  if(post.myReaction!=null){btn.classList.add('reacted');btn.querySelector('.ri').textContent=REACTIONS[post.myReaction];btn.querySelector('.rl').textContent=RLABELS[post.myReaction];}
+  else{btn.classList.remove('reacted');btn.querySelector('.ri').textContent='👍';btn.querySelector('.rl').textContent='Me gusta';}
+  const total=Object.values(post.reactions).reduce((a,b)=>a+b,0);
+  const topR=REACTIONS.filter((_,i)=>post.reactions[i]>0).slice(0,3);
+  const pills=topR.map(e=>{const i=REACTIONS.indexOf(e);return`<span class="rpill" style="background:${RCOLORS[i]}">${e}</span>`;}).join('');
+  card.querySelector('.rpills').innerHTML=pills+`<span style="margin-left:${topR.length?4:0}px">${total?total+' reacciones':'Sé el primero'}</span>`;
+  btn.querySelector('.react-popup').classList.remove('open');
+};
+window.toggleComments=(el)=>{ const card=el.closest('.post-card'); document.getElementById('cs-'+card.dataset.id).classList.toggle('open'); };
+window.submitComment=(pid,puid,input)=>{
+  const user=auth.currentUser; if(!user)return;
+  const text=input.value.trim(); if(!text)return;
+  const p=gp(user.uid); const name=user.displayName||p.name||user.email.split('@')[0];
+  const comment={id:Date.now(),uid:user.uid,name,text,time:Date.now()};
+  const posts=getPosts(puid); const post=posts.find(p=>String(p.id)===String(pid)); if(!post)return;
+  if(!post.comments)post.comments=[];
+  post.comments.push(comment); savePosts(puid,posts);
+  document.getElementById('cl-'+pid).appendChild(buildComment(comment));
+  input.value='';
+  const card=document.querySelector(`[data-id="${pid}"]`);
+  if(card){ const cnt=card.querySelector('.post-stats span:last-child'); if(cnt)cnt.textContent=post.comments.length+' comentarios'; }
+};
+window.deletePost=(id,uid,el)=>{
+  const user=auth.currentUser; if(!user||user.uid!==uid){toast('No podés eliminar');return;}
+  if(!confirm('¿Eliminar?'))return;
+  const posts=getPosts(uid).filter(p=>String(p.id)!==String(id));
+  savePosts(uid,posts); el.closest('.post-card').remove();
+  document.getElementById('pw-pc').textContent=posts.length; toast('🗑️ Eliminado');
+};
+window.toggleMenu=(btn)=>{
+  const dd=btn.nextElementSibling; dd.classList.toggle('open');
+  const close=(e)=>{ if(!dd.contains(e.target)&&e.target!==btn){dd.classList.remove('open');document.removeEventListener('click',close);} };
+  setTimeout(()=>document.addEventListener('click',close),10);
+};
+window.doShare=()=>{ if(navigator.share)navigator.share({title:'Krush 💘',url:location.href}); else navigator.clipboard.writeText(location.href).then(()=>toast('🔗 Enlace copiado')); };
+
+// ── EXPLORE PROFILES (demo profiles generated from localStorage + random) ──
+const CITIES=['Montevideo','Canelones','Maldonado','Salto','Paysandú','Rivera','Colonia'];
+const COVS=['linear-gradient(135deg,#FF6B8A,#FF8FA3)','linear-gradient(135deg,#7EC8E3,#0090C1)','linear-gradient(135deg,#78C2AD,#00897B)','linear-gradient(135deg,#FFB347,#FF7043)','linear-gradient(135deg,#C77DFF,#7B2FBE)','linear-gradient(135deg,#96C93D,#00B09B)','linear-gradient(135deg,#FFD200,#F7971E)','linear-gradient(135deg,#42B0FF,#1877F2)'];
+const LOOKINGS=['Relación seria','Algo casual','Amistad','Ver qué pasa'];
+const GENDERS=['mujer','hombre','mujer','hombre','mujer','mujer','hombre','mujer'];
+const NAMES=[['Valentina','Rodrigo'],['Lucía','Marcos'],['Florencia','Pablo'],['Camila','Diego'],['Sofía','Nicolás'],['Martina','Sebastián'],['Ana','Matías'],['Laura','Facundo']];
+const BIOS=['Amante del mate y la buena música ☕','Viajero empedernido 🌍 busco compañero/a de aventuras','Cocinero aficionado, amante de los atardeceres 🌅','Gym, pizza y buenas series. Simple pero auténtico/a 💪','Psicóloga/o de día, bailarina/or de noche 💃','Foodie y apasionado/a de los libros 📚'];
+
+function getDemoProfiles(){
+  const stored=JSON.parse(localStorage.getItem('kdemo-profiles')||'null');
+  if(stored)return stored;
+  const profiles=[];
+  for(let i=0;i<8;i++){
+    const gender=GENDERS[i];
+    const pair=NAMES[i];
+    const name=gender==='mujer'?pair[0]:pair[1];
+    profiles.push({
+      id:'demo-'+i, name, gender, age:18+Math.floor(Math.random()*12),
+      city:CITIES[i%CITIES.length], looking:LOOKINGS[i%LOOKINGS.length],
+      bio:BIOS[i%BIOS.length], cover:COVS[i], liked:false
+    });
+  }
+  localStorage.setItem('kdemo-profiles',JSON.stringify(profiles));
+  return profiles;
+}
+
+function buildProfileCard(profile, uid){
   const div=document.createElement('div');
-  div.className='cm-item';
-  const ph=gphoto(c.uid);
-  const init=(c.name||'?').charAt(0).toUpperCase();
+  div.className='profile-card';
+  const liked=JSON.parse(localStorage.getItem('klikes-'+uid)||'[]').includes(profile.id);
   div.innerHTML=`
-    <div class="cm-av" style="${ph?`background-image:url(${ph});background-size:cover;background-position:center`:''}">${ph?'':init}</div>
-    <div>
-      <div class="cm-bubble">
-        <div class="cm-name">${esc(c.name)}</div>
-        <div class="cm-text">${esc(c.text)}</div>
-      </div>
-      <div class="cm-meta">
-        <span>${timeAgo(c.time)}</span>
-        <span class="cm-action" onclick="toast('❤️ Like al comentario')">Me gusta</span>
-        <span class="cm-action" onclick="toast('💬 Respuestas próximamente')">Responder</span>
+    <div class="profile-card-cover" style="background:${profile.cover}">
+      <div style="font-size:48px">${profile.gender==='mujer'?'👩':'👨'}</div>
+      <div class="profile-card-av" style="background:${profile.cover}">${profile.name.charAt(0)}</div>
+    </div>
+    <div class="profile-card-body">
+      <div class="profile-card-name">${esc(profile.name)}, ${profile.age}</div>
+      <div class="profile-card-sub">📍 ${esc(profile.city)} · ${esc(profile.looking)}</div>
+      <div style="font-size:13px;color:var(--text2);margin-bottom:10px;line-height:1.4">${esc(profile.bio)}</div>
+      <div class="profile-card-actions">
+        <button class="btn-like${liked?' liked':''}" id="like-${profile.id}" onclick="toggleProfileLike('${profile.id}',this)">${liked?'💘 Like dado':'💘 Like'}</button>
+        <button class="btn-msg" onclick="openChatWith('${profile.id}','${profile.name}','${profile.cover}')">💬 Mensaje</button>
       </div>
     </div>`;
   return div;
 }
 
-// reactions
-window.openReactPopup=(btn)=>{ clearTimeout(btn._ct); btn.querySelector('.react-popup').classList.add('open'); };
-window.closeReactPopup=(btn,delay)=>{ btn._ct=setTimeout(()=>btn.querySelector('.react-popup').classList.remove('open'),delay); };
-window.clearReactClose=(btn)=>clearTimeout(btn._ct);
+function buildExploreGrids(user){
+  const profiles=getDemoProfiles();
+  const grids=['nearby-grid','compatible-grid','city-grid'];
+  grids.forEach(gid=>{
+    const grid=document.getElementById(gid);
+    if(grid&&!grid.dataset.built){ grid.dataset.built='1'; profiles.forEach(p=>grid.appendChild(buildProfileCard(p,user.uid))); }
+  });
+}
 
-window.doReact=(emojiEl,idx)=>{
-  const btn=emojiEl.closest('.pact');
-  const card=emojiEl.closest('.post-card');
-  const pid=card.dataset.id, puid=card.dataset.uid;
+window.toggleProfileLike=(profileId, btn)=>{
   const user=auth.currentUser; if(!user)return;
-  const posts=getPosts(puid);
-  const post=posts.find(p=>String(p.id)===String(pid)); if(!post)return;
-  if(!post.reactions)post.reactions={};
-  const prev=post.myReaction;
-  if(prev===idx){ delete post.myReaction; post.reactions[idx]=(post.reactions[idx]||1)-1; if(!post.reactions[idx])delete post.reactions[idx]; }
-  else { if(prev!=null&&post.reactions[prev]){ post.reactions[prev]--; if(!post.reactions[prev])delete post.reactions[prev]; } post.myReaction=idx; post.reactions[idx]=(post.reactions[idx]||0)+1; }
-  savePosts(puid,posts);
-  // update button
-  if(post.myReaction!=null){ btn.classList.add('reacted'); btn.querySelector('.ri').textContent=REACTIONS[post.myReaction]; btn.querySelector('.rl').textContent=RLABELS[post.myReaction]; }
-  else { btn.classList.remove('reacted'); btn.querySelector('.ri').textContent='👍'; btn.querySelector('.rl').textContent='Me gusta'; }
-  // update pills
-  const total=Object.values(post.reactions).reduce((a,b)=>a+b,0);
-  const topR=REACTIONS.filter((_,i)=>post.reactions[i]>0).slice(0,3);
-  const pillsHtml=topR.map(e=>{ const i=REACTIONS.indexOf(e); return`<span class="rpill" style="background:${RCOLORS[i]}">${e}</span>`; }).join('');
-  card.querySelector('.rpills').innerHTML=pillsHtml+`<span style="margin-left:${topR.length?4:0}px">${total?total+' reacciones':'Sé el primero en reaccionar'}</span>`;
-  btn.querySelector('.react-popup').classList.remove('open');
+  const likes=JSON.parse(localStorage.getItem('klikes-'+user.uid)||'[]');
+  const idx=likes.indexOf(profileId);
+  if(idx>=0){
+    likes.splice(idx,1); btn.classList.remove('liked'); btn.textContent='💘 Like';
+    toast('Like quitado');
+  } else {
+    likes.push(profileId); btn.classList.add('liked'); btn.textContent='💘 Like dado';
+    toast('💘 ¡Like enviado!');
+    // add to likes received of that profile (stored locally for demo)
+    const lr=JSON.parse(localStorage.getItem('klr-'+user.uid)||'[]');
+    // add notif
+    addNotif(user.uid,{type:'like',text:'Le diste like a un perfil 💘',time:Date.now()});
+    renderNotifs(user);
+    // update likes stat
+    document.getElementById('pw-lc').textContent=likes.length;
+  }
+  localStorage.setItem('klikes-'+user.uid,JSON.stringify(likes));
+  renderLikesReceived(user);
 };
 
-window.toggleComments=(el)=>{
-  const card=el.closest('.post-card');
-  document.getElementById('cs-'+card.dataset.id).classList.toggle('open');
-};
-
-window.submitComment=(pid,puid,input)=>{
-  const user=auth.currentUser; if(!user){ toast('Iniciá sesión para comentar'); return; }
-  const text=input.value.trim(); if(!text)return;
-  const p=gp(user.uid);
-  const name=user.displayName||p.name||user.email.split('@')[0];
-  const comment={ id:Date.now(), uid:user.uid, name, text, time:Date.now() };
-  const posts=getPosts(puid);
-  const post=posts.find(p=>String(p.id)===String(pid)); if(!post)return;
-  if(!post.comments)post.comments=[];
-  post.comments.push(comment);
-  savePosts(puid,posts);
-  document.getElementById('cl-'+pid).appendChild(buildComment(comment));
-  input.value='';
-  // update count
-  const card=document.querySelector(`[data-id="${pid}"]`);
-  if(card){ const cnt=card.querySelector('.post-stats span:last-child'); if(cnt)cnt.textContent=post.comments.length+' comentarios'; }
-};
-
-window.deletePost=(id,uid,el)=>{
+window.filterProfiles=(filter, pill)=>{
+  document.querySelectorAll('#nearby-filters .pill').forEach(p=>p.classList.remove('active'));
+  pill.classList.add('active');
+  const profiles=getDemoProfiles();
   const user=auth.currentUser;
-  if(!user||user.uid!==uid){ toast('No podés eliminar este post'); return; }
-  if(!confirm('¿Eliminar esta publicación?'))return;
-  const posts=getPosts(uid).filter(p=>String(p.id)!==String(id));
-  savePosts(uid,posts);
-  el.closest('.post-card').remove();
-  document.getElementById('pw-pc').textContent=posts.length;
-  toast('🗑️ Publicación eliminada');
+  const grid=document.getElementById('nearby-grid'); grid.innerHTML='';
+  profiles.filter(p=>{
+    if(filter==='all')return true;
+    if(filter==='mujer'||filter==='hombre')return p.gender===filter;
+    if(filter==='seria')return p.looking==='Relación seria';
+    if(filter==='casual')return p.looking==='Algo casual';
+    return true;
+  }).forEach(p=>grid.appendChild(buildProfileCard(p, user?user.uid:'demo')));
 };
 
-window.toggleMenu=(btn)=>{
-  const dd=btn.nextElementSibling;
-  dd.classList.toggle('open');
-  const close=(e)=>{ if(!dd.contains(e.target)&&e.target!==btn){ dd.classList.remove('open'); document.removeEventListener('click',close); } };
-  setTimeout(()=>document.addEventListener('click',close),10);
+window.filterCity=(city, pill)=>{
+  document.querySelectorAll('#city-filters .pill').forEach(p=>p.classList.remove('active'));
+  pill.classList.add('active');
+  const profiles=getDemoProfiles();
+  const user=auth.currentUser;
+  const grid=document.getElementById('city-grid'); grid.innerHTML='';
+  profiles.filter(p=>city==='all'||p.city===city).forEach(p=>grid.appendChild(buildProfileCard(p, user?user.uid:'demo')));
 };
 
-window.doShare=()=>{
-  if(navigator.share) navigator.share({title:'Krush 💘',url:location.href});
-  else navigator.clipboard.writeText(location.href).then(()=>toast('🔗 Enlace copiado'));
+// ── MESSAGES / CHAT ──
+window.openChatWith=(profileId, name, cover)=>{
+  const user=auth.currentUser; if(!user){openAuth('login');return;}
+  const convs=getConvs(user.uid);
+  let conv=convs.find(c=>c.profileId===profileId);
+  if(!conv){ conv={profileId,name,cover,messages:[],unread:0,lastMsg:'',lastTime:Date.now()}; convs.unshift(conv); saveConvs(user.uid,convs); }
+  else { conv.unread=0; saveConvs(user.uid,convs); }
+  updateMsgBadge(user.uid);
+  // open chat UI
+  document.getElementById('msgs-list-view').style.display='none';
+  const chatView=document.getElementById('chat-view');
+  chatView.classList.add('open');
+  const av=document.getElementById('chat-av');
+  av.textContent=name.charAt(0).toUpperCase();
+  av.style.background=cover;
+  document.getElementById('chat-name').textContent=name;
+  const msgs=document.getElementById('chat-messages'); msgs.innerHTML='';
+  conv.messages.forEach(m=>msgs.appendChild(buildBubble(m)));
+  msgs.scrollTop=msgs.scrollHeight;
+  window._currentConv={profileId,name,cover};
+  goTo('messages');
 };
+window.closeChat=()=>{
+  document.getElementById('msgs-list-view').style.display='block';
+  document.getElementById('chat-view').classList.remove('open');
+  const user=auth.currentUser; if(user)renderConversations(user);
+};
+window.sendMsg=()=>{
+  const user=auth.currentUser; if(!user)return;
+  const inp=document.getElementById('chat-inp');
+  const text=inp.value.trim(); if(!text)return;
+  const cc=window._currentConv; if(!cc)return;
+  const convs=getConvs(user.uid);
+  const conv=convs.find(c=>c.profileId===cc.profileId); if(!conv)return;
+  const msg={id:Date.now(),text,mine:true,time:Date.now()};
+  conv.messages.push(msg); conv.lastMsg=text; conv.lastTime=Date.now();
+  saveConvs(user.uid,convs);
+  const msgs=document.getElementById('chat-messages');
+  msgs.appendChild(buildBubble(msg));
+  msgs.scrollTop=msgs.scrollHeight;
+  inp.value='';
+  // simulate reply after 1-2s
+  setTimeout(()=>{
+    const replies=["¡Hola! 😊","¿Cómo andás?","Jaja, buenísimo","Uy, qué interesante!","Me parece bien 👍","Dale, dale","Contame más...","🤭","¡Qué coincidencia!"];
+    const reply={id:Date.now(),text:replies[Math.floor(Math.random()*replies.length)],mine:false,time:Date.now()};
+    const convs2=getConvs(user.uid);
+    const conv2=convs2.find(c=>c.profileId===cc.profileId); if(!conv2)return;
+    conv2.messages.push(reply); conv2.lastMsg=reply.text; conv2.lastTime=Date.now();
+    saveConvs(user.uid,convs2);
+    const msgs2=document.getElementById('chat-messages');
+    if(msgs2){ msgs2.appendChild(buildBubble(reply)); msgs2.scrollTop=msgs2.scrollHeight; }
+    addNotif(user.uid,{type:'msg',text:`${cc.name} te respondió: "${reply.text.substring(0,30)}"`,time:Date.now()});
+    renderNotifs(user);
+  }, 1000+Math.random()*1500);
+};
+function buildBubble(msg){
+  const div=document.createElement('div');
+  const d=document.createElement('div');
+  d.className='chat-bubble '+(msg.mine?'mine':'theirs');
+  d.textContent=msg.text;
+  const t=document.createElement('div');
+  t.className='chat-bubble-time'; t.textContent=timeAgo(msg.time);
+  d.appendChild(t); div.appendChild(d);
+  return div;
+}
+function renderConversations(user){
+  const list=document.getElementById('conversations-list');
+  const convs=getConvs(user.uid);
+  if(!convs.length){ list.innerHTML=`<div class="empty-state"><div class="ei">💬</div><h3>No tenés mensajes</h3><p>Explorá perfiles y empezá a chatear.</p><br><button class="btn-nav" onclick="goTo('nearby')" style="margin-top:8px">Explorar perfiles</button></div>`; return; }
+  list.innerHTML='';
+  convs.forEach(conv=>{
+    const item=document.createElement('div'); item.className='msg-list-item';
+    item.innerHTML=`<div class="msg-av" style="background:${conv.cover}">${conv.name.charAt(0)}</div>
+      <div class="msg-info"><div class="msg-name">${esc(conv.name)}</div><div class="msg-preview${conv.unread?' unread':''}">${esc(conv.lastMsg||'Iniciar conversación...')}</div></div>
+      <div class="msg-meta"><div class="msg-time">${timeAgo(conv.lastTime)}</div>${conv.unread?`<div class="msg-unread-badge">${conv.unread}</div>`:''}</div>`;
+    item.onclick=()=>openChatWith(conv.profileId,conv.name,conv.cover);
+    list.appendChild(item);
+  });
+}
+
+// ── NOTIFICATIONS ──
+function renderNotifs(user){
+  const list=document.getElementById('notifs-list');
+  const notifs=getNotifs(user.uid);
+  if(!notifs.length){ list.innerHTML=`<div class="empty-state"><div class="ei">🔔</div><h3>Sin notificaciones</h3><p>Cuando alguien interactúe con vos, aparece acá.</p></div>`; return; }
+  list.innerHTML='';
+  notifs.forEach(n=>{
+    const item=document.createElement('div'); item.className='notif-item'+(n.read?'':' unread');
+    const icons={'like':'❤️','msg':'💬','match':'💘','comment':'💬'};
+    const bgColors={'like':'#E8273A','msg':'#1877F2','match':'#E8273A','comment':'#F7B731'};
+    const ic=icons[n.type]||'🔔'; const bg=bgColors[n.type]||'var(--k)';
+    item.innerHTML=`<div class="notif-av" style="background:linear-gradient(135deg,var(--k),#FF8FA3)">
+        <span class="notif-badge" style="background:${bg}">${ic}</span>K
+      </div>
+      <div class="notif-body"><div class="notif-text">${esc(n.text)}</div><div class="notif-time">${timeAgo(n.time)}</div></div>
+      ${!n.read?'<div class="notif-unread-dot"></div>':''}`;
+    item.onclick=()=>{ n.read=true; saveNotifs(user.uid,getNotifs(user.uid).map(x=>x.id===n.id?{...x,read:true}:x)); item.classList.remove('unread'); item.querySelector('.notif-unread-dot')&&item.querySelector('.notif-unread-dot').remove(); updateNotifBadge(user.uid); };
+    list.appendChild(item);
+  });
+}
+window.markAllRead=()=>{
+  const user=auth.currentUser; if(!user)return;
+  const notifs=getNotifs(user.uid).map(n=>({...n,read:true}));
+  saveNotifs(user.uid,notifs); renderNotifs(user); updateNotifBadge(user.uid); toast('✅ Todo marcado como leído');
+};
+
+// ── LIKES RECEIVED ──
+function renderLikesReceived(user){
+  const list=document.getElementById('likes-received-list');
+  const myLikes=JSON.parse(localStorage.getItem('klikes-'+user.uid)||'[]');
+  if(!myLikes.length){ list.innerHTML=`<div class="empty-state"><div class="ei">⭐</div><h3>Aún no hay likes</h3><p>Completá tu perfil para que más personas te encuentren.</p></div>`; return; }
+  list.innerHTML='';
+  const profiles=getDemoProfiles();
+  myLikes.forEach(lid=>{
+    const profile=profiles.find(p=>p.id===lid); if(!profile)return;
+    const item=document.createElement('div'); item.className='match-card';
+    item.innerHTML=`<div class="match-av" style="background:${profile.cover}">${profile.name.charAt(0)}</div>
+      <div class="match-info"><div class="match-name">${esc(profile.name)}, ${profile.age}</div><div class="match-sub">📍 ${esc(profile.city)}</div></div>
+      <button class="match-action" onclick="openChatWith('${profile.id}','${profile.name}','${profile.cover}')">💬 Mensaje</button>`;
+    list.appendChild(item);
+  });
+  document.getElementById('pw-lc').textContent=myLikes.length;
+}
+
+// ── MATCHES ──
+function renderMatches(user){
+  const list=document.getElementById('matches-list');
+  // For demo: a "match" happens when you liked someone (simulating mutual)
+  const myLikes=JSON.parse(localStorage.getItem('klikes-'+user.uid)||'[]');
+  // Take first half as "matches" for demo
+  const matchIds=myLikes.slice(0, Math.ceil(myLikes.length/2));
+  if(!matchIds.length){ list.innerHTML=`<div class="empty-state"><div class="ei">💘</div><h3>Aún no tenés matches</h3><p>Explorá perfiles y dales like. Cuando sea mutuo aparece acá.</p><br><button class="btn-nav" onclick="goTo('nearby')" style="margin-top:8px">Explorar perfiles</button></div>`; return; }
+  list.innerHTML='';
+  const profiles=getDemoProfiles();
+  matchIds.forEach(lid=>{
+    const profile=profiles.find(p=>p.id===lid); if(!profile)return;
+    const item=document.createElement('div'); item.className='match-card';
+    item.style.borderLeft='4px solid var(--k)';
+    item.innerHTML=`<div class="match-av" style="background:${profile.cover};border-color:var(--k)">${profile.name.charAt(0)}</div>
+      <div class="match-info"><div class="match-name">${esc(profile.name)}, ${profile.age} 💘</div><div class="match-sub">📍 ${esc(profile.city)} · ¡Es un match!</div></div>
+      <button class="match-action" onclick="openChatWith('${profile.id}','${profile.name}','${profile.cover}')">💬 Chatear</button>`;
+    list.appendChild(item);
+  });
+  document.getElementById('pw-mc').textContent=matchIds.length;
+}
+
+// ── GOLD FEATURES ──
+function buildGoldFeatures(){
+  const grid=document.getElementById('gold-features'); if(grid.dataset.built)return; grid.dataset.built='1';
+  const feats=[
+    {icon:'👀',title:'Ver quién te visitó',desc:'Sabé exactamente quién vio tu perfil'},
+    {icon:'💬',title:'Mensajes ilimitados',desc:'Sin límite de 5 por día'},
+    {icon:'🔥',title:'Boost diario',desc:'Tu perfil al tope de resultados'},
+    {icon:'❤️',title:'Likes ilimitados',desc:'Dale like a quién quieras sin límites'},
+    {icon:'🎯',title:'Filtros avanzados',desc:'Filtrá por edad, ciudad, intereses'},
+    {icon:'💎',title:'Badge Premium',desc:'Mostrá que sos Gold en tu perfil'},
+  ];
+  feats.forEach(f=>{
+    const div=document.createElement('div');
+    div.style.cssText='background:var(--white);border-radius:10px;border:1px solid var(--border);padding:16px;text-align:center';
+    div.innerHTML=`<div style="font-size:30px;margin-bottom:8px">${f.icon}</div><div style="font-size:14px;font-weight:700;margin-bottom:4px">${f.title}</div><div style="font-size:12px;color:var(--text3)">${f.desc}</div>`;
+    grid.appendChild(div);
+  });
+}
 </script>
 
 <script>
-// non-module globals
+// ── NAVIGATION ──
+const VIEWS=['feed','matches','messages','likes','notifs','gold','nearby','compatible','city'];
+const VIEW_TABS={feed:'ntab-feed',matches:'ntab-matches',messages:'ntab-messages',notifs:'ntab-notifs'};
+const SI_MAP={feed:'si-feed',matches:'si-matches',messages:'si-messages',likes:'si-likes',notifs:'si-notifs',gold:'si-gold',nearby:'si-nearby',compatible:'si-compatible',city:'si-city'};
+
+window.goTo=(section)=>{
+  const user=window._auth&&window._auth.currentUser;
+  if(!user){ openAuth('login'); return; }
+  VIEWS.forEach(v=>{ const el=document.getElementById('view-'+v); if(el)el.className='view'+(v===section?' active':''); });
+  Object.values(SI_MAP).forEach(id=>{ const el=document.getElementById(id); if(el)el.classList.remove('active'); });
+  const siEl=document.getElementById(SI_MAP[section]); if(siEl)siEl.classList.add('active');
+  Object.values(VIEW_TABS).forEach(id=>{ const el=document.getElementById(id); if(el)el.classList.remove('active'); });
+  const ntEl=document.getElementById(VIEW_TABS[section]); if(ntEl)ntEl.classList.add('active');
+  // close chat if navigating away from messages
+  if(section!=='messages'){ const cv=document.getElementById('chat-view'); if(cv)cv.classList.remove('open'); const ml=document.getElementById('msgs-list-view'); if(ml)ml.style.display='block'; }
+};
+
+// AUTH MODAL
 function openAuth(tab){ document.getElementById('auth-ov').className='overlay open'; switchTab(tab||'login'); document.getElementById('auth-ok').style.display='none'; }
 function closeAuth(){ document.getElementById('auth-ov').className='overlay'; }
 function switchTab(tab){
@@ -779,49 +1202,26 @@ function switchTab(tab){
 }
 window.openAuth=openAuth; window.closeAuth=closeAuth; window.switchTab=switchTab;
 
+// TOAST
 function toast(msg,dur=2600){
   const el=document.getElementById('toast-el');
   el.textContent=msg; el.className='toast show';
-  clearTimeout(window._tt);
-  window._tt=setTimeout(()=>el.className='toast',dur);
+  clearTimeout(window._tt); window._tt=setTimeout(()=>el.className='toast',dur);
 }
 window.toast=toast;
 
-window.handlePostPhoto=(e)=>{
-  const f=e.target.files[0]; if(!f)return;
-  document.getElementById('cp-img').src=URL.createObjectURL(f);
-  document.getElementById('cp-img-wrap').style.display='block';
-};
-window.removePostImg=()=>{
-  document.getElementById('cp-img').src='';
-  document.getElementById('cp-img-wrap').style.display='none';
-  document.getElementById('cp-file').value='';
-};
-window.toggleFeeling=()=>{
-  const r=document.getElementById('feeling-row');
-  r.style.display=r.style.display==='none'||!r.style.display?'flex':'none';
-};
-window.pickFeeling=(f)=>{
-  const inp=document.getElementById('cp-txt');
-  inp.value=inp.value.replace(/ — me siento .+$/,'')+' — me siento '+f;
-  document.getElementById('feeling-row').style.display='none';
-};
-window.addLocation=()=>{
-  const inp=document.getElementById('cp-txt');
-  const auth=window._auth;
-  const user=auth&&auth.currentUser;
-  const p=user?JSON.parse(localStorage.getItem('kp-'+user.uid)||'{}'):{};
-  const city=p.city||'Uruguay';
-  inp.value=inp.value.replace(/ 📍.+$/,'')+' 📍 '+city;
-  toast('📍 Ubicación agregada');
-};
+// POST HELPERS
+window.handlePostPhoto=(e)=>{ const f=e.target.files[0]; if(!f)return; document.getElementById('cp-img').src=URL.createObjectURL(f); document.getElementById('cp-img-wrap').style.display='block'; };
+window.removePostImg=()=>{ document.getElementById('cp-img').src=''; document.getElementById('cp-img-wrap').style.display='none'; document.getElementById('cp-file').value=''; };
+window.toggleFeeling=()=>{ const r=document.getElementById('feeling-row'); r.style.display=r.style.display==='none'||!r.style.display?'flex':'none'; };
+window.pickFeeling=(f)=>{ const inp=document.getElementById('cp-txt'); inp.value=inp.value.replace(/ — me siento .+$/,'')+' — me siento '+f; document.getElementById('feeling-row').style.display='none'; };
+window.addLocation=()=>{ const inp=document.getElementById('cp-txt'); const user=window._auth&&window._auth.currentUser; const p=user?JSON.parse(localStorage.getItem('kp-'+user.uid)||'{}'):{};  inp.value=inp.value.replace(/ 📍.+$/,'')+' 📍 '+(p.city||'Uruguay'); toast('📍 Ubicación agregada'); };
 window.autoResize=(el)=>{ el.style.height='auto'; el.style.height=el.scrollHeight+'px'; };
+window.handleSearch=(val)=>{ if(val.length>1) toast('🔍 Búsqueda próximamente'); };
 
 document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ closeAuth(); if(window.closeEP)closeEP(); } });
 document.addEventListener('click',e=>{
-  if(!e.target.closest('.react-popup')&&!e.target.closest('.pact')){
-    document.querySelectorAll('.react-popup.open').forEach(el=>el.classList.remove('open'));
-  }
+  if(!e.target.closest('.react-popup')&&!e.target.closest('.pact')) document.querySelectorAll('.react-popup.open').forEach(el=>el.classList.remove('open'));
 });
 </script>
 </body>
