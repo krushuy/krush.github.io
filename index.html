@@ -183,6 +183,30 @@
     .btn-logout:hover { background: var(--border); }
     @media (max-width: 1100px) { .layout { grid-template-columns: 240px 1fr 0; } .sidebar-right { display: none; } }
     @media (max-width: 768px) { .layout { grid-template-columns: 1fr; } .sidebar-left { display: none; } .nav-center { display: none; } .feed { padding: 8px; } }
+    /* FEED LOCKED */
+    .feed-locked { display: none; flex-direction: column; align-items: center; justify-content: center; padding: 60px 20px; text-align: center; }
+    .feed-locked-icon { font-size: 64px; margin-bottom: 16px; }
+    .feed-locked h2 { font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+    .feed-locked p { font-size: 15px; color: var(--text2); margin-bottom: 24px; max-width: 340px; }
+    .feed-locked-btns { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+    .feed-content { display: block; }
+    /* EDIT PROFILE MODAL */
+    .edit-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(255,255,255,0.8); backdrop-filter: blur(4px); z-index: 999; align-items: center; justify-content: center; }
+    .edit-modal-overlay.active { display: flex; }
+    .edit-modal { background: var(--white); border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.18); width: 100%; max-width: 460px; margin: 20px; overflow: hidden; animation: modalIn 0.2s ease forwards; }
+    .edit-modal-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid var(--border); }
+    .edit-modal-title { font-size: 18px; font-weight: 700; }
+    .edit-modal-body { padding: 20px; display: flex; flex-direction: column; gap: 12px; }
+    .edit-label { font-size: 13px; font-weight: 600; color: var(--text2); margin-bottom: 4px; }
+    .edit-input { width: 100%; padding: 11px 14px; background: var(--white); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-family: 'Inter', sans-serif; font-size: 15px; outline: none; transition: border-color 0.15s; }
+    .edit-input:focus { border-color: var(--k); box-shadow: 0 0 0 2px rgba(232,39,58,0.15); }
+    .edit-modal-footer { display: flex; gap: 8px; padding: 16px 20px; border-top: 1px solid var(--border); }
+    .btn-save-profile { flex: 1; padding: 11px; background: var(--k); border: none; border-radius: 6px; color: #fff; font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; transition: background 0.15s; }
+    .btn-save-profile:hover { background: var(--k2); }
+    .btn-cancel-profile { padding: 11px 20px; background: var(--hover); border: none; border-radius: 6px; color: var(--text); font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 600; cursor: pointer; transition: background 0.15s; }
+    .btn-cancel-profile:hover { background: var(--border); }
+    .edit-success { background: #D1FAE5; border: 1px solid #6EE7B7; border-radius: 6px; padding: 10px 14px; font-size: 13px; color: #065F46; display: none; }
+    .edit-success.show { display: block; }
   </style>
 </head>
 <body>
@@ -279,6 +303,18 @@
 
   <!-- FEED -->
   <main class="feed">
+    <!-- LOCKED STATE (shown to non-logged users) -->
+    <div class="feed-locked" id="feed-locked">
+      <div class="feed-locked-icon">🔒</div>
+      <h2>Iniciá sesión para ver el feed</h2>
+      <p>Más de 12.000 uruguayos activos te esperan. Registrate gratis o entrá con tu cuenta.</p>
+      <div class="feed-locked-btns">
+        <button class="btn-login-nav" onclick="openModal('register')">Crear cuenta gratis</button>
+        <button class="btn-login-nav ghost" onclick="openModal('login')">Ya tengo cuenta</button>
+      </div>
+    </div>
+    <!-- FEED CONTENT (shown only when logged in) -->
+    <div class="feed-content" id="feed-content" style="display:none;">
     <!-- STORIES -->
     <div class="stories-row">
       <div class="story-card story-add">
@@ -423,21 +459,22 @@
         <button class="post-action" onclick="openModal('register')" style="color:var(--k);">⭐ Activar Gold</button>
       </div>
     </div>
+    </div><!-- /feed-content -->
   </main>
 
   <!-- RIGHT -->
   <aside class="sidebar-right">
     <div class="widget-box">
       <div class="profile-widget">
-        <div class="profile-widget-av">T</div>
-        <div class="profile-widget-name">Tu nombre</div>
-        <div class="profile-widget-sub">Montevideo · Plan Gratis</div>
+        <div class="profile-widget-av" id="profile-widget-av">T</div>
+        <div class="profile-widget-name" id="profile-widget-name">Tu nombre</div>
+        <div class="profile-widget-sub" id="profile-widget-sub">Montevideo · Plan Gratis</div>
         <div class="profile-widget-stats">
           <div class="pstat"><div class="pstat-num">0</div><div class="pstat-label">Matches</div></div>
           <div class="pstat"><div class="pstat-num">0</div><div class="pstat-label">Likes</div></div>
           <div class="pstat"><div class="pstat-num">0</div><div class="pstat-label">Visitas</div></div>
         </div>
-        <button class="btn-edit-profile" onclick="openModal('register')">Completar perfil</button>
+        <button class="btn-edit-profile" id="profile-widget-btn" onclick="openModal('register')">Completar perfil</button>
       </div>
     </div>
 
@@ -497,36 +534,215 @@
   </aside>
 </div>
 
+<!-- EDIT PROFILE MODAL -->
+<div class="edit-modal-overlay" id="edit-modal-overlay" onclick="if(event.target===this)closeEditModal()">
+  <div class="edit-modal">
+    <div class="edit-modal-header">
+      <div class="edit-modal-title">✏️ Editar perfil</div>
+      <button class="modal-close" onclick="closeEditModal()">✕</button>
+    </div>
+    <div class="edit-modal-body">
+      <div id="edit-success" class="edit-success">✅ ¡Perfil actualizado correctamente!</div>
+      <div>
+        <div class="edit-label">Nombre para mostrar</div>
+        <input class="edit-input" type="text" id="edit-name" placeholder="Tu nombre">
+      </div>
+      <div>
+        <div class="edit-label">Ciudad</div>
+        <input class="edit-input" type="text" id="edit-city" placeholder="Ej: Montevideo, Salto...">
+      </div>
+      <div>
+        <div class="edit-label">¿Qué buscás?</div>
+        <select class="edit-input" id="edit-looking">
+          <option value="">Seleccioná...</option>
+          <option value="Relación seria">Relación seria</option>
+          <option value="Algo casual">Algo casual</option>
+          <option value="Amistad">Amistad</option>
+          <option value="Ver qué pasa">Ver qué pasa</option>
+        </select>
+      </div>
+      <div>
+        <div class="edit-label">Bio (sobre vos)</div>
+        <textarea class="edit-input" id="edit-bio" rows="3" placeholder="Contá algo sobre vos..." style="resize:vertical;"></textarea>
+      </div>
+    </div>
+    <div class="edit-modal-footer">
+      <button class="btn-cancel-profile" onclick="closeEditModal()">Cancelar</button>
+      <button class="btn-save-profile" onclick="saveProfile()">Guardar cambios</button>
+    </div>
+  </div>
+</div>
+
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
   const firebaseConfig = { apiKey:"AIzaSyD7wDuUvGwkwb6ekSfgqLpPdRucfHgV6Tk", authDomain:"krush-8d3cf.firebaseapp.com", projectId:"krush-8d3cf", storageBucket:"krush-8d3cf.firebasestorage.app", messagingSenderId:"760726538346", appId:"1:760726538346:web:5e7cf7c8c97dc75184a213" };
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
-  onAuthStateChanged(auth, (user) => {
+
+  // Expose auth to non-module scripts
+  window._auth = auth;
+
+  function updateUI(user) {
     const navRight = document.getElementById("nav-right");
+    const feedLocked = document.getElementById("feed-locked");
+    const feedContent = document.getElementById("feed-content");
+    const profileWidgetName = document.getElementById("profile-widget-name");
+    const profileWidgetSub = document.getElementById("profile-widget-sub");
+    const profileWidgetAv = document.getElementById("profile-widget-av");
+    const profileWidgetBtn = document.getElementById("profile-widget-btn");
+
     if (user) {
+      // NAV: show user info
       const initial = (user.displayName || user.email).charAt(0).toUpperCase();
+      const displayName = user.displayName || user.email;
       const emailShort = user.email.length > 18 ? user.email.substring(0,18)+"..." : user.email;
       navRight.innerHTML = `<div class="user-nav"><div class="user-avatar-nav">${initial}</div><span class="user-email-nav">${emailShort}</span><button class="btn-logout" id="btn-logout">Salir</button></div>`;
       document.getElementById("btn-logout").onclick = () => signOut(auth);
+
+      // FEED: show content, hide lock
+      feedLocked.style.display = "none";
+      feedContent.style.display = "block";
+
+      // PROFILE WIDGET: update with user data
+      const savedProfile = JSON.parse(localStorage.getItem("krush-profile-" + user.uid) || "{}");
+      const name = user.displayName || savedProfile.name || "Sin nombre";
+      const city = savedProfile.city || "Uruguay";
+      if (profileWidgetAv) profileWidgetAv.textContent = name.charAt(0).toUpperCase();
+      if (profileWidgetName) profileWidgetName.textContent = name;
+      if (profileWidgetSub) profileWidgetSub.textContent = city + " · Plan Gratis";
+      if (profileWidgetBtn) {
+        profileWidgetBtn.textContent = "✏️ Editar perfil";
+        profileWidgetBtn.onclick = () => openEditModal();
+      }
+
     } else {
+      // NAV: show login/register buttons
       navRight.innerHTML = `<button class="btn-login-nav ghost" onclick="openModal('login')">Entrar</button><button class="btn-login-nav" onclick="openModal('register')">Crear cuenta</button>`;
+
+      // FEED: show locked state
+      feedLocked.style.display = "flex";
+      feedContent.style.display = "none";
+
+      // PROFILE WIDGET: reset
+      if (profileWidgetAv) profileWidgetAv.textContent = "T";
+      if (profileWidgetName) profileWidgetName.textContent = "Tu nombre";
+      if (profileWidgetSub) profileWidgetSub.textContent = "Montevideo · Plan Gratis";
+      if (profileWidgetBtn) {
+        profileWidgetBtn.textContent = "Completar perfil";
+        profileWidgetBtn.onclick = () => openModal('register');
+      }
     }
-  });
-  window.doGoogle = async () => { const p = new GoogleAuthProvider(); try { await signInWithPopup(auth,p); showSuccess("¡Bienvenido a Krush!","Sesión iniciada con Google."); setTimeout(closeModal,2000); } catch(e){ if(e.code!=="auth/popup-closed-by-user") showError(getErrorMsg(e.code)); } };
-  window.doLogin = async () => { const e=document.getElementById("login-email").value, p=document.getElementById("login-password").value, b=document.getElementById("btn-login"); showError(""); b.disabled=true; b.textContent="Entrando..."; try { await signInWithEmailAndPassword(auth,e,p); showSuccess("¡Bienvenido de vuelta!","Ya estás dentro."); setTimeout(()=>window.location.href='app.html',1500); } catch(err){ showError(getErrorMsg(err.code)); b.disabled=false; b.textContent="Entrar a Krush"; } };
-  window.doRegister = async () => { const n=document.getElementById("reg-name").value, e=document.getElementById("reg-email").value, p=document.getElementById("reg-password").value, b=document.getElementById("btn-register"); showError(""); b.disabled=true; b.textContent="Creando cuenta..."; try { const c=await createUserWithEmailAndPassword(auth,e,p); if(n) await updateProfile(c.user,{displayName:n}); showSuccess("¡Bienvenido"+(n?", "+n:"")+"!","Tu cuenta fue creada."); setTimeout(()=>window.location.href='app.html',1500); } catch(err){ showError(getErrorMsg(err.code)); b.disabled=false; b.textContent="Crear cuenta gratis"; } };
-  function getErrorMsg(code){ const m={"auth/email-already-in-use":"Ya existe una cuenta con ese correo.","auth/invalid-email":"El correo no es válido.","auth/weak-password":"La contraseña debe tener al menos 6 caracteres.","auth/user-not-found":"No encontramos esa cuenta.","auth/wrong-password":"Contraseña incorrecta.","auth/invalid-credential":"Correo o contraseña incorrectos.","auth/too-many-requests":"Demasiados intentos. Esperá unos minutos."}; return m[code]||"Ocurrió un error. Intentá de nuevo."; }
-  function showError(msg){ const el=document.getElementById("auth-error"); el.textContent=msg; el.classList.toggle("show",!!msg); }
-  function showSuccess(title,msg){ document.getElementById("form-login").style.display="none"; document.getElementById("form-register").style.display="none"; document.getElementById("auth-error").classList.remove("show"); document.getElementById("success-title").textContent=title; document.getElementById("success-msg").textContent=msg; document.getElementById("auth-success").style.display="block"; }
+  }
+
+  onAuthStateChanged(auth, updateUI);
+
+  window.doGoogle = async () => {
+    const p = new GoogleAuthProvider();
+    try {
+      await signInWithPopup(auth, p);
+      showSuccess("¡Bienvenido a Krush!", "Sesión iniciada con Google.");
+      setTimeout(closeModal, 1500);
+    } catch(e) {
+      if (e.code !== "auth/popup-closed-by-user") showError(getErrorMsg(e.code));
+    }
+  };
+
+  window.doLogin = async () => {
+    const e = document.getElementById("login-email").value;
+    const p = document.getElementById("login-password").value;
+    const b = document.getElementById("btn-login");
+    showError(""); b.disabled = true; b.textContent = "Entrando...";
+    try {
+      await signInWithEmailAndPassword(auth, e, p);
+      showSuccess("¡Bienvenido de vuelta!", "Ya estás dentro.");
+      setTimeout(closeModal, 1500);
+    } catch(err) {
+      showError(getErrorMsg(err.code));
+      b.disabled = false; b.textContent = "Entrar a Krush";
+    }
+  };
+
+  window.doRegister = async () => {
+    const n = document.getElementById("reg-name").value;
+    const e = document.getElementById("reg-email").value;
+    const p = document.getElementById("reg-password").value;
+    const b = document.getElementById("btn-register");
+    showError(""); b.disabled = true; b.textContent = "Creando cuenta...";
+    try {
+      const c = await createUserWithEmailAndPassword(auth, e, p);
+      if (n) await updateProfile(c.user, {displayName: n});
+      showSuccess("¡Bienvenido" + (n ? ", " + n : "") + "!", "Tu cuenta fue creada.");
+      setTimeout(closeModal, 1500);
+    } catch(err) {
+      showError(getErrorMsg(err.code));
+      b.disabled = false; b.textContent = "Crear cuenta gratis";
+    }
+  };
+
+  // Edit profile save
+  window.saveProfile = async () => {
+    const user = auth.currentUser;
+    if (!user) return;
+    const name = document.getElementById("edit-name").value.trim();
+    const city = document.getElementById("edit-city").value.trim();
+    const looking = document.getElementById("edit-looking").value;
+    const bio = document.getElementById("edit-bio").value.trim();
+    try {
+      if (name) await updateProfile(user, {displayName: name});
+      // Save extra fields to localStorage (Firebase free tier has no Firestore required)
+      const profile = {name: name || user.displayName, city, looking, bio};
+      localStorage.setItem("krush-profile-" + user.uid, JSON.stringify(profile));
+      // Update widget
+      updateUI(auth.currentUser);
+      document.getElementById("edit-success").classList.add("show");
+      setTimeout(() => {
+        document.getElementById("edit-success").classList.remove("show");
+        closeEditModal();
+      }, 2000);
+    } catch(err) {
+      alert("Error al guardar: " + err.message);
+    }
+  };
+
+  // Open edit modal prefilled
+  window.openEditModal = () => {
+    const user = auth.currentUser;
+    if (!user) { openModal('login'); return; }
+    const saved = JSON.parse(localStorage.getItem("krush-profile-" + user.uid) || "{}");
+    document.getElementById("edit-name").value = user.displayName || saved.name || "";
+    document.getElementById("edit-city").value = saved.city || "";
+    document.getElementById("edit-looking").value = saved.looking || "";
+    document.getElementById("edit-bio").value = saved.bio || "";
+    document.getElementById("edit-success").classList.remove("show");
+    document.getElementById("edit-modal-overlay").classList.add("active");
+  };
+
+  window.closeEditModal = () => {
+    document.getElementById("edit-modal-overlay").classList.remove("active");
+  };
+
+  function getErrorMsg(code) {
+    const m = {"auth/email-already-in-use":"Ya existe una cuenta con ese correo.","auth/invalid-email":"El correo no es válido.","auth/weak-password":"La contraseña debe tener al menos 6 caracteres.","auth/user-not-found":"No encontramos esa cuenta.","auth/wrong-password":"Contraseña incorrecta.","auth/invalid-credential":"Correo o contraseña incorrectos.","auth/too-many-requests":"Demasiados intentos. Esperá unos minutos."};
+    return m[code] || "Ocurrió un error. Intentá de nuevo.";
+  }
+  function showError(msg) { const el = document.getElementById("auth-error"); el.textContent = msg; el.classList.toggle("show", !!msg); }
+  function showSuccess(title, msg) {
+    document.getElementById("form-login").style.display = "none";
+    document.getElementById("form-register").style.display = "none";
+    document.getElementById("auth-error").classList.remove("show");
+    document.getElementById("success-title").textContent = title;
+    document.getElementById("success-msg").textContent = msg;
+    document.getElementById("auth-success").style.display = "block";
+  }
 </script>
 <script>
   function openModal(tab){ document.getElementById("modal-overlay").classList.add("active"); switchTab(tab||"login"); document.getElementById("auth-success").style.display="none"; document.getElementById("auth-error").classList.remove("show"); }
   function closeModal(){ document.getElementById("modal-overlay").classList.remove("active"); }
   function handleOverlayClick(e){ if(e.target===document.getElementById("modal-overlay")) closeModal(); }
   function switchTab(tab){ document.getElementById("tab-login").classList.toggle("active",tab==="login"); document.getElementById("tab-register").classList.toggle("active",tab==="register"); document.getElementById("form-login").style.display=tab==="login"?"":"none"; document.getElementById("form-register").style.display=tab==="register"?"":"none"; document.getElementById("auth-success").style.display="none"; document.getElementById("auth-error").classList.remove("show"); }
-  document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeModal(); });
+  document.addEventListener("keydown",e=>{ if(e.key==="Escape"){ closeModal(); if(window.closeEditModal) closeEditModal(); } });
 </script>
 </body>
 </html>
