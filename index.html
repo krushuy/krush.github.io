@@ -190,6 +190,16 @@
     .feed-locked p { font-size: 15px; color: var(--text2); margin-bottom: 24px; max-width: 340px; }
     .feed-locked-btns { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
     .feed-content { display: block; }
+    /* FEELING BTNS */
+    .feeling-btn { background: var(--hover); border: none; border-radius: 20px; padding: 6px 14px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif; transition: background 0.15s; }
+    .feeling-btn:hover { background: var(--border); }
+    /* TOAST */
+    .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px); background: #1a1a1a; color: #fff; padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; z-index: 9999; opacity: 0; transition: all 0.3s; pointer-events: none; white-space: nowrap; }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    /* PROFILE PHOTO */
+    .profile-widget-av { cursor: pointer; transition: opacity 0.15s; }
+    .profile-widget-av:hover { opacity: 0.85; }
+    .profile-photo-ring { width: 72px; height: 72px; border-radius: 50%; object-fit: cover; border: 3px solid var(--k); margin-bottom: 10px; cursor: pointer; }
     /* EDIT PROFILE MODAL */
     .edit-modal-overlay { display: none; position: fixed; inset: 0; background: rgba(255,255,255,0.8); backdrop-filter: blur(4px); z-index: 999; align-items: center; justify-content: center; }
     .edit-modal-overlay.active { display: flex; }
@@ -315,12 +325,14 @@
     </div>
     <!-- FEED CONTENT (shown only when logged in) -->
     <div class="feed-content" id="feed-content" style="display:none;">
+
     <!-- STORIES -->
     <div class="stories-row">
-      <div class="story-card story-add">
-        <div class="story-add-photo">😊<div class="story-add-plus">+</div></div>
+      <div class="story-card story-add" onclick="triggerStoryUpload()" style="cursor:pointer;" title="Subir tu story">
+        <div class="story-add-photo" id="my-story-preview">😊<div class="story-add-plus">+</div></div>
         <div class="story-add-label" style="margin-top:18px;color:var(--text);">Tu story</div>
       </div>
+      <input type="file" id="story-file-input" accept="image/*" style="display:none;" onchange="handleStoryUpload(event)">
       <div class="story-card">
         <div class="story-bg-img" style="background:linear-gradient(160deg,#FFB3BA,#FF6B8A);"></div>
         <div class="story-overlay"></div>
@@ -347,29 +359,39 @@
       </div>
     </div>
 
-    <!-- BANNER -->
-    <div class="match-banner">
-      <h3>¡Encontrá tu Krush hoy 🔥</h3>
-      <p>+12.000 uruguayos activos te están esperando. Gratis, sin tarjeta.</p>
-      <div class="match-banner-btns">
-        <button class="btn-match-primary" onclick="openModal('register')">Crear cuenta gratis</button>
-        <button class="btn-match-ghost" onclick="openModal('login')">Ya tengo cuenta</button>
-      </div>
-    </div>
-
-    <!-- CREATE POST -->
+    <!-- CREATE POST (funcional para logueados) -->
     <div class="create-post">
       <div class="create-post-top">
-        <div class="post-avatar">T</div>
-        <input class="create-post-input" type="text" placeholder="¿Qué estás buscando?" onclick="openModal('register')" readonly>
+        <div class="post-avatar" id="create-post-av">G</div>
+        <input class="create-post-input" type="text" id="post-text-input" placeholder="¿Qué estás buscando?" style="cursor:text;" readonly="false">
+      </div>
+      <!-- image preview -->
+      <div id="post-img-preview" style="display:none;padding:0 16px 10px;position:relative;">
+        <img id="post-img-tag" style="width:100%;border-radius:8px;max-height:300px;object-fit:cover;" src="">
+        <button onclick="removePostImage()" style="position:absolute;top:6px;right:22px;background:rgba(0,0,0,0.6);color:#fff;border:none;border-radius:50%;width:28px;height:28px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;">✕</button>
       </div>
       <div class="create-post-divider"></div>
       <div class="create-post-actions">
-        <button class="create-action" onclick="openModal('register')"><span>📷</span> Foto</button>
-        <button class="create-action" onclick="openModal('register')"><span>😊</span> Feeling</button>
-        <button class="create-action" onclick="openModal('register')"><span>📍</span> Ubicación</button>
+        <button class="create-action" onclick="document.getElementById('post-photo-input').click()"><span>📷</span> Foto</button>
+        <input type="file" id="post-photo-input" accept="image/*" style="display:none;" onchange="handlePostPhoto(event)">
+        <button class="create-action" onclick="toggleFeeling()"><span>😊</span> Feeling</button>
+        <button class="create-action" onclick="addLocation()"><span>📍</span> Ubicación</button>
+        <button class="create-action" style="background:var(--k);color:#fff;border-radius:8px;flex:0;padding:8px 16px;" onclick="publishPost()">Publicar</button>
+      </div>
+      <!-- Feeling picker -->
+      <div id="feeling-picker" style="display:none;padding:10px 16px;border-top:1px solid var(--border);flex-wrap:wrap;gap:8px;display:none;">
+        <span style="font-size:13px;font-weight:600;color:var(--text2);width:100%;display:block;margin-bottom:4px;">¿Cómo te sentís?</span>
+        <button class="feeling-btn" onclick="selectFeeling('😊 feliz')">😊 Feliz</button>
+        <button class="feeling-btn" onclick="selectFeeling('💘 enamorado/a')">💘 Enamorado/a</button>
+        <button class="feeling-btn" onclick="selectFeeling('🔥 con ganas')">🔥 Con ganas</button>
+        <button class="feeling-btn" onclick="selectFeeling('😎 relajado/a')">😎 Relajado/a</button>
+        <button class="feeling-btn" onclick="selectFeeling('🤔 pensativo/a')">🤔 Pensativo/a</button>
+        <button class="feeling-btn" onclick="selectFeeling('😂 divertido/a')">😂 Divertido/a</button>
       </div>
     </div>
+
+    <!-- POSTS publicados por usuario -->
+    <div id="user-posts-container"></div>
 
     <!-- POST 1 -->
     <div class="post-card">
@@ -396,9 +418,9 @@
       </div>
       <div class="post-divider"></div>
       <div class="post-actions">
-        <button class="post-action liked"><span>❤️</span> Me encanta</button>
-        <button class="post-action" onclick="openModal('login')"><span>💬</span> Comentar</button>
-        <button class="post-action" onclick="openModal('login')"><span>↗️</span> Compartir</button>
+        <button class="post-action" onclick="toggleLike(this)"><span>❤️</span> Me encanta</button>
+        <button class="post-action" onclick="showToast('💬 Comentarios próximamente')"><span>💬</span> Comentar</button>
+        <button class="post-action" onclick="showToast('↗️ Compartido!')"><span>↗️</span> Compartir</button>
       </div>
     </div>
 
@@ -425,9 +447,9 @@
       </div>
       <div class="post-divider"></div>
       <div class="post-actions">
-        <button class="post-action" onclick="openModal('login')"><span>👍</span> Me gusta</button>
-        <button class="post-action" onclick="openModal('login')"><span>💬</span> Comentar</button>
-        <button class="post-action" onclick="openModal('login')"><span>↗️</span> Compartir</button>
+        <button class="post-action" onclick="toggleLike(this)"><span>👍</span> Me gusta</button>
+        <button class="post-action" onclick="showToast('💬 Comentarios próximamente')"><span>💬</span> Comentar</button>
+        <button class="post-action" onclick="showToast('↗️ Compartido!')"><span>↗️</span> Compartir</button>
       </div>
     </div>
 
@@ -454,11 +476,12 @@
       </div>
       <div class="post-divider"></div>
       <div class="post-actions">
-        <button class="post-action" onclick="openModal('login')"><span>👍</span> Me gusta</button>
-        <button class="post-action" onclick="openModal('login')"><span>💬</span> Comentar</button>
-        <button class="post-action" onclick="openModal('register')" style="color:var(--k);">⭐ Activar Gold</button>
+        <button class="post-action" onclick="toggleLike(this)"><span>👍</span> Me gusta</button>
+        <button class="post-action" onclick="showToast('💬 Comentarios próximamente')"><span>💬</span> Comentar</button>
+        <button class="post-action" style="color:var(--k);" onclick="showToast('⭐ Próximamente: Krush Gold!')">⭐ Activar Gold</button>
       </div>
     </div>
+
     </div><!-- /feed-content -->
   </main>
 
@@ -466,7 +489,9 @@
   <aside class="sidebar-right">
     <div class="widget-box">
       <div class="profile-widget">
-        <div class="profile-widget-av" id="profile-widget-av">T</div>
+        <div class="profile-widget-av" id="profile-widget-av" onclick="triggerProfilePhotoUpload()" title="Cambiar foto de perfil">T</div>
+        <input type="file" id="profile-photo-input" accept="image/*" style="display:none;" onchange="handleProfilePhoto(event)">
+        <div id="photo-hint" style="font-size:11px;color:var(--text3);margin-top:-6px;margin-bottom:6px;cursor:pointer;" onclick="triggerProfilePhotoUpload()">📷 cambiar foto</div>
         <div class="profile-widget-name" id="profile-widget-name">Tu nombre</div>
         <div class="profile-widget-sub" id="profile-widget-sub">Montevideo · Plan Gratis</div>
         <div class="profile-widget-stats">
@@ -483,19 +508,19 @@
       <div class="suggestion-item">
         <div class="sug-av" style="background:linear-gradient(135deg,#FF6B8A,#FF8FA3);">V</div>
         <div class="sug-info"><div class="sug-name">Valentina R.</div><div class="sug-detail">📍 2.4 km · Pocitos</div></div>
-        <button class="btn-follow" onclick="openModal('register')">💘 Like</button>
+        <button class="btn-follow" onclick="handleLike(this,'Valentina R.')">💘 Like</button>
       </div>
       <div class="suggestion-item">
         <div class="sug-av" style="background:linear-gradient(135deg,#78C2AD,#00897B);">L</div>
         <div class="sug-info"><div class="sug-name">Lucía M.</div><div class="sug-detail">📍 5.1 km · P. Carretas</div></div>
-        <button class="btn-follow" onclick="openModal('register')">💘 Like</button>
+        <button class="btn-follow" onclick="handleLike(this,'Lucía M.')">💘 Like</button>
       </div>
       <div class="suggestion-item">
         <div class="sug-av" style="background:linear-gradient(135deg,#FFB347,#FF7043);">M</div>
         <div class="sug-info"><div class="sug-name">Marcos D.</div><div class="sug-detail">📍 0.8 km · Palermo</div></div>
-        <button class="btn-follow" onclick="openModal('register')">💘 Like</button>
+        <button class="btn-follow" onclick="handleLike(this,'Marcos D.')">💘 Like</button>
       </div>
-      <div style="padding:8px 16px 12px;"><a href="#" onclick="openModal('register');return false;" style="font-size:14px;color:var(--text2);font-weight:600;text-decoration:none;">Ver todos →</a></div>
+      <div style="padding:8px 16px 12px;"><a href="#" onclick="showToast('🔍 Explorar próximamente');return false;" style="font-size:14px;color:var(--text2);font-weight:600;text-decoration:none;">Ver todos →</a></div>
     </div>
 
     <div class="widget-box">
@@ -609,9 +634,23 @@
       const savedProfile = JSON.parse(localStorage.getItem("krush-profile-" + user.uid) || "{}");
       const name = user.displayName || savedProfile.name || "Sin nombre";
       const city = savedProfile.city || "Uruguay";
-      if (profileWidgetAv) profileWidgetAv.textContent = name.charAt(0).toUpperCase();
+      if (profileWidgetAv) {
+        profileWidgetAv.textContent = name.charAt(0).toUpperCase();
+        profileWidgetAv.style.backgroundImage = '';
+        // Load saved profile photo
+        const savedPhoto = localStorage.getItem("krush-profile-photo-" + user.uid);
+        if (savedPhoto) {
+          profileWidgetAv.style.backgroundImage = `url(${savedPhoto})`;
+          profileWidgetAv.style.backgroundSize = 'cover';
+          profileWidgetAv.style.backgroundPosition = 'center';
+          profileWidgetAv.textContent = '';
+        }
+      }
       if (profileWidgetName) profileWidgetName.textContent = name;
       if (profileWidgetSub) profileWidgetSub.textContent = city + " · Plan Gratis";
+      // Update create-post avatar initial
+      const cpAv = document.getElementById('create-post-av');
+      if (cpAv) cpAv.textContent = name.charAt(0).toUpperCase();
       if (profileWidgetBtn) {
         profileWidgetBtn.textContent = "✏️ Editar perfil";
         profileWidgetBtn.onclick = () => openEditModal();
@@ -743,6 +782,176 @@
   function handleOverlayClick(e){ if(e.target===document.getElementById("modal-overlay")) closeModal(); }
   function switchTab(tab){ document.getElementById("tab-login").classList.toggle("active",tab==="login"); document.getElementById("tab-register").classList.toggle("active",tab==="register"); document.getElementById("form-login").style.display=tab==="login"?"":"none"; document.getElementById("form-register").style.display=tab==="register"?"":"none"; document.getElementById("auth-success").style.display="none"; document.getElementById("auth-error").classList.remove("show"); }
   document.addEventListener("keydown",e=>{ if(e.key==="Escape"){ closeModal(); if(window.closeEditModal) closeEditModal(); } });
+
+  // ── TOAST ──
+  const toastEl = document.createElement('div');
+  toastEl.className = 'toast';
+  document.body.appendChild(toastEl);
+  window.showToast = (msg, duration=2500) => {
+    toastEl.textContent = msg;
+    toastEl.classList.add('show');
+    clearTimeout(window._toastTimer);
+    window._toastTimer = setTimeout(() => toastEl.classList.remove('show'), duration);
+  };
+
+  // ── LIKE TOGGLE ──
+  window.toggleLike = (btn) => {
+    btn.classList.toggle('liked');
+    if (btn.classList.contains('liked')) {
+      showToast('❤️ ¡Le diste like!');
+    }
+  };
+
+  // ── LIKE A PERSON ──
+  window.handleLike = (btn, name) => {
+    btn.textContent = '💘 Enviado';
+    btn.disabled = true;
+    btn.style.opacity = '0.6';
+    showToast('💘 ¡Like enviado a ' + name + '!');
+  };
+
+  // ── STORY UPLOAD ──
+  window.triggerStoryUpload = () => {
+    document.getElementById('story-file-input').click();
+  };
+  window.handleStoryUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const url = URL.createObjectURL(file);
+    const preview = document.getElementById('my-story-preview');
+    preview.style.backgroundImage = `url(${url})`;
+    preview.style.backgroundSize = 'cover';
+    preview.style.backgroundPosition = 'center';
+    preview.innerHTML = '';
+    showToast('📸 ¡Story subida correctamente!');
+  };
+
+  // ── POST PHOTO ──
+  window.handlePostPhoto = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const url = URL.createObjectURL(file);
+    document.getElementById('post-img-tag').src = url;
+    document.getElementById('post-img-preview').style.display = 'block';
+  };
+  window.removePostImage = () => {
+    document.getElementById('post-img-tag').src = '';
+    document.getElementById('post-img-preview').style.display = 'none';
+    document.getElementById('post-photo-input').value = '';
+  };
+
+  // ── FEELING ──
+  window.toggleFeeling = () => {
+    const fp = document.getElementById('feeling-picker');
+    fp.style.display = fp.style.display === 'none' || fp.style.display === '' ? 'flex' : 'none';
+  };
+  window.selectFeeling = (f) => {
+    const input = document.getElementById('post-text-input');
+    const current = input.value.replace(/ — me siento .+$/, '');
+    input.value = (current || '') + ' — me siento ' + f;
+    document.getElementById('feeling-picker').style.display = 'none';
+  };
+
+  // ── LOCATION ──
+  window.addLocation = () => {
+    if (!navigator.geolocation) { showToast('📍 Geolocalización no disponible'); return; }
+    navigator.geolocation.getCurrentPosition(
+      () => {
+        const input = document.getElementById('post-text-input');
+        const saved = JSON.parse(localStorage.getItem('krush-profile-' + (window._auth && window._auth.currentUser ? window._auth.currentUser.uid : '')) || '{}');
+        const city = saved.city || 'Uruguay';
+        const current = input.value.replace(/ 📍 .+$/, '');
+        input.value = (current || '') + ' 📍 ' + city;
+        showToast('📍 Ubicación agregada');
+      },
+      () => {
+        const input = document.getElementById('post-text-input');
+        const current = input.value.replace(/ 📍 .+$/, '');
+        input.value = (current || '') + ' 📍 Uruguay';
+        showToast('📍 Ubicación agregada');
+      }
+    );
+  };
+
+  // ── PUBLISH POST ──
+  window.publishPost = () => {
+    const input = document.getElementById('post-text-input');
+    const imgSrc = document.getElementById('post-img-tag').src;
+    const text = input.value.trim();
+    if (!text && !imgSrc) { showToast('✏️ Escribí algo primero'); return; }
+    const auth = window._auth;
+    const user = auth ? auth.currentUser : null;
+    const name = (user && user.displayName) ? user.displayName : (user ? user.email : 'Vos');
+    const initial = name.charAt(0).toUpperCase();
+    const saved = JSON.parse(localStorage.getItem('krush-profile-' + (user ? user.uid : '')) || '{}');
+    const city = saved.city || 'Uruguay';
+    const now = 'ahora mismo';
+    const card = document.createElement('div');
+    card.className = 'post-card';
+    card.style.animation = 'modalIn 0.25s ease forwards';
+    card.innerHTML = `
+      <div class="post-header">
+        <div class="post-avatar-sm" id="new-post-av" style="background:linear-gradient(135deg,var(--k),#FF8FA3);">${initial}</div>
+        <div class="post-meta">
+          <div class="post-name">${name}</div>
+          <div class="post-sub">${city} · ${now} 🌐</div>
+        </div>
+        <div class="post-menu">···</div>
+      </div>
+      ${text ? `<div class="post-body">${text}</div>` : ''}
+      ${imgSrc ? `<img src="${imgSrc}" style="width:100%;max-height:400px;object-fit:cover;">` : ''}
+      <div class="post-stats">
+        <div class="post-reactions"><div class="reaction-icons"></div>&nbsp;Sé el primero en reaccionar</div>
+        <div class="post-comments-count">0 comentarios</div>
+      </div>
+      <div class="post-divider"></div>
+      <div class="post-actions">
+        <button class="post-action" onclick="toggleLike(this)"><span>❤️</span> Me encanta</button>
+        <button class="post-action" onclick="showToast('💬 Comentarios próximamente')"><span>💬</span> Comentar</button>
+        <button class="post-action" onclick="showToast('↗️ Compartido!')"><span>↗️</span> Compartir</button>
+      </div>`;
+    // Update new post avatar if user has photo
+    const savedPhoto = localStorage.getItem('krush-profile-photo-' + (user ? user.uid : ''));
+    if (savedPhoto) {
+      setTimeout(() => {
+        const av = card.querySelector('#new-post-av');
+        if (av) { av.style.backgroundImage = `url(${savedPhoto})`; av.style.backgroundSize = 'cover'; av.textContent = ''; }
+      }, 0);
+    }
+    const container = document.getElementById('user-posts-container');
+    container.insertBefore(card, container.firstChild);
+    input.value = '';
+    removePostImage();
+    document.getElementById('feeling-picker').style.display = 'none';
+    showToast('✅ ¡Publicación creada!');
+  };
+
+  // ── PROFILE PHOTO UPLOAD ──
+  window.triggerProfilePhotoUpload = () => {
+    document.getElementById('profile-photo-input').click();
+  };
+  window.handleProfilePhoto = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const dataUrl = ev.target.result;
+      const auth = window._auth;
+      const user = auth ? auth.currentUser : null;
+      if (user) localStorage.setItem('krush-profile-photo-' + user.uid, dataUrl);
+      const av = document.getElementById('profile-widget-av');
+      if (av.tagName === 'DIV') {
+        av.style.backgroundImage = `url(${dataUrl})`;
+        av.style.backgroundSize = 'cover';
+        av.style.backgroundPosition = 'center';
+        av.textContent = '';
+      } else {
+        av.src = dataUrl;
+      }
+      showToast('📸 ¡Foto de perfil actualizada!');
+    };
+    reader.readAsDataURL(file);
+  };
 </script>
 </body>
 </html>
