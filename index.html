@@ -116,6 +116,97 @@
     .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
     .toast.success { background: var(--green); }
     .toast.error { background: #e44040; }
+    /* ══ ADMIN PANEL ══ */
+    #adminView { display:none; }
+    .admin-layout { max-width:1200px; margin:0 auto; padding:20px 16px; }
+    .admin-header { background:linear-gradient(135deg,#1c1e21,#2d3748); color:white; padding:28px 32px; border-radius:16px; margin-bottom:24px; display:flex; align-items:center; justify-content:space-between; }
+    .admin-header h1 { font-family:'Nunito',sans-serif; font-size:28px; font-weight:900; margin:0; }
+    .admin-header p { margin:4px 0 0; opacity:.7; font-size:14px; }
+    .admin-badge { background:#e91e8c; color:white; padding:6px 14px; border-radius:20px; font-size:13px; font-weight:800; display:flex; align-items:center; gap:6px; }
+    .admin-stats { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px; }
+    .admin-stat-card { background:white; border-radius:12px; padding:20px; box-shadow:0 1px 4px rgba(0,0,0,.1); text-align:center; }
+    .admin-stat-card .stat-icon { font-size:32px; margin-bottom:8px; }
+    .admin-stat-card .stat-num { font-family:'Nunito',sans-serif; font-size:28px; font-weight:900; color:var(--blue); }
+    .admin-stat-card .stat-label { font-size:13px; color:var(--gray-text); font-weight:600; margin-top:2px; }
+    .admin-tabs { display:flex; gap:8px; margin-bottom:20px; flex-wrap:wrap; }
+    .admin-tab { padding:10px 20px; border-radius:50px; border:none; font-size:14px; font-weight:700; cursor:pointer; transition:all .2s; background:#e4e6eb; color:var(--dark); }
+    .admin-tab.active { background:var(--blue); color:white; }
+    .admin-section { display:none; }
+    .admin-section.active { display:block; }
+    .admin-card { background:white; border-radius:12px; box-shadow:0 1px 4px rgba(0,0,0,.1); overflow:hidden; margin-bottom:20px; }
+    .admin-card-header { padding:16px 20px; border-bottom:1px solid var(--gray-border); display:flex; align-items:center; justify-content:space-between; }
+    .admin-card-header h3 { font-family:'Nunito',sans-serif; font-size:18px; font-weight:800; margin:0; }
+    .admin-search-bar { display:flex; gap:10px; padding:16px 20px; background:#f8f9fa; border-bottom:1px solid var(--gray-border); }
+    .admin-search-bar input { flex:1; padding:10px 14px; border:1.5px solid var(--gray-border); border-radius:8px; font-size:14px; outline:none; }
+    .admin-search-bar input:focus { border-color:var(--blue); }
+    .admin-table { width:100%; border-collapse:collapse; }
+    .admin-table th { background:#f0f2f5; padding:12px 16px; text-align:left; font-size:13px; font-weight:700; color:var(--gray-text); text-transform:uppercase; letter-spacing:.5px; }
+    .admin-table td { padding:14px 16px; border-bottom:1px solid #f0f2f5; font-size:14px; vertical-align:middle; }
+    .admin-table tr:last-child td { border-bottom:none; }
+    .admin-table tr:hover td { background:#f8f9fa; }
+    .user-row-avatar { width:38px; height:38px; border-radius:50%; background:var(--blue-light); display:flex; align-items:center; justify-content:center; font-size:16px; overflow:hidden; flex-shrink:0; }
+    .user-row-avatar img { width:100%;height:100%;object-fit:cover;border-radius:50%; }
+    .user-info-cell { display:flex; align-items:center; gap:10px; }
+    .user-name-sub { font-weight:700; font-size:14px; }
+    .user-email-sub { font-size:12px; color:var(--gray-text); }
+    .status-badge { padding:4px 10px; border-radius:20px; font-size:12px; font-weight:700; }
+    .status-active { background:#e8f5e9; color:#2e7d32; }
+    .status-banned { background:#ffebee; color:#c62828; }
+    .status-admin { background:#e3f2fd; color:#1565c0; }
+    .action-btns { display:flex; gap:6px; flex-wrap:wrap; }
+    .btn-action { padding:6px 12px; border-radius:6px; border:none; font-size:12px; font-weight:700; cursor:pointer; transition:all .2s; }
+    .btn-action:hover { opacity:.85; transform:scale(0.97); }
+    .btn-edit-a { background:#e3f2fd; color:#1565c0; }
+    .btn-ban { background:#fff3e0; color:#e65100; }
+    .btn-unban { background:#e8f5e9; color:#2e7d32; }
+    .btn-delete-a { background:#ffebee; color:#c62828; }
+    .btn-promote { background:#f3e5f5; color:#6a1b9a; }
+    .admin-empty { text-align:center; padding:40px; color:var(--gray-text); font-size:15px; }
+    .admin-form-row { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+    .admin-form-group { margin-bottom:14px; }
+    .admin-form-group label { display:block; font-size:13px; font-weight:700; color:var(--gray-text); margin-bottom:5px; text-transform:uppercase; }
+    .admin-form-group input, .admin-form-group select, .admin-form-group textarea { width:100%; padding:11px 14px; border:1.5px solid var(--gray-border); border-radius:8px; font-size:14px; outline:none; font-family:'Lato',sans-serif; }
+    .admin-form-group input:focus, .admin-form-group select:focus, .admin-form-group textarea:focus { border-color:var(--blue); }
+    .admin-modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:800; align-items:center; justify-content:center; }
+    .admin-modal-overlay.show { display:flex; }
+    .admin-modal-box { background:white; border-radius:14px; width:520px; max-width:95vw; max-height:90vh; overflow-y:auto; box-shadow:0 8px 40px rgba(0,0,0,.25); animation:slideUp .3s ease; }
+    .admin-modal-header { padding:18px 22px; border-bottom:1px solid var(--gray-border); display:flex; align-items:center; justify-content:space-between; }
+    .admin-modal-header h3 { font-family:'Nunito',sans-serif; font-size:20px; font-weight:900; margin:0; }
+    .admin-modal-body { padding:22px; }
+    .admin-modal-footer { padding:16px 22px; border-top:1px solid var(--gray-border); display:flex; gap:10px; justify-content:flex-end; }
+    .btn-admin-cancel { padding:10px 20px; border-radius:8px; border:1.5px solid var(--gray-border); background:white; font-size:14px; font-weight:700; cursor:pointer; }
+    .btn-admin-save { padding:10px 24px; border-radius:8px; border:none; background:var(--blue); color:white; font-size:14px; font-weight:700; cursor:pointer; }
+    .btn-admin-danger { padding:10px 24px; border-radius:8px; border:none; background:#e53935; color:white; font-size:14px; font-weight:700; cursor:pointer; }
+    .group-card-admin { display:flex; align-items:center; gap:14px; padding:14px 20px; border-bottom:1px solid #f0f2f5; }
+    .group-card-admin:last-child { border-bottom:none; }
+    .group-icon-admin { width:48px; height:48px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:24px; flex-shrink:0; }
+    .group-info-admin { flex:1; }
+    .group-name-admin { font-weight:700; font-size:15px; }
+    .group-meta-admin { font-size:13px; color:var(--gray-text); margin-top:2px; }
+    .post-admin-row { padding:14px 20px; border-bottom:1px solid #f0f2f5; display:flex; align-items:flex-start; gap:12px; }
+    .post-admin-row:last-child { border-bottom:none; }
+    .post-admin-content { flex:1; }
+    .post-admin-author { font-weight:700; font-size:14px; }
+    .post-admin-text { font-size:13px; color:var(--gray-text); margin-top:4px; max-width:400px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .admin-add-btn { background:var(--blue); color:white; border:none; border-radius:8px; padding:9px 18px; font-size:14px; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:6px; }
+    .admin-add-btn:hover { background:var(--blue-dark); }
+    .confirm-modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:900; align-items:center; justify-content:center; }
+    .confirm-modal-overlay.show { display:flex; }
+    .confirm-box { background:white; border-radius:14px; padding:28px; width:360px; max-width:95vw; text-align:center; box-shadow:0 8px 40px rgba(0,0,0,.3); animation:slideUp .3s ease; }
+    .confirm-box .confirm-icon { font-size:48px; margin-bottom:12px; }
+    .confirm-box h3 { font-family:'Nunito',sans-serif; font-size:20px; font-weight:800; margin-bottom:8px; }
+    .confirm-box p { color:var(--gray-text); font-size:14px; margin-bottom:20px; line-height:1.5; }
+    .confirm-btns { display:flex; gap:10px; justify-content:center; }
+    .activity-log { list-style:none; padding:0; }
+    .activity-log li { padding:12px 20px; border-bottom:1px solid #f0f2f5; display:flex; align-items:center; gap:12px; font-size:14px; }
+    .activity-log li:last-child { border-bottom:none; }
+    .activity-log .log-icon { font-size:20px; flex-shrink:0; }
+    .activity-log .log-time { margin-left:auto; font-size:12px; color:var(--gray-text); }
+    .report-row { padding:14px 20px; border-bottom:1px solid #f0f2f5; display:flex; align-items:center; gap:12px; }
+    .report-row:last-child { border-bottom:none; }
+    .report-row .report-info { flex:1; }
+    .report-row .report-type { font-size:12px; background:#fff3e0; color:#e65100; padding:3px 8px; border-radius:20px; font-weight:700; }
+
 
     footer { background: var(--white); border-top: 1px solid var(--gray-border); padding: 20px 24px; text-align: center; font-size: 13px; color: var(--gray-text); }
     footer a { color: var(--gray-text); text-decoration: none; margin: 0 8px; }
@@ -551,6 +642,7 @@
           <div class="sidebar-item" onclick="showWatch()"><div class="si-icon">📺</div>Watch</div>
           <div class="sidebar-item" onclick="showEvents()"><div class="si-icon">📅</div>Eventos</div>
           <div class="sidebar-item" onclick="showGroups()"><div class="si-icon">🏘️</div>Grupos</div>
+          <div class="sidebar-item" id="adminSidebarItem" style="display:none;" onclick="showAdmin()"><div class="si-icon" style="background:#ffebee;">🛡️</div><span style="color:#c62828;font-weight:800;">Admin Panel</span></div>
         </div>
         <div class="sidebar-divider"></div>
         <div class="sidebar-footer">
@@ -873,6 +965,178 @@
   </div>
 </div>
 
+
+  <!-- ADMIN VIEW -->
+  <div id="adminView">
+    <div class="admin-layout">
+      <div class="admin-header">
+        <div>
+          <h1>🛡️ Panel de Administración</h1>
+          <p>ConnectMe · Bienvenido, Gustavo Ruiz</p>
+        </div>
+        <div class="admin-badge">⚡ Super Admin</div>
+      </div>
+      <div class="admin-stats">
+        <div class="admin-stat-card"><div class="stat-icon">👥</div><div class="stat-num" id="statUsers">—</div><div class="stat-label">Usuarios registrados</div></div>
+        <div class="admin-stat-card"><div class="stat-icon">📝</div><div class="stat-num" id="statPosts">—</div><div class="stat-label">Publicaciones</div></div>
+        <div class="admin-stat-card"><div class="stat-icon">🏘️</div><div class="stat-num" id="statGroups">—</div><div class="stat-label">Grupos activos</div></div>
+        <div class="admin-stat-card"><div class="stat-icon">🚫</div><div class="stat-num" id="statBanned">0</div><div class="stat-label">Usuarios baneados</div></div>
+      </div>
+      <div class="admin-tabs">
+        <button class="admin-tab active" onclick="adminTab('users',this)">👥 Usuarios</button>
+        <button class="admin-tab" onclick="adminTab('posts',this)">📝 Publicaciones</button>
+        <button class="admin-tab" onclick="adminTab('groups',this)">🏘️ Grupos</button>
+        <button class="admin-tab" onclick="adminTab('reports',this)">🚨 Reportes</button>
+        <button class="admin-tab" onclick="adminTab('activity',this)">📋 Actividad</button>
+      </div>
+
+      <!-- USERS SECTION -->
+      <div class="admin-section active" id="adminUsers">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <h3>👥 Gestión de Usuarios</h3>
+            <button class="admin-add-btn" onclick="openAddUserModal()">➕ Nuevo usuario</button>
+          </div>
+          <div class="admin-search-bar">
+            <input type="text" id="adminUserSearch" placeholder="🔍 Buscar por nombre o email..." oninput="filterAdminUsers()"/>
+          </div>
+          <div style="overflow-x:auto;">
+            <table class="admin-table">
+              <thead><tr><th>Usuario</th><th>Email</th><th>Rol</th><th>Estado</th><th>Se unió</th><th>Acciones</th></tr></thead>
+              <tbody id="adminUsersTable"><tr><td colspan="6" class="admin-empty">Cargando usuarios...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- POSTS SECTION -->
+      <div class="admin-section" id="adminPosts">
+        <div class="admin-card">
+          <div class="admin-card-header"><h3>📝 Gestión de Publicaciones</h3></div>
+          <div id="adminPostsList"><div class="admin-empty">Cargando publicaciones...</div></div>
+        </div>
+      </div>
+
+      <!-- GROUPS SECTION -->
+      <div class="admin-section" id="adminGroups">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <h3>🏘️ Gestión de Grupos</h3>
+            <button class="admin-add-btn" onclick="openCreateGroupModal()">➕ Crear grupo</button>
+          </div>
+          <div id="adminGroupsList"><div class="admin-empty">Cargando grupos...</div></div>
+        </div>
+      </div>
+
+      <!-- REPORTS SECTION -->
+      <div class="admin-section" id="adminReports">
+        <div class="admin-card">
+          <div class="admin-card-header"><h3>🚨 Reportes de la comunidad</h3></div>
+          <div id="adminReportsList"></div>
+        </div>
+      </div>
+
+      <!-- ACTIVITY SECTION -->
+      <div class="admin-section" id="adminActivity">
+        <div class="admin-card">
+          <div class="admin-card-header"><h3>📋 Registro de actividad admin</h3></div>
+          <ul class="activity-log" id="adminActivityLog"><li><span class="log-icon">📋</span> No hay actividad registrada aún.</li></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADMIN: Edit User Modal -->
+  <div class="admin-modal-overlay" id="adminEditUserModal">
+    <div class="admin-modal-box">
+      <div class="admin-modal-header"><h3>✏️ Editar Usuario</h3><button class="modal-close" onclick="closeAdminModal('adminEditUserModal')">✕</button></div>
+      <div class="admin-modal-body">
+        <input type="hidden" id="editUserId"/>
+        <div class="admin-form-row">
+          <div class="admin-form-group"><label>Nombre</label><input type="text" id="editUserFirst" placeholder="Nombre"/></div>
+          <div class="admin-form-group"><label>Apellido</label><input type="text" id="editUserLast" placeholder="Apellido"/></div>
+        </div>
+        <div class="admin-form-group"><label>Email</label><input type="email" id="editUserEmail" placeholder="email@ejemplo.com" disabled style="background:#f0f2f5;"/></div>
+        <div class="admin-form-group"><label>Ciudad</label><input type="text" id="editUserCity" placeholder="Ciudad"/></div>
+        <div class="admin-form-group"><label>Trabajo</label><input type="text" id="editUserWork" placeholder="Trabajo"/></div>
+        <div class="admin-form-group"><label>Rol</label>
+          <select id="editUserRole">
+            <option value="user">Usuario</option>
+            <option value="moderator">Moderador</option>
+            <option value="admin">Administrador</option>
+          </select>
+        </div>
+        <div class="admin-form-group"><label>Nota interna (solo admins)</label><textarea id="editUserNote" rows="2" placeholder="Notas sobre este usuario..."></textarea></div>
+      </div>
+      <div class="admin-modal-footer">
+        <button class="btn-admin-cancel" onclick="closeAdminModal('adminEditUserModal')">Cancelar</button>
+        <button class="btn-admin-save" onclick="saveEditUser()">💾 Guardar cambios</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADMIN: Add User Modal -->
+  <div class="admin-modal-overlay" id="adminAddUserModal">
+    <div class="admin-modal-box">
+      <div class="admin-modal-header"><h3>➕ Nuevo Usuario</h3><button class="modal-close" onclick="closeAdminModal('adminAddUserModal')">✕</button></div>
+      <div class="admin-modal-body">
+        <div class="admin-form-row">
+          <div class="admin-form-group"><label>Nombre</label><input type="text" id="newUserFirst" placeholder="Nombre"/></div>
+          <div class="admin-form-group"><label>Apellido</label><input type="text" id="newUserLast" placeholder="Apellido"/></div>
+        </div>
+        <div class="admin-form-group"><label>Email</label><input type="email" id="newUserEmail" placeholder="email@ejemplo.com"/></div>
+        <div class="admin-form-group"><label>Contraseña temporal</label><input type="password" id="newUserPass" placeholder="Mínimo 8 caracteres"/></div>
+        <div class="admin-form-group"><label>Rol</label>
+          <select id="newUserRole"><option value="user">Usuario</option><option value="moderator">Moderador</option><option value="admin">Administrador</option></select>
+        </div>
+      </div>
+      <div class="admin-modal-footer">
+        <button class="btn-admin-cancel" onclick="closeAdminModal('adminAddUserModal')">Cancelar</button>
+        <button class="btn-admin-save" onclick="createUserFromAdmin()">✅ Crear usuario</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADMIN: Create Group Modal -->
+  <div class="admin-modal-overlay" id="adminCreateGroupModal">
+    <div class="admin-modal-box">
+      <div class="admin-modal-header"><h3>🏘️ Crear Grupo</h3><button class="modal-close" onclick="closeAdminModal('adminCreateGroupModal')">✕</button></div>
+      <div class="admin-modal-body">
+        <div class="admin-form-group"><label>Nombre del grupo</label><input type="text" id="newGroupName" placeholder="Ej: Fotógrafos Uruguay"/></div>
+        <div class="admin-form-group"><label>Descripción</label><textarea id="newGroupDesc" rows="2" placeholder="Descripción del grupo..."></textarea></div>
+        <div class="admin-form-row">
+          <div class="admin-form-group"><label>Ícono (emoji)</label><input type="text" id="newGroupEmoji" placeholder="📸" maxlength="2"/></div>
+          <div class="admin-form-group"><label>Categoría</label>
+            <select id="newGroupCategory">
+              <option>Arte & Cultura</option><option>Tecnología</option><option>Deportes</option>
+              <option>Música</option><option>Gastronomía</option><option>Educación</option><option>Otro</option>
+            </select>
+          </div>
+        </div>
+        <div class="admin-form-group"><label>Privacidad</label>
+          <select id="newGroupPrivacy"><option value="public">Público</option><option value="private">Privado</option></select>
+        </div>
+      </div>
+      <div class="admin-modal-footer">
+        <button class="btn-admin-cancel" onclick="closeAdminModal('adminCreateGroupModal')">Cancelar</button>
+        <button class="btn-admin-save" onclick="createGroupFromAdmin()">✅ Crear grupo</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADMIN: Confirm Modal -->
+  <div class="confirm-modal-overlay" id="confirmModal">
+    <div class="confirm-box">
+      <div class="confirm-icon" id="confirmIcon">⚠️</div>
+      <h3 id="confirmTitle">¿Estás seguro?</h3>
+      <p id="confirmMsg">Esta acción no se puede deshacer.</p>
+      <div class="confirm-btns">
+        <button class="btn-admin-cancel" onclick="closeConfirm()">Cancelar</button>
+        <button class="btn-admin-danger" id="confirmOkBtn" onclick="confirmAction()">Confirmar</button>
+      </div>
+    </div>
+  </div>
+
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
 
@@ -978,6 +1242,13 @@
       study: 'Universidad de la República',
       relacion: 'Soltero/a'
     };
+
+    // Admin detection
+    if (isAdmin({email: user.email, displayName: user.displayName})) {
+      const adminItem = document.getElementById('adminSidebarItem');
+      if (adminItem) adminItem.style.display = 'flex';
+      window._currentUser.isAdmin = true;
+    }
 
     // Load profile from Firestore
     loadUserProfile(user.uid);
@@ -1639,7 +1910,7 @@
 
   // ══ NAVIGATION ══
   function showSection(id) {
-    ['feedView','profileView','matchView','friendsView','watchView','eventsView','groupsView'].forEach(s => {
+    ['feedView','profileView','matchView','friendsView','watchView','eventsView','groupsView','adminView'].forEach(s => {
       const el = document.getElementById(s);
       if (el) el.style.display = 'none';
     });
@@ -1647,6 +1918,379 @@
     if (target) target.style.display = 'block';
     document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active-section'));
   }
+
+
+  // ══ ADMIN SYSTEM ══
+  const ADMIN_EMAILS = ['gustavo.ruiz@connectme.app', 'gruiz@connectme.app', 'gustaruiz@gmail.com', 'gustavo@connectme.app'];
+  const ADMIN_NAMES  = ['gustavo ruiz'];
+
+  function isAdmin(user) {
+    if (!user) return false;
+    const email = (user.email || '').toLowerCase();
+    const name  = (user.displayName || user.name || '').toLowerCase();
+    return ADMIN_EMAILS.includes(email) || ADMIN_NAMES.includes(name);
+  }
+
+  window._adminLog = [];
+  window._adminGroups = [
+    {id:'g1', emoji:'📸', bg:'linear-gradient(135deg,#f093fb,#f5576c)', name:'Fotografía Uruguay', desc:'Apasionados de la fotografía', category:'Arte & Cultura', members:12400, privacy:'public', created:'Ene 2026'},
+    {id:'g2', emoji:'💻', bg:'linear-gradient(135deg,#4facfe,#00f2fe)', name:'Devs de Montevideo', desc:'Comunidad de desarrolladores', category:'Tecnología', members:8700, privacy:'public', created:'Feb 2026'},
+    {id:'g3', emoji:'🏃', bg:'linear-gradient(135deg,#43e97b,#38f9d7)', name:'Running Club MVD', desc:'Corremos juntos', category:'Deportes', members:5200, privacy:'public', created:'Ene 2026'},
+    {id:'g4', emoji:'🎨', bg:'linear-gradient(135deg,#667eea,#764ba2)', name:'Arte & Cultura UY', desc:'Arte y cultura uruguaya', category:'Arte & Cultura', members:15000, privacy:'public', created:'Mar 2026'},
+    {id:'g5', emoji:'🍕', bg:'linear-gradient(135deg,#fa709a,#fee140)', name:'Foodies Montevideo', desc:'Gastronomía y sabores', category:'Gastronomía', members:23000, privacy:'public', created:'Feb 2026'},
+    {id:'g6', emoji:'🎮', bg:'linear-gradient(135deg,#1877F2,#42b72a)', name:'Gamers Uruguay', desc:'Gaming community', category:'Tecnología', members:18000, privacy:'public', created:'Mar 2026'},
+  ];
+  window._adminBanned = {};
+  window._adminUsers  = [];
+  window._confirmCallback = null;
+
+  function adminLogAction(icon, msg) {
+    const now = new Date();
+    const time = now.toLocaleTimeString('es-UY', {hour:'2-digit',minute:'2-digit'});
+    window._adminLog.unshift({icon, msg, time});
+    renderAdminActivity();
+  }
+
+  // ── Show/hide admin ──
+  window.showAdmin = function() {
+    showSection('adminView');
+    loadAdminData();
+  };
+
+  // ── Load admin data ──
+  async function loadAdminData() {
+    // Stats
+    try {
+      const usersSnap = await getDocs(collection(db, 'users'));
+      const postsSnap = await getDocs(collection(db, 'posts'));
+      const usersArr = [];
+      usersSnap.forEach(d => usersArr.push({id: d.id, ...d.data()}));
+      window._adminUsers = usersArr;
+      document.getElementById('statUsers').textContent = usersArr.length || '0';
+      document.getElementById('statPosts').textContent = postsSnap.size || '0';
+      document.getElementById('statGroups').textContent = window._adminGroups.length;
+      document.getElementById('statBanned').textContent = Object.values(window._adminBanned).filter(Boolean).length;
+      renderAdminUsersTable(usersArr);
+      renderAdminPosts(postsSnap);
+    } catch(e) {
+      document.getElementById('statUsers').textContent = '—';
+      renderAdminUsersTable([]);
+    }
+    renderAdminGroups();
+    renderAdminReports();
+    renderAdminActivity();
+  }
+
+  // ── Admin tabs ──
+  window.adminTab = function(tab, btn) {
+    document.querySelectorAll('.admin-tab').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('admin' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('active');
+  };
+
+  // ── USERS ──
+  window._adminUsersFiltered = [];
+  function renderAdminUsersTable(users) {
+    window._adminUsersFiltered = users;
+    const tbody = document.getElementById('adminUsersTable');
+    if (!users.length) { tbody.innerHTML = '<tr><td colspan="6" class="admin-empty">No hay usuarios registrados aún.</td></tr>'; return; }
+    tbody.innerHTML = users.map(u => {
+      const isBanned = window._adminBanned[u.id];
+      const isAdminUser = (u.role === 'admin') || ADMIN_NAMES.includes((u.firstName + ' ' + u.lastName).toLowerCase());
+      const roleLabel = isAdminUser ? '<span class="status-badge status-admin">Admin</span>' : (u.role === 'moderator' ? '<span class="status-badge" style="background:#f3e5f5;color:#6a1b9a;">Mod</span>' : '<span class="status-badge status-active">Usuario</span>');
+      const statusLabel = isBanned ? '<span class="status-badge status-banned">🚫 Baneado</span>' : '<span class="status-badge status-active">✅ Activo</span>';
+      const banBtn = isBanned
+        ? `<button class="btn-action btn-unban" onclick="adminUnban('${u.id}','${(u.firstName||'')+' '+(u.lastName||'')}')">✅ Desbanear</button>`
+        : `<button class="btn-action btn-ban" onclick="adminBan('${u.id}','${(u.firstName||'')+' '+(u.lastName||'')}')">🚫 Banear</button>`;
+      const avatar = u.photoURL ? `<img src="${u.photoURL}"/>` : '👤';
+      const joinDate = u.createdAt?.toDate ? u.createdAt.toDate().toLocaleDateString('es-UY') : '—';
+      return `<tr>
+        <td><div class="user-info-cell"><div class="user-row-avatar">${avatar}</div><div><div class="user-name-sub">${(u.firstName||'')} ${(u.lastName||'')}</div></div></div></td>
+        <td style="color:var(--gray-text);font-size:13px;">${u.email||'—'}</td>
+        <td>${roleLabel}</td>
+        <td>${statusLabel}</td>
+        <td style="font-size:13px;color:var(--gray-text);">${joinDate}</td>
+        <td><div class="action-btns">
+          <button class="btn-action btn-edit-a" onclick="openEditUserModal('${u.id}')">✏️ Editar</button>
+          ${banBtn}
+          <button class="btn-action btn-delete-a" onclick="adminDeleteUser('${u.id}','${(u.firstName||'')+' '+(u.lastName||'')}')">🗑️ Eliminar</button>
+        </div></td>
+      </tr>`;
+    }).join('');
+  }
+
+  window.filterAdminUsers = function() {
+    const q = document.getElementById('adminUserSearch').value.toLowerCase();
+    const filtered = window._adminUsers.filter(u =>
+      (u.firstName+' '+u.lastName).toLowerCase().includes(q) || (u.email||'').toLowerCase().includes(q)
+    );
+    renderAdminUsersTable(filtered);
+  };
+
+  window.openEditUserModal = function(uid) {
+    const u = window._adminUsers.find(x => x.id === uid);
+    if (!u) return;
+    document.getElementById('editUserId').value = uid;
+    document.getElementById('editUserFirst').value = u.firstName || '';
+    document.getElementById('editUserLast').value = u.lastName || '';
+    document.getElementById('editUserEmail').value = u.email || '';
+    document.getElementById('editUserCity').value = u.city || '';
+    document.getElementById('editUserWork').value = u.work || '';
+    document.getElementById('editUserRole').value = u.role || 'user';
+    document.getElementById('editUserNote').value = u.adminNote || '';
+    document.getElementById('adminEditUserModal').classList.add('show');
+  };
+
+  window.saveEditUser = async function() {
+    const uid = document.getElementById('editUserId').value;
+    const data = {
+      firstName: document.getElementById('editUserFirst').value.trim(),
+      lastName: document.getElementById('editUserLast').value.trim(),
+      city: document.getElementById('editUserCity').value.trim(),
+      work: document.getElementById('editUserWork').value.trim(),
+      role: document.getElementById('editUserRole').value,
+      adminNote: document.getElementById('editUserNote').value.trim(),
+    };
+    try {
+      await setDoc(doc(db,'users',uid), data, {merge:true});
+      const idx = window._adminUsers.findIndex(u => u.id === uid);
+      if (idx > -1) window._adminUsers[idx] = {...window._adminUsers[idx], ...data};
+      closeAdminModal('adminEditUserModal');
+      renderAdminUsersTable(window._adminUsers);
+      showToast('✅ Usuario actualizado','success');
+      adminLogAction('✏️', `Usuario editado: ${data.firstName} ${data.lastName}`);
+    } catch(e) { showToast('⚠️ Error al guardar','error'); }
+  };
+
+  window.adminBan = function(uid, name) {
+    showConfirm('🚫', '¿Banear usuario?', `"${name}" no podrá acceder a ConnectMe.`, async () => {
+      window._adminBanned[uid] = true;
+      try { await setDoc(doc(db,'users',uid),{banned:true},{merge:true}); } catch(e){}
+      document.getElementById('statBanned').textContent = Object.values(window._adminBanned).filter(Boolean).length;
+      renderAdminUsersTable(window._adminUsers);
+      showToast(`🚫 ${name} ha sido baneado`,'error');
+      adminLogAction('🚫', `Usuario baneado: ${name}`);
+    });
+  };
+
+  window.adminUnban = function(uid, name) {
+    showConfirm('✅', '¿Desbanear usuario?', `"${name}" recuperará acceso a ConnectMe.`, async () => {
+      window._adminBanned[uid] = false;
+      try { await setDoc(doc(db,'users',uid),{banned:false},{merge:true}); } catch(e){}
+      document.getElementById('statBanned').textContent = Object.values(window._adminBanned).filter(Boolean).length;
+      renderAdminUsersTable(window._adminUsers);
+      showToast(`✅ ${name} ha sido desbaneado`,'success');
+      adminLogAction('✅', `Usuario desbaneado: ${name}`);
+    });
+  };
+
+  window.adminDeleteUser = function(uid, name) {
+    showConfirm('🗑️', '¿Eliminar usuario?', `Se eliminará permanentemente la cuenta de "${name}". Esta acción NO se puede deshacer.`, async () => {
+      try { await deleteDoc(doc(db,'users',uid)); } catch(e){}
+      window._adminUsers = window._adminUsers.filter(u => u.id !== uid);
+      renderAdminUsersTable(window._adminUsers);
+      document.getElementById('statUsers').textContent = window._adminUsers.length;
+      showToast(`🗑️ Usuario "${name}" eliminado`,'error');
+      adminLogAction('🗑️', `Usuario eliminado: ${name}`);
+    });
+  };
+
+  window.openAddUserModal = function() { document.getElementById('adminAddUserModal').classList.add('show'); };
+
+  window.createUserFromAdmin = async function() {
+    const first = document.getElementById('newUserFirst').value.trim();
+    const last = document.getElementById('newUserLast').value.trim();
+    const email = document.getElementById('newUserEmail').value.trim();
+    const pass = document.getElementById('newUserPass').value;
+    const role = document.getElementById('newUserRole').value;
+    if (!first||!last||!email||!pass) { showToast('⚠️ Completa todos los campos','error'); return; }
+    if (pass.length < 8) { showToast('⚠️ Contraseña mínimo 8 caracteres','error'); return; }
+    try {
+      const cred = await createUserWithEmailAndPassword(auth, email, pass);
+      await setDoc(doc(db,'users',cred.user.uid),{firstName:first,lastName:last,email,role,createdAt:serverTimestamp()});
+      window._adminUsers.push({id:cred.user.uid,firstName:first,lastName:last,email,role});
+      renderAdminUsersTable(window._adminUsers);
+      document.getElementById('statUsers').textContent = window._adminUsers.length;
+      closeAdminModal('adminAddUserModal');
+      showToast(`✅ Usuario ${first} ${last} creado`,'success');
+      adminLogAction('➕', `Nuevo usuario creado: ${first} ${last} (${role})`);
+    } catch(e) {
+      const msgs={'auth/email-already-in-use':'⚠️ Email ya registrado','auth/invalid-email':'⚠️ Email inválido','auth/weak-password':'⚠️ Contraseña débil'};
+      showToast(msgs[e.code]||'⚠️ Error al crear usuario','error');
+    }
+  };
+
+  // ── POSTS ──
+  function renderAdminPosts(snap) {
+    const container = document.getElementById('adminPostsList');
+    const posts = window._firestorePosts || [];
+    const allPosts = [...posts];
+    if (!allPosts.length) { container.innerHTML = '<div class="admin-empty">No hay publicaciones aún.</div>'; return; }
+    container.innerHTML = allPosts.map(p => `
+      <div class="post-admin-row" id="apost-${p.id}">
+        <div style="font-size:28px;">📝</div>
+        <div class="post-admin-content">
+          <div class="post-admin-author">${p.author||'Anónimo'}</div>
+          <div class="post-admin-text">${(p.text||'[Sin texto]').substring(0,80)}</div>
+          <div style="font-size:12px;color:var(--gray-text);margin-top:4px;">${p.image?'📎 Con imagen · ':''}</div>
+        </div>
+        <div class="action-btns">
+          <button class="btn-action btn-delete-a" onclick="adminDeletePost('${p.id}','${(p.author||'').replace(/'/g,"\'")}')">🗑️ Eliminar</button>
+        </div>
+      </div>`).join('');
+  }
+
+  window.adminDeletePost = function(postId, author) {
+    showConfirm('🗑️','¿Eliminar publicación?',`Se eliminará la publicación de "${author}".`, async () => {
+      try { await deleteDoc(doc(db,'posts',postId)); } catch(e){}
+      const el = document.getElementById('apost-'+postId);
+      if (el) el.remove();
+      showToast('🗑️ Publicación eliminada','error');
+      adminLogAction('🗑️', `Publicación eliminada de: ${author}`);
+    });
+  };
+
+  // ── GROUPS ──
+  function renderAdminGroups() {
+    const container = document.getElementById('adminGroupsList');
+    container.innerHTML = window._adminGroups.map(g => `
+      <div class="group-card-admin" id="grp-${g.id}">
+        <div class="group-icon-admin" style="background:${g.bg}">${g.emoji}</div>
+        <div class="group-info-admin">
+          <div class="group-name-admin">${g.name}</div>
+          <div class="group-meta-admin">${g.category} · ${(g.members||0).toLocaleString()} miembros · ${g.privacy === 'private' ? '🔒 Privado' : '🌎 Público'} · Creado ${g.created||'—'}</div>
+          ${g.desc ? `<div style="font-size:12px;color:var(--gray-text);margin-top:2px;">${g.desc}</div>` : ''}
+        </div>
+        <div class="action-btns">
+          <button class="btn-action btn-edit-a" onclick="openEditGroupModal('${g.id}')">✏️ Editar</button>
+          <button class="btn-action btn-delete-a" onclick="adminDeleteGroup('${g.id}','${g.name.replace(/'/g,"\'")}')">🗑️ Eliminar</button>
+        </div>
+      </div>`).join('');
+  }
+
+  window.openCreateGroupModal = function() {
+    document.getElementById('newGroupName').value='';
+    document.getElementById('newGroupDesc').value='';
+    document.getElementById('newGroupEmoji').value='';
+    document.getElementById('adminCreateGroupModal').classList.add('show');
+  };
+
+  window.createGroupFromAdmin = function() {
+    const name = document.getElementById('newGroupName').value.trim();
+    const desc = document.getElementById('newGroupDesc').value.trim();
+    const emoji = document.getElementById('newGroupEmoji').value.trim() || '🏘️';
+    const category = document.getElementById('newGroupCategory').value;
+    const privacy = document.getElementById('newGroupPrivacy').value;
+    if (!name) { showToast('⚠️ Ingresá un nombre para el grupo','error'); return; }
+    const gradients = ['linear-gradient(135deg,#f093fb,#f5576c)','linear-gradient(135deg,#4facfe,#00f2fe)','linear-gradient(135deg,#43e97b,#38f9d7)','linear-gradient(135deg,#667eea,#764ba2)','linear-gradient(135deg,#fa709a,#fee140)','linear-gradient(135deg,#1877F2,#42b72a)'];
+    const bg = gradients[Math.floor(Math.random()*gradients.length)];
+    const newGroup = {id:'g'+Date.now(), emoji, bg, name, desc, category, members:1, privacy, created:'Mar 2026'};
+    window._adminGroups.unshift(newGroup);
+    document.getElementById('statGroups').textContent = window._adminGroups.length;
+    renderAdminGroups();
+    closeAdminModal('adminCreateGroupModal');
+    showToast(`✅ Grupo "${name}" creado`,'success');
+    adminLogAction('🏘️', `Grupo creado: ${name}`);
+  };
+
+  window.openEditGroupModal = function(gid) {
+    const g = window._adminGroups.find(x=>x.id===gid);
+    if (!g) return;
+    // Reuse create modal for editing
+    document.getElementById('newGroupName').value = g.name;
+    document.getElementById('newGroupDesc').value = g.desc || '';
+    document.getElementById('newGroupEmoji').value = g.emoji || '';
+    document.getElementById('newGroupCategory').value = g.category || 'Arte & Cultura';
+    document.getElementById('newGroupPrivacy').value = g.privacy || 'public';
+    const modal = document.getElementById('adminCreateGroupModal');
+    modal.querySelector('h3').textContent = '✏️ Editar Grupo';
+    // Override create button
+    const saveBtn = modal.querySelector('.btn-admin-save');
+    saveBtn.textContent = '💾 Guardar cambios';
+    saveBtn.onclick = () => {
+      g.name = document.getElementById('newGroupName').value.trim() || g.name;
+      g.desc = document.getElementById('newGroupDesc').value.trim();
+      g.emoji = document.getElementById('newGroupEmoji').value.trim() || g.emoji;
+      g.category = document.getElementById('newGroupCategory').value;
+      g.privacy = document.getElementById('newGroupPrivacy').value;
+      renderAdminGroups();
+      closeAdminModal('adminCreateGroupModal');
+      modal.querySelector('h3').textContent = '🏘️ Crear Grupo';
+      saveBtn.textContent = '✅ Crear grupo';
+      saveBtn.onclick = createGroupFromAdmin;
+      showToast(`✅ Grupo "${g.name}" actualizado`,'success');
+      adminLogAction('✏️', `Grupo editado: ${g.name}`);
+    };
+    modal.classList.add('show');
+  };
+
+  window.adminDeleteGroup = function(gid, name) {
+    showConfirm('🗑️','¿Eliminar grupo?',`Se eliminará el grupo "${name}" y todo su contenido.`, () => {
+      window._adminGroups = window._adminGroups.filter(g=>g.id!==gid);
+      document.getElementById('statGroups').textContent = window._adminGroups.length;
+      renderAdminGroups();
+      showToast(`🗑️ Grupo "${name}" eliminado`,'error');
+      adminLogAction('🗑️', `Grupo eliminado: ${name}`);
+    });
+  };
+
+  // ── REPORTS ──
+  const SAMPLE_REPORTS = [
+    {id:'r1', type:'Spam', reporter:'Ana M.', target:'Carlos R.', content:'Publicación con spam de productos', time:'hace 2h'},
+    {id:'r2', type:'Contenido inapropiado', reporter:'Diego P.', target:'Publicación #A12', content:'Imagen con contenido ofensivo', time:'hace 5h'},
+    {id:'r3', type:'Acoso', reporter:'Valentina R.', target:'Usuario @jperez', content:'Mensajes de acoso reiterados', time:'hace 1 día'},
+    {id:'r4', type:'Desinformación', reporter:'Pablo S.', target:'Publicación #B77', content:'Información falsa sobre salud', time:'hace 2 días'},
+  ];
+
+  function renderAdminReports() {
+    const container = document.getElementById('adminReportsList');
+    container.innerHTML = SAMPLE_REPORTS.map(r => `
+      <div class="report-row" id="rep-${r.id}">
+        <div style="font-size:24px;">🚨</div>
+        <div class="report-info">
+          <div style="font-weight:700;font-size:14px;">${r.target}</div>
+          <div style="font-size:13px;color:var(--gray-text);margin:2px 0;">${r.content}</div>
+          <div style="font-size:12px;color:var(--gray-text);">Reportado por ${r.reporter} · ${r.time}</div>
+        </div>
+        <span class="report-type">${r.type}</span>
+        <div class="action-btns" style="margin-left:8px;">
+          <button class="btn-action btn-edit-a" onclick="resolveReport('${r.id}')">✅ Resolver</button>
+          <button class="btn-action btn-delete-a" onclick="resolveReport('${r.id}')">🗑️ Descartar</button>
+        </div>
+      </div>`).join('');
+  }
+
+  window.resolveReport = function(rid) {
+    const el = document.getElementById('rep-'+rid);
+    if (el) { el.style.opacity='0.4'; el.style.pointerEvents='none'; }
+    showToast('✅ Reporte resuelto','success');
+    adminLogAction('✅', 'Reporte resuelto');
+  };
+
+  // ── ACTIVITY ──
+  function renderAdminActivity() {
+    const log = document.getElementById('adminActivityLog');
+    if (!window._adminLog.length) { log.innerHTML='<li><span class="log-icon">📋</span> No hay actividad registrada aún.</li>'; return; }
+    log.innerHTML = window._adminLog.map(l=>`<li><span class="log-icon">${l.icon}</span>${l.msg}<span class="log-time">${l.time}</span></li>`).join('');
+  }
+
+  // ── MODALS ──
+  window.closeAdminModal = function(id) { document.getElementById(id).classList.remove('show'); };
+
+  function showConfirm(icon, title, msg, callback) {
+    document.getElementById('confirmIcon').textContent = icon;
+    document.getElementById('confirmTitle').textContent = title;
+    document.getElementById('confirmMsg').textContent = msg;
+    window._confirmCallback = callback;
+    document.getElementById('confirmModal').classList.add('show');
+  }
+  window.closeConfirm = function() { document.getElementById('confirmModal').classList.remove('show'); window._confirmCallback = null; };
+  window.confirmAction = function() { if (window._confirmCallback) window._confirmCallback(); closeConfirm(); };
+
+  // ── INJECT ADMIN IN showApp ──
+  const _origShowApp = window._showAppOrig || null;
+
 
   window.showFeed = function() {
     showSection('feedView');
