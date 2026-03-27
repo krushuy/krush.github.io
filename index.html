@@ -1098,6 +1098,29 @@ let userStories = [], userPosts = [], postImageData = null;
 let storyBg = 'linear-gradient(135deg,#667eea,#764ba2)', storyType = 'text', storyPhotoData = null, storyAutoCloseTimer = null;
 const matchLoved = {};
 let currentPMUser = null;
+
+// ══ CLOUDINARY CONFIG ══
+const CLOUDINARY_CLOUD = 'dblmunvjx';
+const CLOUDINARY_PRESET = 'connectme_uploads';
+const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/upload`;
+
+async function uploadToCloudinary(file, onProgress) {
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('upload_preset', CLOUDINARY_PRESET);
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', CLOUDINARY_URL);
+    if (onProgress) xhr.upload.addEventListener('progress', e => { if (e.lengthComputable) onProgress(Math.round(e.loaded / e.total * 100)); });
+    xhr.onload = () => {
+      const res = JSON.parse(xhr.responseText);
+      if (xhr.status === 200) resolve(res.secure_url);
+      else reject(new Error(res.error?.message || 'Upload failed'));
+    };
+    xhr.onerror = () => reject(new Error('Network error'));
+    xhr.send(formData);
+  });
+}
 const pmConversations = {};
 
 // ══ NAVIGATION ══
@@ -1185,46 +1208,43 @@ function renderFriendsInline(containerId) {
 window.triggerCoverUpload = function() {
   document.getElementById('coverFileInput').click();
 };
-window.handleCoverUpload = function(e) {
+window.handleCoverUpload = async function(e) {
   const file = e.target.files[0]; if (!file) return;
-  const reader = new FileReader();
-  reader.onload = ev => {
-    window._coverPhoto = ev.target.result;
+  window.showToast('⬆️ Subiendo portada...', '');
+  try {
+    const url = await uploadToCloudinary(file);
+    window._coverPhoto = url;
     const cover = document.getElementById('profileCover');
     cover.style.background = 'none';
     let img = cover.querySelector('img.cover-img');
     if (!img) { img = document.createElement('img'); img.className = 'cover-img'; img.style.cssText='width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;'; cover.insertBefore(img, cover.firstChild); }
-    img.src = window._coverPhoto;
-    // Update edit preview
+    img.src = url;
     const prev = document.getElementById('editCoverPreview');
-    if (prev) { prev.style.background='none'; prev.innerHTML=`<img src="${window._coverPhoto}" style="width:100%;height:100%;object-fit:cover;border-radius:8px;"/>`; }
+    if (prev) { prev.style.background='none'; prev.innerHTML=`<img src="${url}" style="width:100%;height:100%;object-fit:cover;border-radius:8px;"/>`; }
     window.showToast('✅ Foto de portada actualizada', 'success');
-  };
-  reader.readAsDataURL(file);
+  } catch(err) { window.showToast('⚠️ Error al subir la portada', 'error'); }
 };
 
 window.triggerProfilePicUpload = function() {
   document.getElementById('profilePicInput').click();
 };
-window.handleProfilePicUpload = function(e) {
+window.handleProfilePicUpload = async function(e) {
   const file = e.target.files[0]; if (!file) return;
-  const reader = new FileReader();
-  reader.onload = ev => {
-    window._profilePhoto = ev.target.result;
-    window._currentUser.photo = ev.target.result;
-    // Update all avatars
+  window.showToast('⬆️ Subiendo foto de perfil...', '');
+  try {
+    const url = await uploadToCloudinary(file);
+    window._profilePhoto = url;
+    window._currentUser.photo = url;
     const pw = document.getElementById('profilePicWrap');
-    pw.innerHTML = `<img src="${ev.target.result}" alt="perfil"/><div class="profile-pic-edit-overlay">📷</div><input type="file" id="profilePicInput" accept="image/*" style="display:none;" onchange="handleProfilePicUpload(event)"/>`;
-    document.getElementById('navAvatarWrap').innerHTML = `<img class="nav-avatar" src="${ev.target.result}" onclick="showProfile()"/>`;
-    document.getElementById('sbAvatarWrap').innerHTML = `<img style="width:36px;height:36px;border-radius:50%;object-fit:cover;" src="${ev.target.result}"/>`;
-    document.getElementById('cpAvatarWrap').innerHTML = `<img src="${ev.target.result}"/>`;
-    document.getElementById('modalAvatarWrap').innerHTML = `<img src="${ev.target.result}"/>`;
-    // Edit preview
+    pw.innerHTML = `<img src="${url}" alt="perfil"/><div class="profile-pic-edit-overlay">📷</div><input type="file" id="profilePicInput" accept="image/*" style="display:none;" onchange="handleProfilePicUpload(event)"/>`;
+    document.getElementById('navAvatarWrap').innerHTML = `<img class="nav-avatar" src="${url}" onclick="showProfile()"/>`;
+    document.getElementById('sbAvatarWrap').innerHTML = `<img style="width:36px;height:36px;border-radius:50%;object-fit:cover;" src="${url}"/>`;
+    document.getElementById('cpAvatarWrap').innerHTML = `<img src="${url}"/>`;
+    document.getElementById('modalAvatarWrap').innerHTML = `<img src="${url}"/>`;
     const prev = document.getElementById('editProfilePicPreview');
-    if (prev) prev.innerHTML = `<img src="${ev.target.result}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"/>`;
+    if (prev) prev.innerHTML = `<img src="${url}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"/>`;
     window.showToast('✅ Foto de perfil actualizada', 'success');
-  };
-  reader.readAsDataURL(file);
+  } catch(err) { window.showToast('⚠️ Error al subir la foto de perfil', 'error'); }
 };
 
 // ══ EDIT PROFILE ══
@@ -1315,11 +1335,14 @@ window.selectStoryType = function(type, btn) {
   document.getElementById('storyPhotoOptions').style.display = type==='photo'?'block':'none';
 };
 window.selectStoryBg = function(el) { document.querySelectorAll('.story-bg-opt').forEach(e => e.classList.remove('selected')); el.classList.add('selected'); storyBg = el.dataset.bg; };
-window.handleStoryPhoto = function(e) {
+window.handleStoryPhoto = async function(e) {
   const file = e.target.files[0]; if (!file) return;
-  const reader = new FileReader();
-  reader.onload = ev => { storyPhotoData = ev.target.result; document.getElementById('storyPhotoPreview').innerHTML = `<img src="${storyPhotoData}" style="width:100%;border-radius:8px;max-height:200px;object-fit:cover;"/>`; };
-  reader.readAsDataURL(file);
+  document.getElementById('storyPhotoPreview').innerHTML = '<div style="text-align:center;padding:12px;color:var(--gray-text)">⬆️ Subiendo foto...</div>';
+  try {
+    const url = await uploadToCloudinary(file);
+    storyPhotoData = url;
+    document.getElementById('storyPhotoPreview').innerHTML = `<img src="${url}" style="width:100%;border-radius:8px;max-height:200px;object-fit:cover;"/>`;
+  } catch(err) { document.getElementById('storyPhotoPreview').innerHTML = ''; window.showToast('⚠️ Error al subir la foto', 'error'); }
 };
 window.submitStory = function() {
   const text = document.getElementById('storyTextInput').value.trim();
@@ -1332,11 +1355,26 @@ window.submitStory = function() {
 // ══ POSTS ══
 window.openPostModal = function() { document.getElementById('postModal').classList.add('show'); document.getElementById('postTextarea').focus(); };
 window.closePostModal = function() { document.getElementById('postModal').classList.remove('show'); document.getElementById('postTextarea').value=''; removePostImage(); };
-window.handleImageUpload = function(e) {
+window.handleImageUpload = async function(e) {
   const file = e.target.files[0]; if (!file) return;
-  const reader = new FileReader();
-  reader.onload = ev => { postImageData = ev.target.result; document.getElementById('modalPreviewImg').src=postImageData; document.getElementById('modalImagePreview').style.display='block'; };
-  reader.readAsDataURL(file);
+  document.getElementById('modalImagePreview').style.display = 'block';
+  document.getElementById('modalPreviewImg').src = '';
+  document.getElementById('modalPreviewImg').alt = '⬆️ Subiendo imagen...';
+  // Show a loading placeholder
+  document.getElementById('modalPreviewImg').style.minHeight = '80px';
+  document.getElementById('modalPreviewImg').style.background = 'var(--gray-bg)';
+  try {
+    const url = await uploadToCloudinary(file, pct => {
+      document.getElementById('modalPreviewImg').alt = `⬆️ ${pct}%`;
+    });
+    postImageData = url;
+    document.getElementById('modalPreviewImg').src = url;
+    document.getElementById('modalPreviewImg').style.minHeight = '';
+    document.getElementById('modalPreviewImg').style.background = '';
+  } catch(err) {
+    document.getElementById('modalImagePreview').style.display = 'none';
+    window.showToast('⚠️ Error al subir la imagen', 'error');
+  }
 };
 window.removePostImage = function() { postImageData=null; document.getElementById('modalImagePreview').style.display='none'; document.getElementById('modalPreviewImg').src=''; };
 window.submitPost = function() {
