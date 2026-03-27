@@ -519,6 +519,49 @@
     .upload-progress { background: var(--gray-bg); border-radius: 8px; overflow: hidden; height: 6px; margin-top: 8px; }
     .upload-progress-bar { height: 100%; background: var(--blue); transition: width 0.3s; border-radius: 8px; }
 
+    /* ── Story ring & nav ── */
+    .story-avatar-ring { border: 3px solid var(--blue) !important; box-shadow: 0 0 0 2px white; }
+    .story-count-badge { position:absolute; top:8px; right:8px; background:var(--blue); color:white; border-radius:50%; width:20px; height:20px; font-size:11px; font-weight:800; display:flex; align-items:center; justify-content:center; }
+    .story-nav-btn { position:absolute; top:50%; transform:translateY(-50%); background:rgba(255,255,255,0.9); border:none; border-radius:50%; width:36px; height:36px; font-size:22px; font-weight:900; cursor:pointer; z-index:10; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 8px rgba(0,0,0,0.2); }
+    .story-nav-prev { left:10px; }
+    .story-nav-next { right:10px; }
+
+    /* ── Group join button ── */
+    .group-join-btn { margin-top:10px; width:100%; padding:8px; border-radius:8px; border:none; background:var(--blue-light); color:var(--blue); font-size:14px; font-weight:700; cursor:pointer; transition:all .2s; }
+    .group-join-btn:hover { background:var(--blue); color:white; }
+    .group-join-btn.joined { background:#e8f5e9; color:#2e7d32; }
+    .group-join-btn.joined:hover { background:#2e7d32; color:white; }
+
+    /* ── Group page layout ── */
+    #groupPageView { display:none; }
+    .group-page-layout { max-width:1100px; margin:0 auto; padding:0 0 40px; }
+    .group-page-cover { height:220px; display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden; }
+    .group-page-header { background:white; box-shadow:0 1px 4px rgba(0,0,0,.1); padding:0 16px; }
+    .group-page-header-inner { display:flex; align-items:flex-start; justify-content:space-between; padding:20px 0 16px; gap:16px; flex-wrap:wrap; }
+    .group-page-title { font-family:'Nunito',sans-serif; font-size:28px; font-weight:900; color:var(--dark); margin:0; }
+    .group-page-meta { font-size:14px; color:var(--gray-text); margin-top:4px; }
+    .group-page-btn { padding:9px 18px; border-radius:8px; font-size:14px; font-weight:700; cursor:pointer; border:none; transition:all .2s; }
+    .group-page-btn.primary { background:var(--blue); color:white; }
+    .group-page-btn.primary:hover { background:var(--blue-dark); }
+    .group-page-btn.secondary { background:#e4e6eb; color:var(--dark); }
+    .group-page-btn.secondary:hover { background:#d8dadf; }
+    .group-page-tabs { display:flex; gap:4px; border-top:1px solid var(--gray-border); }
+    .gp-tab { padding:14px 16px; border:none; background:none; font-size:15px; font-weight:700; color:var(--gray-text); cursor:pointer; border-bottom:3px solid transparent; margin-bottom:-1px; transition:all .2s; }
+    .gp-tab.active { color:var(--blue); border-bottom-color:var(--blue); }
+    .gp-tab:hover { background:var(--gray-bg); border-radius:8px 8px 0 0; }
+    .group-page-content { display:grid; grid-template-columns:340px 1fr; gap:16px; padding:16px; }
+    .group-page-sidebar {}
+    .group-sidebar-card { background:white; border-radius:12px; box-shadow:0 1px 4px rgba(0,0,0,.1); padding:16px; }
+    .group-sidebar-card h3 { font-family:'Nunito',sans-serif; font-size:18px; font-weight:800; margin:0 0 4px; }
+    .group-page-feed {}
+    @media(max-width:900px){ .group-page-content { grid-template-columns:1fr; } .group-page-sidebar { display:none; } }
+
+    /* ── Report row ── */
+    .report-row { display:flex; align-items:center; gap:14px; padding:14px 20px; border-bottom:1px solid #f0f2f5; }
+    .report-row:last-child { border-bottom:none; }
+    .report-info { flex:1; }
+    .report-type { background:#fff3e0; color:#e65100; padding:4px 10px; border-radius:20px; font-size:12px; font-weight:700; white-space:nowrap; }
+
     @media (max-width: 1100px) { .app-layout { grid-template-columns: 240px 1fr; } .sidebar-right { display: none; } .profile-content { grid-template-columns: 280px 1fr; } }
     @media (max-width: 860px) { .hero { flex-direction: column; gap: 40px; padding: 40px 16px; } .hero-left { max-width: 100%; text-align: center; } .hero-left h1 { font-size: 36px; } .hero-right { width: 100%; max-width: 420px; } .app-layout { grid-template-columns: 1fr; padding: 12px 8px; } .sidebar-left { display: none; } .profile-content { grid-template-columns: 1fr; } .match-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); } }
     @media (max-width: 480px) { .hero-left h1 { font-size: 28px; } .hero-right { width: 100%; } .card { padding: 22px 18px; } .profile-cover { height: 200px; } .profile-pic-wrap { width: 120px; height: 120px; font-size: 48px; margin-top: -40px; } .profile-name { font-size: 22px; } .match-grid { grid-template-columns: 1fr 1fr; } }
@@ -1481,6 +1524,32 @@
     const u = window._currentUser;
     const btn = document.getElementById('btnPost');
     btn.disabled = true; btn.textContent = 'Publicando...';
+
+    // If posting to a group
+    if (window._postingToGroup) {
+      const gid = window._postingToGroup;
+      if (!groupPosts[gid]) groupPosts[gid] = [];
+      const newPost = {
+        id: gid+'_p'+Date.now(),
+        author: u.name,
+        userPhoto: u.photo || null,
+        emoji: '👤',
+        text: text,
+        image: window._pendingPostImage || null,
+        time: 'ahora',
+        reactions: {total:0, types:[]},
+        comments: [],
+        shares: 0
+      };
+      groupPosts[gid].unshift(newPost);
+      closePostModal();
+      window._postingToGroup = null;
+      renderGroupPosts(gid);
+      showToast('✅ Publicación creada en el grupo','success');
+      btn.disabled = false; btn.textContent = 'Publicar';
+      return;
+    }
+
     try {
       await addDoc(collection(db, 'posts'), {
         author: u.name,
@@ -1694,45 +1763,126 @@
     row.innerHTML = ''; row.appendChild(addCard);
     const u = window._currentUser;
 
-    // Firestore stories first (own user)
+    // Firestore stories: group by uid, show ONE card per user
     const firestoreStories = window._firestoreStories || [];
-    firestoreStories.filter(s => s.uid === u?.uid).forEach(s => {
+    const byUid = {};
+    firestoreStories.forEach(s => {
+      if (!byUid[s.uid]) byUid[s.uid] = [];
+      byUid[s.uid].push(s);
+    });
+
+    // Own stories first (with "+" icon like Facebook)
+    const ownStories = byUid[u?.uid] || [];
+    if (ownStories.length > 0) {
+      const latest = ownStories[0];
+      const card = document.createElement('div');
+      card.className = 'story-card story-card-own';
+      card.onclick = () => viewStory(latest, ownStories);
+      card.innerHTML = `
+        ${latest.photo ? `<img style="width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;border-radius:12px;" src="${latest.photo}"/>` : ''}
+        <div class="story-gradient"></div>
+        <div class="story-avatar story-avatar-ring">${u.photo ? `<img src="${u.photo}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"/>` : '👤'}</div>
+        <div class="story-expiry" style="top:8px;bottom:auto;font-size:10px;opacity:.85;">${ownStories.length > 1 ? ownStories.length + ' historias' : 'Tu historia'}</div>
+        <div class="story-name">${u.name?.split(' ')[0] || 'Tú'}</div>`;
+      if (!latest.photo) card.style.background = latest.bg || storyBg;
+      row.appendChild(card);
+    }
+
+    // Other users from Firestore (one card each)
+    Object.entries(byUid).forEach(([uid, stories]) => {
+      if (uid === u?.uid) return; // already shown
+      const latest = stories[0];
       const card = document.createElement('div');
       card.className = 'story-card';
-      card.onclick = () => viewStory(s);
+      card.onclick = () => viewStory(latest, stories);
+      const avatarHTML = latest.userPhoto
+        ? `<img src="${latest.userPhoto}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"/>`
+        : '👤';
       card.innerHTML = `
-        ${s.photo ? `<img style="width:100%;height:100%;object-fit:cover;position:absolute;" src="${s.photo}"/>` : ''}
+        ${latest.photo ? `<img style="width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;border-radius:12px;" src="${latest.photo}"/>` : ''}
         <div class="story-gradient"></div>
-        <div class="story-avatar">${u.photo ? `<img src="${u.photo}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"/>` : '👤'}</div>
-        <div class="story-expiry">Tú</div>
-        <div class="story-name">${s.text || 'Mi historia'}</div>`;
-      if (!s.photo) card.style.background = s.bg || storyBg;
+        <div class="story-avatar story-avatar-ring">${avatarHTML}</div>
+        ${stories.length > 1 ? `<div class="story-count-badge">${stories.length}</div>` : ''}
+        <div class="story-name">${(latest.userName || 'Usuario').split(' ')[0]}</div>`;
+      if (!latest.photo) card.style.background = latest.bg || storyBg;
       row.appendChild(card);
     });
 
-    // Sample stories
+    // Sample stories (one per name)
     SAMPLE_STORIES.forEach(s => {
       const card = document.createElement('div');
-      card.className = 'story-card'; card.style.background = s.bg; card.onclick = () => viewStory(s);
-      card.innerHTML = `<div class="story-gradient"></div><div class="story-avatar">${s.emoji}</div><div class="story-expiry">${s.time}</div><div class="story-name">${s.name}</div>`;
+      card.className = 'story-card'; card.style.background = s.bg; card.onclick = () => viewStory(s, [s]);
+      card.innerHTML = `<div class="story-gradient"></div><div class="story-avatar story-avatar-ring">${s.emoji}</div><div class="story-name">${s.name.split(' ')[0]}</div>`;
       row.appendChild(card);
     });
   }
 
-  function viewStory(s) {
+  let _storyQueue = [], _storyIndex = 0;
+
+  function viewStory(s, queue) {
+    _storyQueue = queue || [s];
+    _storyIndex = queue ? queue.indexOf(s) : 0;
+    if (_storyIndex < 0) _storyIndex = 0;
+    _showStoryAt(_storyIndex);
+  }
+
+  function _showStoryAt(idx) {
+    const s = _storyQueue[idx];
+    if (!s) { closeStoryModal(); return; }
     const modal = document.getElementById('storyModal');
     modal.classList.add('show');
     const u = window._currentUser;
     const isOwn = s.uid === u?.uid;
-    document.getElementById('storyModalAvatar').innerHTML = isOwn ? (u.photo ? `<img src="${u.photo}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"/>` : '👤') : (s.emoji || '👤');
-    document.getElementById('storyModalName').textContent = isOwn ? u.name : (s.name || u.name);
+    const avatarSrc = isOwn ? u.photo : (s.userPhoto || null);
+    const avatarName = isOwn ? u.name : (s.userName || s.name || 'Usuario');
+    document.getElementById('storyModalAvatar').innerHTML = avatarSrc
+      ? `<img src="${avatarSrc}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"/>`
+      : (s.emoji || '👤');
+    document.getElementById('storyModalName').textContent = avatarName;
     document.getElementById('storyModalTime').textContent = s.time || 'ahora';
+
+    // Progress dots
+    const progressBox = document.getElementById('storyModal').querySelector('.story-progress');
+    if (_storyQueue.length > 1) {
+      progressBox.innerHTML = _storyQueue.map((_, i) => `<div style="flex:1;height:3px;border-radius:2px;background:${i < idx ? 'rgba(255,255,255,0.9)' : i === idx ? 'transparent' : 'rgba(255,255,255,0.4)'};overflow:hidden;margin:0 1px;">
+        ${i === idx ? `<div class="story-progress-fill" id="storyProgressFill" style="height:100%;background:white;border-radius:2px;"></div>` : ''}
+      </div>`).join('');
+    } else {
+      progressBox.innerHTML = `<div class="story-progress-bar"><div class="story-progress-fill" id="storyProgressFill"></div></div>`;
+    }
+
     const content = document.getElementById('storyContent');
-    content.innerHTML = s.photo ? `<img class="story-content-img" src="${s.photo}"/>` : `<div class="story-content-text" style="background:${s.bg||'linear-gradient(135deg,#1877F2,#42b72a)'}">${s.text||'✨'}</div>`;
+    content.innerHTML = s.photo
+      ? `<img class="story-content-img" src="${s.photo}"/>`
+      : `<div class="story-content-text" style="background:${s.bg||'linear-gradient(135deg,#1877F2,#42b72a)'}">${s.text||'✨'}</div>`;
+
+    // Navigation arrows for multiple stories
+    const existingNav = modal.querySelectorAll('.story-nav-btn');
+    existingNav.forEach(el => el.remove());
+    if (_storyQueue.length > 1) {
+      if (idx > 0) {
+        const prev = document.createElement('button');
+        prev.className = 'story-nav-btn story-nav-prev';
+        prev.innerHTML = '‹';
+        prev.onclick = (e) => { e.stopPropagation(); if (storyAutoCloseTimer) clearTimeout(storyAutoCloseTimer); _storyIndex--; _showStoryAt(_storyIndex); };
+        modal.querySelector('.story-modal-box').appendChild(prev);
+      }
+      if (idx < _storyQueue.length - 1) {
+        const next = document.createElement('button');
+        next.className = 'story-nav-btn story-nav-next';
+        next.innerHTML = '›';
+        next.onclick = (e) => { e.stopPropagation(); if (storyAutoCloseTimer) clearTimeout(storyAutoCloseTimer); _storyIndex++; _showStoryAt(_storyIndex); };
+        modal.querySelector('.story-modal-box').appendChild(next);
+      }
+    }
+
     const fill = document.getElementById('storyProgressFill');
-    fill.style.animation = 'none'; void fill.offsetWidth; fill.style.animation = 'storyProgress 5s linear forwards';
+    if (fill) { fill.style.animation = 'none'; void fill.offsetWidth; fill.style.animation = 'storyProgress 5s linear forwards'; }
     if (storyAutoCloseTimer) clearTimeout(storyAutoCloseTimer);
-    storyAutoCloseTimer = setTimeout(() => closeStoryModal(), 5100);
+    storyAutoCloseTimer = setTimeout(() => {
+      if (_storyIndex < _storyQueue.length - 1) { _storyIndex++; _showStoryAt(_storyIndex); }
+      else closeStoryModal();
+    }, 5100);
   }
 
   window.closeStoryModal = function() { document.getElementById('storyModal').classList.remove('show'); if (storyAutoCloseTimer) clearTimeout(storyAutoCloseTimer); };
@@ -1910,13 +2060,14 @@
 
   // ══ NAVIGATION ══
   function showSection(id) {
-    ['feedView','profileView','matchView','friendsView','watchView','eventsView','groupsView','adminView'].forEach(s => {
+    ['feedView','profileView','matchView','friendsView','watchView','eventsView','groupsView','adminView','groupPageView'].forEach(s => {
       const el = document.getElementById(s);
       if (el) el.style.display = 'none';
     });
     const target = document.getElementById(id);
     if (target) target.style.display = 'block';
     document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active-section'));
+    window._postingToGroup = null;
   }
 
 
@@ -1935,10 +2086,10 @@
   window._adminGroups = [
     {id:'g1', emoji:'📸', bg:'linear-gradient(135deg,#f093fb,#f5576c)', name:'Fotografía Uruguay', desc:'Apasionados de la fotografía', category:'Arte & Cultura', members:12400, privacy:'public', created:'Ene 2026'},
     {id:'g2', emoji:'💻', bg:'linear-gradient(135deg,#4facfe,#00f2fe)', name:'Devs de Montevideo', desc:'Comunidad de desarrolladores', category:'Tecnología', members:8700, privacy:'public', created:'Feb 2026'},
-    {id:'g3', emoji:'🏃', bg:'linear-gradient(135deg,#43e97b,#38f9d7)', name:'Running Club MVD', desc:'Corremos juntos', category:'Deportes', members:5200, privacy:'public', created:'Ene 2026'},
+    {id:'g3', emoji:'🏃', bg:'linear-gradient(135deg,#43e97b,#38f9d7)', name:'Running Club MVD', desc:'Corremos juntos cada mañana', category:'Deportes', members:5200, privacy:'public', created:'Ene 2026'},
     {id:'g4', emoji:'🎨', bg:'linear-gradient(135deg,#667eea,#764ba2)', name:'Arte & Cultura UY', desc:'Arte y cultura uruguaya', category:'Arte & Cultura', members:15000, privacy:'public', created:'Mar 2026'},
-    {id:'g5', emoji:'🍕', bg:'linear-gradient(135deg,#fa709a,#fee140)', name:'Foodies Montevideo', desc:'Gastronomía y sabores', category:'Gastronomía', members:23000, privacy:'public', created:'Feb 2026'},
-    {id:'g6', emoji:'🎮', bg:'linear-gradient(135deg,#1877F2,#42b72a)', name:'Gamers Uruguay', desc:'Gaming community', category:'Tecnología', members:18000, privacy:'public', created:'Mar 2026'},
+    {id:'g5', emoji:'🍕', bg:'linear-gradient(135deg,#fa709a,#fee140)', name:'Foodies Montevideo', desc:'Gastronomía y sabores locales', category:'Gastronomía', members:23000, privacy:'public', created:'Feb 2026'},
+    {id:'g6', emoji:'🎮', bg:'linear-gradient(135deg,#1877F2,#42b72a)', name:'Gamers Uruguay', desc:'Gaming community uruguaya', category:'Tecnología', members:18000, privacy:'public', created:'Mar 2026'},
   ];
   window._adminBanned = {};
   window._adminUsers  = [];
@@ -1993,9 +2144,15 @@
   window._adminUsersFiltered = [];
   function renderAdminUsersTable(users) {
     window._adminUsersFiltered = users;
+    // Filter out any fábrica/fabrica users
+    const filtered = users.filter(u => {
+      const name = ((u.firstName||'') + ' ' + (u.lastName||'')).toLowerCase();
+      const email = (u.email||'').toLowerCase();
+      return !name.includes('fabrica') && !name.includes('fábrica') && !email.includes('fabrica') && !email.includes('fábrica');
+    });
     const tbody = document.getElementById('adminUsersTable');
-    if (!users.length) { tbody.innerHTML = '<tr><td colspan="6" class="admin-empty">No hay usuarios registrados aún.</td></tr>'; return; }
-    tbody.innerHTML = users.map(u => {
+    if (!filtered.length) { tbody.innerHTML = '<tr><td colspan="6" class="admin-empty">No hay usuarios registrados aún.</td></tr>'; return; }
+    tbody.innerHTML = filtered.map(u => {
       const isBanned = window._adminBanned[u.id];
       const isAdminUser = (u.role === 'admin') || ADMIN_NAMES.includes((u.firstName + ' ' + u.lastName).toLowerCase());
       const roleLabel = isAdminUser ? '<span class="status-badge status-admin">Admin</span>' : (u.role === 'moderator' ? '<span class="status-badge" style="background:#f3e5f5;color:#6a1b9a;">Mod</span>' : '<span class="status-badge status-active">Usuario</span>');
@@ -2545,22 +2702,258 @@ function renderEvents() {
 }
 
 // ══ GROUPS ══
+const joinedGroups = {};
+const groupPosts = {};
+
 function renderGroups() {
-  const groups = [
-    {emoji:'📸',bg:'linear-gradient(135deg,#f093fb,#f5576c)',name:'Fotografía Uruguay',members:'12.4K miembros'},
-    {emoji:'💻',bg:'linear-gradient(135deg,#4facfe,#00f2fe)',name:'Devs de Montevideo',members:'8.7K miembros'},
-    {emoji:'🏃',bg:'linear-gradient(135deg,#43e97b,#38f9d7)',name:'Running Club MVD',members:'5.2K miembros'},
-    {emoji:'🎨',bg:'linear-gradient(135deg,#667eea,#764ba2)',name:'Arte & Cultura UY',members:'15K miembros'},
-    {emoji:'🍕',bg:'linear-gradient(135deg,#fa709a,#fee140)',name:'Foodies Montevideo',members:'23K miembros'},
-    {emoji:'🎮',bg:'linear-gradient(135deg,#1877F2,#42b72a)',name:'Gamers Uruguay',members:'18K miembros'},
+  const groups = window._adminGroups || [
+    {id:'g1', emoji:'📸', bg:'linear-gradient(135deg,#f093fb,#f5576c)', name:'Fotografía Uruguay', members:12400, desc:'Apasionados de la fotografía', privacy:'public'},
+    {id:'g2', emoji:'💻', bg:'linear-gradient(135deg,#4facfe,#00f2fe)', name:'Devs de Montevideo', members:8700, desc:'Comunidad de desarrolladores', privacy:'public'},
+    {id:'g3', emoji:'🏃', bg:'linear-gradient(135deg,#43e97b,#38f9d7)', name:'Running Club MVD', members:5200, desc:'Corremos juntos cada mañana', privacy:'public'},
+    {id:'g4', emoji:'🎨', bg:'linear-gradient(135deg,#667eea,#764ba2)', name:'Arte & Cultura UY', members:15000, desc:'Arte y cultura uruguaya', privacy:'public'},
+    {id:'g5', emoji:'🍕', bg:'linear-gradient(135deg,#fa709a,#fee140)', name:'Foodies Montevideo', members:23000, desc:'Gastronomía y sabores locales', privacy:'public'},
+    {id:'g6', emoji:'🎮', bg:'linear-gradient(135deg,#1877F2,#42b72a)', name:'Gamers Uruguay', members:18000, desc:'Gaming community uruguaya', privacy:'public'},
   ];
   const grid = document.getElementById('groupsGrid'); if (!grid) return;
-  grid.innerHTML = groups.map(g=>`
-    <div class="group-card" onclick="window.showToast('🏘️ Uniéndote a ${g.name}...','success')">
+  grid.innerHTML = groups.map(g => {
+    const isJoined = joinedGroups[g.id];
+    return `
+    <div class="group-card">
       <div class="group-cover" style="background:${g.bg}">${g.emoji}</div>
-      <div class="group-info"><div class="group-name">${g.name}</div><div class="group-members">${g.members}</div></div>
-    </div>`).join('');
+      <div class="group-info">
+        <div class="group-name">${g.name}</div>
+        <div class="group-members">${(g.members||0).toLocaleString()} miembros · ${g.privacy==='private'?'🔒 Privado':'🌎 Público'}</div>
+        ${g.desc ? `<div style="font-size:12px;color:var(--gray-text);margin-top:3px;">${g.desc}</div>` : ''}
+        <button class="group-join-btn ${isJoined ? 'joined' : ''}" onclick="handleGroupJoin('${g.id}')">
+          ${isJoined ? '✅ Miembro · Ver grupo' : '+ Unirse'}
+        </button>
+      </div>
+    </div>`;
+  }).join('');
 }
+
+window.handleGroupJoin = function(gid) {
+  if (!joinedGroups[gid]) {
+    joinedGroups[gid] = true;
+    const g = (window._adminGroups || []).find(x => x.id === gid);
+    if (g) g.members = (g.members || 0) + 1;
+    window.showToast('✅ ¡Te uniste al grupo!', 'success');
+    renderGroups();
+  }
+  openGroupPage(gid);
+};
+
+window.openGroupPage = function(gid) {
+  const groups = window._adminGroups || [];
+  const g = groups.find(x => x.id === gid);
+  if (!g) return;
+
+  if (!groupPosts[gid]) {
+    groupPosts[gid] = [
+      { id: gid+'_p1', author: 'María García', emoji: '👩', bg: 'linear-gradient(135deg,#f093fb,#f5576c)', text: `¡Hola a todos en ${g.name}! 🎉 ¿Alguien tiene recomendaciones?`, time: 'hace 2h', reactions: {total:24, types:['👍','❤️']}, comments: [{author:'Carlos R.', text:'¡Bienvenida! 😊', time:'hace 1h'}], shares: 2 },
+      { id: gid+'_p2', author: 'Carlos Rodríguez', emoji: '👨', bg: 'linear-gradient(135deg,#4facfe,#00f2fe)', text: `Compartiendo esto con la comunidad de ${g.name} 📢`, time: 'hace 5h', reactions: {total:61, types:['🔥','👍']}, comments: [], shares: 5 },
+    ];
+  }
+
+  // Build group page HTML
+  const u = window._currentUser;
+  const avatarHTML = u?.photo ? `<img src="${u.photo}" style="width:36px;height:36px;border-radius:50%;object-fit:cover;"/>` : `<span style="font-size:22px;">👤</span>`;
+
+  let groupPageEl = document.getElementById('groupPageView');
+  if (!groupPageEl) {
+    groupPageEl = document.createElement('div');
+    groupPageEl.id = 'groupPageView';
+    document.getElementById('appPage').appendChild(groupPageEl);
+  }
+
+  groupPageEl.innerHTML = `
+    <div class="group-page-layout">
+      <!-- Cover -->
+      <div class="group-page-cover" style="background:${g.bg}">
+        <span style="font-size:80px;">${g.emoji}</span>
+      </div>
+      <!-- Header info -->
+      <div class="group-page-header">
+        <div class="group-page-header-inner">
+          <div>
+            <h1 class="group-page-title">${g.name}</h1>
+            <div class="group-page-meta">${g.privacy==='private'?'🔒 Grupo privado':'🌎 Grupo público'} · ${(g.members||0).toLocaleString()} miembros</div>
+            ${g.desc ? `<div style="font-size:14px;color:var(--gray-text);margin-top:4px;">${g.desc}</div>` : ''}
+          </div>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+            <button class="group-page-btn primary" onclick="focusGroupPost('${gid}')">✏️ Escribir algo</button>
+            <button class="group-page-btn secondary" onclick="closeGroupPage()">← Volver</button>
+          </div>
+        </div>
+        <!-- Group nav tabs -->
+        <div class="group-page-tabs">
+          <button class="gp-tab active" onclick="switchGroupTab('feed','${gid}',this)">Publicaciones</button>
+          <button class="gp-tab" onclick="switchGroupTab('members','${gid}',this)">Miembros</button>
+          <button class="gp-tab" onclick="switchGroupTab('media','${gid}',this)">Fotos</button>
+          <button class="gp-tab" onclick="switchGroupTab('about','${gid}',this)">Acerca de</button>
+        </div>
+      </div>
+
+      <!-- Content -->
+      <div class="group-page-content">
+        <!-- Left sidebar -->
+        <aside class="group-page-sidebar">
+          <div class="group-sidebar-card">
+            <h3>Acerca de</h3>
+            <p style="font-size:14px;color:var(--gray-text);margin:8px 0;">${g.desc || 'Un grupo para conectar personas.'}</p>
+            <div style="font-size:13px;color:var(--gray-text);margin-top:8px;">${g.privacy==='private'?'🔒 Privado':'🌎 Público'} · Creado ${g.created||'2026'}</div>
+            <div style="font-size:13px;color:var(--gray-text);margin-top:4px;">👥 ${(g.members||0).toLocaleString()} miembros</div>
+          </div>
+          <div class="group-sidebar-card" style="margin-top:12px;">
+            <h3>Miembros recientes</h3>
+            <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;">
+              ${['👩','👨','👩‍🦰','👨‍💻','👩‍🎨'].map(e=>`<div style="width:40px;height:40px;border-radius:50%;background:var(--blue-light);display:flex;align-items:center;justify-content:center;font-size:20px;">${e}</div>`).join('')}
+              <div style="width:40px;height:40px;border-radius:50%;background:var(--gray-bg);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--gray-text);">+${((g.members||10)-5).toLocaleString()}</div>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Main feed -->
+        <main class="group-page-feed" id="groupMainFeed_${gid}">
+          <!-- Create post box -->
+          <div class="create-post" style="margin-bottom:16px;" id="groupCreatePost_${gid}">
+            <div class="create-post-top">
+              <div class="cp-avatar">${avatarHTML}</div>
+              <button class="create-post-input" id="groupPostTrigger_${gid}" onclick="openGroupPostModal('${gid}')">¿Qué estás pensando?</button>
+            </div>
+            <div class="create-post-divider"></div>
+            <div class="create-post-actions">
+              <button class="cp-action-btn" onclick="openGroupPostModal('${gid}')"><span class="cp-icon">📸</span> Foto/Video</button>
+              <button class="cp-action-btn" onclick="openGroupPostModal('${gid}')"><span class="cp-icon">😊</span> Sentimiento</button>
+              <button class="cp-action-btn" onclick="openGroupPostModal('${gid}')"><span class="cp-icon">📅</span> Evento</button>
+            </div>
+          </div>
+          <!-- Posts -->
+          <div id="groupPostsFeed_${gid}"></div>
+        </main>
+      </div>
+    </div>`;
+
+  // Show group page, hide others
+  ['feedView','profileView','matchView','friendsView','watchView','eventsView','groupsView','adminView'].forEach(s => {
+    const el = document.getElementById(s);
+    if (el) el.style.display = 'none';
+  });
+  groupPageEl.style.display = 'block';
+  window._currentGroupId = gid;
+
+  // Render posts in this group
+  renderGroupPosts(gid);
+};
+
+function renderGroupPosts(gid) {
+  const container = document.getElementById('groupPostsFeed_' + gid); if (!container) return;
+  container.innerHTML = '';
+  (groupPosts[gid] || []).forEach(p => {
+    const card = document.createElement('div');
+    card.className = 'post-card';
+    card.id = 'gpost-' + p.id;
+    const avatarHTML = p.userPhoto ? `<img src="${p.userPhoto}" onerror="this.parentElement.textContent='${p.emoji||'👤'}'">` : (p.emoji || '👤');
+    const avatarStyle = p.bg && !p.userPhoto ? `style="background:${p.bg}"` : '';
+    const reactionHTML = p.reactions?.types?.length ? `<span class="reaction-icons">${p.reactions.types.map(r=>`<span>${r}</span>`).join('')}</span>` : '';
+    card.innerHTML = `
+      <div class="post-header">
+        <div class="post-avatar" ${avatarStyle}>${avatarHTML}</div>
+        <div class="post-header-info">
+          <div class="post-author">${p.author}</div>
+          <div class="post-meta">🌎 · ${p.time||'ahora'}</div>
+        </div>
+        <button class="post-more">···</button>
+      </div>
+      <div class="post-text">${p.text}</div>
+      <div class="post-stats">
+        <div class="reaction-summary">${reactionHTML}<span class="reaction-count">${p.reactions?.total>0?p.reactions.total:''}</span></div>
+        <div><span class="comments-count">${p.comments?.length>0?p.comments.length+' comentarios':''}</span></div>
+      </div>
+      <div class="post-actions">
+        <button class="action-btn" onclick="groupReaction('${gid}','${p.id}',this)"><span class="action-icon">👍</span><span>Me gusta</span></button>
+        <button class="action-btn" onclick="focusGroupComment('${gid}','${p.id}')"><span class="action-icon">💬</span> Comentar</button>
+        <button class="action-btn" onclick="window.showToast('✅ Compartido','success')"><span class="action-icon">↗️</span> Compartir</button>
+      </div>
+      <div class="post-comments" id="gcomments-${p.id}">
+        ${(p.comments||[]).map(c=>`<div class="comment-item"><div class="comment-avatar">${c.photo?`<img src="${c.photo}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"/>`:c.emoji||'👤'}</div><div><div class="comment-bubble"><div class="cb-author">${c.author}</div><div class="cb-text">${c.text}</div></div><div class="comment-actions"><a>Me gusta</a><a>Responder</a><span class="comment-time">${c.time||'ahora'}</span></div></div></div>`).join('')}
+        <div class="comment-input-row" id="gcommentRow-${p.id}">
+          <div class="comment-avatar" id="gcommentAvatar-${p.id}"></div>
+          <div class="comment-input-wrap">
+            <input class="comment-input" id="gcommentInput-${p.id}" placeholder="Escribe un comentario..." onkeydown="if(event.key==='Enter'){submitGroupComment('${gid}','${p.id}');event.preventDefault();}"/>
+            <button class="comment-send-btn" onclick="submitGroupComment('${gid}','${p.id}')">➤</button>
+          </div>
+        </div>
+      </div>`;
+    setTimeout(() => {
+      const u = window._currentUser;
+      const ca = document.getElementById('gcommentAvatar-'+p.id);
+      if (ca) ca.innerHTML = u?.photo ? `<img src="${u.photo}" alt=""/>` : '👤';
+    }, 50);
+    container.appendChild(card);
+  });
+}
+
+window.groupReaction = function(gid, pid, btn) {
+  const p = (groupPosts[gid]||[]).find(x=>x.id===pid);
+  if (!p) return;
+  if (!p._liked) { p._liked=true; p.reactions.total++; if (!p.reactions.types.includes('👍')) p.reactions.types.unshift('👍'); btn.classList.add('liked'); btn.querySelector('.action-icon').textContent='👍'; }
+  else { p._liked=false; p.reactions.total=Math.max(0,p.reactions.total-1); btn.classList.remove('liked'); btn.querySelector('.action-icon').textContent='👍'; }
+};
+
+window.focusGroupComment = function(gid, pid) {
+  const inp = document.getElementById('gcommentInput-'+pid);
+  if (inp) inp.focus();
+};
+
+window.submitGroupComment = function(gid, pid) {
+  const inp = document.getElementById('gcommentInput-'+pid); if (!inp) return;
+  const text = inp.value.trim(); if (!text) return;
+  const u = window._currentUser;
+  const p = (groupPosts[gid]||[]).find(x=>x.id===pid); if (!p) return;
+  if (!p.comments) p.comments=[];
+  p.comments.push({author:u.name,text,time:'ahora',photo:u.photo||null});
+  const row = document.getElementById('gcommentRow-'+pid);
+  if (row) row.insertAdjacentHTML('beforebegin',`<div class="comment-item"><div class="comment-avatar">${u.photo?`<img src="${u.photo}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"/>`:'👤'}</div><div><div class="comment-bubble"><div class="cb-author">${u.name}</div><div class="cb-text">${text}</div></div><div class="comment-actions"><a>Me gusta</a><a>Responder</a><span class="comment-time">ahora</span></div></div></div>`);
+  inp.value='';
+  window.showToast('💬 Comentario publicado','success');
+};
+
+window.openGroupPostModal = function(gid) {
+  window._currentGroupId = gid;
+  document.getElementById('postModal').classList.add('show');
+  const ta = document.getElementById('postTextarea');
+  ta.placeholder = '¿Qué quieres compartir con el grupo?';
+  ta.focus();
+  // Override submitPost temporarily
+  window._postingToGroup = gid;
+};
+
+window.focusGroupPost = function(gid) { window.openGroupPostModal(gid); };
+
+window.switchGroupTab = function(tab, gid, btn) {
+  document.querySelectorAll('.gp-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const feed = document.getElementById('groupMainFeed_'+gid);
+  if (!feed) return;
+  if (tab==='feed') { feed.style.display=''; }
+  else if (tab==='members') {
+    feed.innerHTML = `<div class="section-card"><h3>👥 Miembros del grupo</h3><div class="friends-grid">${['María García','Carlos Rodríguez','Ana Martínez','Luis Pérez','Sofía López','Valentina R.','Diego M.','Ramiro T.'].map((n,i)=>`<div class="friend-card"><div class="friend-avatar" style="background:${['linear-gradient(135deg,#f093fb,#f5576c)','linear-gradient(135deg,#4facfe,#00f2fe)','linear-gradient(135deg,#43e97b,#38f9d7)','linear-gradient(135deg,#667eea,#764ba2)','linear-gradient(135deg,#fa709a,#fee140)','linear-gradient(135deg,#1877F2,#42b72a)','linear-gradient(135deg,#f7971e,#ffd200)','linear-gradient(135deg,#ee0979,#ff6a00)'][i]}">${['👩','👨','👩‍🦰','👨‍💻','👩‍🎨','👩‍🦱','👨‍🦳','👨'][i]}</div><div class="friend-name">${n}</div></div>`).join('')}</div></div>`;
+  } else if (tab==='media') {
+    const colors=['linear-gradient(135deg,#f093fb,#f5576c)','linear-gradient(135deg,#4facfe,#00f2fe)','linear-gradient(135deg,#43e97b,#38f9d7)','linear-gradient(135deg,#fa709a,#fee140)','linear-gradient(135deg,#667eea,#764ba2)','linear-gradient(135deg,#1877F2,#42b72a)'];
+    feed.innerHTML=`<div class="section-card"><h3>📷 Fotos del grupo</h3><div class="photos-grid">${colors.map((bg,i)=>`<div class="photo-thumb"><div class="ph-placeholder" style="background:${bg}">${['🌅','🎉','🏖️','🎨','🏃','🎮'][i]}</div></div>`).join('')}</div></div>`;
+  } else if (tab==='about') {
+    const g2=(window._adminGroups||[]).find(x=>x.id===gid)||{};
+    feed.innerHTML=`<div class="section-card"><h3>ℹ️ Acerca de este grupo</h3><div class="about-item"><span class="ai-icon">📝</span><span>${g2.desc||'Grupo de la comunidad ConnectMe'}</span></div><div class="about-item"><span class="ai-icon">🌎</span><span>${g2.privacy==='private'?'Grupo privado — solo miembros pueden ver el contenido':'Grupo público — cualquiera puede ver las publicaciones'}</span></div><div class="about-item"><span class="ai-icon">👥</span><span>${(g2.members||0).toLocaleString()} miembros</span></div><div class="about-item"><span class="ai-icon">📅</span><span>Creado en ${g2.created||'2026'}</span></div></div>`;
+  }
+};
+
+window.closeGroupPage = function() {
+  const gp = document.getElementById('groupPageView');
+  if (gp) gp.style.display = 'none';
+  window._postingToGroup = null;
+  window.showGroups();
+};
 
 // ══ MODAL CLOSE ON OVERLAY ══
 ['postModal','storyModal','addStoryModal','shareModal','editProfileModal','pmModal'].forEach(id => {
