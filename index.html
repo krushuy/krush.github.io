@@ -935,25 +935,26 @@
     document.getElementById('navLoggedIn').style.display = 'flex';
 
     const name = user.displayName || user.email.split('@')[0];
+    // Use Google photo as initial fallback; Firestore photoURL will override in loadUserProfile
     const photo = user.photoURL;
 
     document.getElementById('navAvatarWrap').innerHTML = photo
-      ? `<img class="nav-avatar" src="${photo}" alt="avatar" onclick="showProfile()"/>`
+      ? `<img class="nav-avatar" src="${photo}" alt="avatar" onclick="showProfile()" onerror="this.parentElement.innerHTML='<div class=\\'nav-avatar-placeholder\\' onclick=\\'showProfile()\\'>👤</div>'"/>`
       : `<div class="nav-avatar-placeholder" onclick="showProfile()">👤</div>`;
 
     document.getElementById('sbUserName').textContent = name;
     document.getElementById('sbAvatarWrap').innerHTML = photo
-      ? `<img style="width:36px;height:36px;border-radius:50%;object-fit:cover;" src="${photo}"/>`
+      ? `<img style="width:36px;height:36px;border-radius:50%;object-fit:cover;" src="${photo}" onerror="this.parentElement.innerHTML='<div class=\\'sb-avatar\\'>👤</div>'"/>`
       : `<div class="sb-avatar">👤</div>`;
 
-    document.getElementById('cpAvatarWrap').innerHTML = photo ? `<img src="${photo}" alt=""/>` : `👤`;
-    document.getElementById('modalAvatarWrap').innerHTML = photo ? `<img src="${photo}" alt=""/>` : `👤`;
+    document.getElementById('cpAvatarWrap').innerHTML = photo ? `<img src="${photo}" alt="" onerror="this.parentElement.textContent='👤'"/>` : `👤`;
+    document.getElementById('modalAvatarWrap').innerHTML = photo ? `<img src="${photo}" alt="" onerror="this.parentElement.textContent='👤'"/>` : `👤`;
     document.getElementById('modalUserName').textContent = name;
     document.getElementById('profileName').textContent = name;
 
     const profilePicWrap = document.getElementById('profilePicWrap');
     profilePicWrap.innerHTML = `
-      ${photo ? `<img src="${photo}" alt="perfil"/>` : `<span style="font-size:64px;">👤</span>`}
+      ${photo ? `<img src="${photo}" alt="perfil" onerror="this.style.display='none';this.nextElementSibling?.remove();this.insertAdjacentHTML('afterend','<span style=\\'font-size:64px;\\'>👤</span>')"/>` : `<span style="font-size:64px;">👤</span>`}
       <div class="profile-pic-edit-overlay">📷</div>
       <input type="file" id="profilePicInput" accept="image/*" style="display:none;" onchange="handleProfilePicUpload(event)"/>
     `;
@@ -1104,12 +1105,12 @@
   }
 
   function updateAllAvatars(url) {
-    document.getElementById('navAvatarWrap').innerHTML = `<img class="nav-avatar" src="${url}" onclick="showProfile()"/>`;
-    document.getElementById('sbAvatarWrap').innerHTML = `<img style="width:36px;height:36px;border-radius:50%;object-fit:cover;" src="${url}"/>`;
-    document.getElementById('cpAvatarWrap').innerHTML = `<img src="${url}" alt=""/>`;
-    document.getElementById('modalAvatarWrap').innerHTML = `<img src="${url}" alt=""/>`;
+    document.getElementById('navAvatarWrap').innerHTML = `<img class="nav-avatar" src="${url}" onclick="showProfile()" onerror="this.parentElement.innerHTML='<div class=\\'nav-avatar-placeholder\\' onclick=\\'showProfile()\\'>👤</div>'"/>`;
+    document.getElementById('sbAvatarWrap').innerHTML = `<img style="width:36px;height:36px;border-radius:50%;object-fit:cover;" src="${url}" onerror="this.parentElement.innerHTML='<div class=\\'sb-avatar\\'>👤</div>'"/>`;
+    document.getElementById('cpAvatarWrap').innerHTML = `<img src="${url}" alt="" onerror="this.parentElement.textContent='👤'"/>`;
+    document.getElementById('modalAvatarWrap').innerHTML = `<img src="${url}" alt="" onerror="this.parentElement.textContent='👤'"/>`;
     const pw = document.getElementById('profilePicWrap');
-    if (pw) pw.innerHTML = `<img src="${url}" alt="perfil"/><div class="profile-pic-edit-overlay">📷</div><input type="file" id="profilePicInput" accept="image/*" style="display:none;" onchange="handleProfilePicUpload(event)"/>`;
+    if (pw) pw.innerHTML = `<img src="${url}" alt="perfil" onerror="this.style.display='none'"/><div class="profile-pic-edit-overlay">📷</div><input type="file" id="profilePicInput" accept="image/*" style="display:none;" onchange="handleProfilePicUpload(event)"/>`;
   }
 
   // ══ FIRESTORE: REALTIME POSTS ══
@@ -1154,11 +1155,15 @@
   window._pendingPostImage = null;
   window.handleImageUpload = async function(e) {
     const file = e.target.files[0]; if (!file) return;
+    // Reset input so the same file can be selected again later
+    e.target.value = '';
     const uid = window._currentUser?.uid || 'anon';
     const path = `posts/${uid}/${Date.now()}_${file.name}`;
 
+    // Show local preview immediately while uploading
+    const localURL = URL.createObjectURL(file);
     document.getElementById('modalImagePreview').style.display = 'block';
-    document.getElementById('modalPreviewImg').src = '';
+    document.getElementById('modalPreviewImg').src = localURL;
     document.getElementById('postUploadProgress').style.display = 'block';
     document.getElementById('postUploadBar').style.width = '0%';
     document.getElementById('postUploadLabel').textContent = 'Subiendo imagen... 0%';
@@ -1171,10 +1176,13 @@
       });
       window._pendingPostImage = url;
       document.getElementById('modalPreviewImg').src = url;
+      URL.revokeObjectURL(localURL);
       document.getElementById('postUploadProgress').style.display = 'none';
       document.getElementById('btnPost').disabled = false;
     } catch(err) {
+      URL.revokeObjectURL(localURL);
       document.getElementById('modalImagePreview').style.display = 'none';
+      document.getElementById('modalPreviewImg').src = '';
       document.getElementById('postUploadProgress').style.display = 'none';
       document.getElementById('btnPost').disabled = false;
       showToast('⚠️ Error al subir la imagen', 'error');
@@ -1243,11 +1251,16 @@
 
   function createPostCard(post) {
     const card = document.createElement('div'); card.className='post-card'; card.id='post-'+post.id;
-    const avatarHTML = post.userPhoto ? `<img src="${post.userPhoto}" alt="avatar"/>` : (post.emoji||'👤');
+    const avatarHTML = post.userPhoto
+      ? `<img src="${post.userPhoto}" alt="avatar" onerror="this.style.display='none';this.parentElement.textContent='${post.emoji||'👤'}'">`
+      : (post.emoji||'👤');
     const avatarStyle = post.bg && !post.userPhoto ? `style="background:${post.bg}"` : '';
     const reactionHTML = post.reactions?.types?.length ? `<span class="reaction-icons">${post.reactions.types.map(r=>`<span>${r}</span>`).join('')}</span>` : '';
     const isBigText = !post.image && post.text && post.text.length < 120;
     const timeStr = post.createdAt ? timeAgo(post.createdAt) : (post.time || 'ahora');
+    const imageHTML = post.image
+      ? `<img class="post-image" src="${post.image}" alt="post" onerror="this.style.display='none'"/>`
+      : '';
     card.innerHTML = `
       <div class="post-header">
         <div class="post-avatar" ${avatarStyle} onclick="showProfile()">${avatarHTML}</div>
@@ -1255,7 +1268,7 @@
         <button class="post-more">···</button>
       </div>
       ${post.text?`<div class="post-text ${isBigText?'big-text':''}">${post.text}</div>`:''}
-      ${post.image?`<img class="post-image" src="${post.image}" alt="post"/>`:''}
+      ${imageHTML}
       <div class="post-stats">
         <div class="reaction-summary" onclick="toggleReactionsInfo('${post.id}')">${reactionHTML}<span class="reaction-count">${post.reactions?.total>0?post.reactions.total:''}</span></div>
         <div><span class="comments-count" onclick="focusComment('${post.id}')">${post.comments?.length>0?post.comments.length+' comentarios':''}</span>${post.shares>0?`<span style="font-size:14px;color:var(--gray-text);margin-left:12px;">${post.shares} compartidos</span>`:''}</div>
@@ -1460,15 +1473,20 @@
 
   window.handleStoryPhoto = async function(e) {
     const file = e.target.files[0]; if (!file) return;
+    e.target.value = '';
     const uid = window._currentUser?.uid || 'anon';
     const path = `stories/${uid}/${Date.now()}_${file.name}`;
-    document.getElementById('storyPhotoPreview').innerHTML = '<div style="text-align:center;padding:12px;color:var(--gray-text)">⬆️ Subiendo foto...</div>';
+    // Show local preview immediately
+    const localURL = URL.createObjectURL(file);
+    document.getElementById('storyPhotoPreview').innerHTML = `<img src="${localURL}" style="width:100%;border-radius:8px;max-height:200px;object-fit:cover;opacity:0.7;"/>` + '<div style="text-align:center;padding:8px;color:var(--gray-text);font-size:13px;">⬆️ Subiendo foto...</div>';
     document.getElementById('btnSubmitStory').disabled = true;
     try {
       const url = await uploadToStorage(file, path);
       storyPhotoData = url;
+      URL.revokeObjectURL(localURL);
       document.getElementById('storyPhotoPreview').innerHTML = `<img src="${url}" style="width:100%;border-radius:8px;max-height:200px;object-fit:cover;"/>`;
     } catch(err) {
+      URL.revokeObjectURL(localURL);
       document.getElementById('storyPhotoPreview').innerHTML = '';
       showToast('⚠️ Error al subir la foto', 'error');
     } finally { document.getElementById('btnSubmitStory').disabled = false; }
@@ -1503,40 +1521,61 @@
   window.triggerCoverUpload = function() { document.getElementById('coverFileInput').click(); };
   window.handleCoverUpload = async function(e) {
     const file = e.target.files[0]; if (!file) return;
+    e.target.value = '';
     const uid = window._currentUser?.uid;
+    // Show local preview immediately
+    const localURL = URL.createObjectURL(file);
+    const cover = document.getElementById('profileCover');
+    cover.style.background = 'none';
+    let img = cover.querySelector('img.cover-img');
+    if (!img) { img = document.createElement('img'); img.className = 'cover-img'; img.style.cssText='width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;'; cover.insertBefore(img, cover.firstChild); }
+    img.src = localURL; img.style.opacity = '0.7';
+    const prev = document.getElementById('editCoverPreview');
+    if (prev) { prev.style.background='none'; prev.innerHTML=`<img src="${localURL}" style="width:100%;height:100%;object-fit:cover;border-radius:8px;opacity:0.7;"/>`; }
     showToast('⬆️ Subiendo portada...', '');
     try {
       const url = await uploadToStorage(file, `covers/${uid}/cover_${Date.now()}`);
+      URL.revokeObjectURL(localURL);
       window._coverPhoto = url;
-      const cover = document.getElementById('profileCover');
-      cover.style.background = 'none';
-      let img = cover.querySelector('img.cover-img');
-      if (!img) { img = document.createElement('img'); img.className = 'cover-img'; img.style.cssText='width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;'; cover.insertBefore(img, cover.firstChild); }
-      img.src = url;
-      const prev = document.getElementById('editCoverPreview');
+      img.src = url; img.style.opacity = '1';
       if (prev) { prev.style.background='none'; prev.innerHTML=`<img src="${url}" style="width:100%;height:100%;object-fit:cover;border-radius:8px;"/>`; }
       // Save to Firestore
       if (uid) await updateDoc(doc(db, 'users', uid), { coverURL: url }).catch(()=>setDoc(doc(db,'users',uid),{coverURL:url},{merge:true}));
       showToast('✅ Foto de portada actualizada', 'success');
-    } catch(err) { showToast('⚠️ Error al subir la portada', 'error'); }
+    } catch(err) {
+      URL.revokeObjectURL(localURL);
+      showToast('⚠️ Error al subir la portada', 'error');
+    }
   };
 
   window.triggerProfilePicUpload = function() { document.getElementById('profilePicInput').click(); };
   window.handleProfilePicUpload = async function(e) {
     const file = e.target.files[0]; if (!file) return;
+    e.target.value = '';
     const uid = window._currentUser?.uid;
+    // Show local preview immediately
+    const localURL = URL.createObjectURL(file);
+    updateAllAvatars(localURL);
+    const prev = document.getElementById('editProfilePicPreview');
+    if (prev) prev.innerHTML = `<img src="${localURL}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;opacity:0.7;"/>`;
     showToast('⬆️ Subiendo foto de perfil...', '');
     try {
       const url = await uploadToStorage(file, `avatars/${uid}/avatar_${Date.now()}`);
+      URL.revokeObjectURL(localURL);
       window._currentUser.photo = url;
       updateAllAvatars(url);
-      const prev = document.getElementById('editProfilePicPreview');
       if (prev) prev.innerHTML = `<img src="${url}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"/>`;
       // Save to Firestore & Auth
       if (uid) await updateDoc(doc(db, 'users', uid), { photoURL: url }).catch(()=>setDoc(doc(db,'users',uid),{photoURL:url},{merge:true}));
       await updateProfile(auth.currentUser, { photoURL: url });
       showToast('✅ Foto de perfil actualizada', 'success');
-    } catch(err) { showToast('⚠️ Error al subir la foto de perfil', 'error'); console.error(err); }
+    } catch(err) {
+      URL.revokeObjectURL(localURL);
+      // Restore previous photo on error
+      if (window._currentUser.photo) updateAllAvatars(window._currentUser.photo);
+      showToast('⚠️ Error al subir la foto de perfil', 'error');
+      console.error(err);
+    }
   };
 
   // ══ EDIT PROFILE ══
