@@ -1679,6 +1679,7 @@
     container.innerHTML = '';
     const posts = window._firestorePosts || [];
     [...posts, ...SAMPLE_POSTS].forEach(p => container.appendChild(createPostCard(p)));
+    renderProfilePhotos();
   }
 
   function renderProfilePosts() {
@@ -1909,13 +1910,7 @@
       row.appendChild(card);
     });
 
-    // Sample stories (one per name)
-    SAMPLE_STORIES.forEach(s => {
-      const card = document.createElement('div');
-      card.className = 'story-card'; card.style.background = s.bg; card.onclick = () => viewStory(s, [s]);
-      card.innerHTML = `<div class="story-gradient"></div><div class="story-avatar story-avatar-ring">${s.emoji}</div><div class="story-name">${s.name.split(' ')[0]}</div>`;
-      row.appendChild(card);
-    });
+    // No sample stories — only real Firestore stories shown
   }
 
   let _storyQueue = [], _storyIndex = 0;
@@ -2184,7 +2179,7 @@
   }
 
   window._adminLog = [];
-  window._adminGroups = [
+  const DEFAULT_GROUPS = [
     {id:'g1', emoji:'📸', bg:'linear-gradient(135deg,#f093fb,#f5576c)', name:'Fotografía Uruguay', desc:'Apasionados de la fotografía', category:'Arte & Cultura', members:12400, privacy:'public', created:'Ene 2026'},
     {id:'g2', emoji:'💻', bg:'linear-gradient(135deg,#4facfe,#00f2fe)', name:'Devs de Montevideo', desc:'Comunidad de desarrolladores', category:'Tecnología', members:8700, privacy:'public', created:'Feb 2026'},
     {id:'g3', emoji:'🏃', bg:'linear-gradient(135deg,#43e97b,#38f9d7)', name:'Running Club MVD', desc:'Corremos juntos cada mañana', category:'Deportes', members:5200, privacy:'public', created:'Ene 2026'},
@@ -2192,6 +2187,17 @@
     {id:'g5', emoji:'🍕', bg:'linear-gradient(135deg,#fa709a,#fee140)', name:'Foodies Montevideo', desc:'Gastronomía y sabores locales', category:'Gastronomía', members:23000, privacy:'public', created:'Feb 2026'},
     {id:'g6', emoji:'🎮', bg:'linear-gradient(135deg,#1877F2,#42b72a)', name:'Gamers Uruguay', desc:'Gaming community uruguaya', category:'Tecnología', members:18000, privacy:'public', created:'Mar 2026'},
   ];
+  function loadGroups() {
+    try {
+      const saved = localStorage.getItem('connectme_groups');
+      if (saved) return JSON.parse(saved);
+    } catch(e) {}
+    return DEFAULT_GROUPS.map(g => ({...g}));
+  }
+  function saveGroups() {
+    try { localStorage.setItem('connectme_groups', JSON.stringify(window._adminGroups)); } catch(e) {}
+  }
+  window._adminGroups = loadGroups();
   window._adminBanned = {};
   window._adminUsers  = [];
   window._confirmCallback = null;
@@ -2457,6 +2463,7 @@
     const bg = gradients[Math.floor(Math.random()*gradients.length)];
     const newGroup = {id:'g'+Date.now(), emoji, bg, name, desc, category, members:1, privacy, created:'Mar 2026'};
     window._adminGroups.unshift(newGroup);
+    saveGroups();
     document.getElementById('statGroups').textContent = window._adminGroups.length;
     renderAdminGroups();
     closeAdminModal('adminCreateGroupModal');
@@ -2489,6 +2496,7 @@
       modal.querySelector('h3').textContent = '🏘️ Crear Grupo';
       saveBtn.textContent = '✅ Crear grupo';
       saveBtn.onclick = createGroupFromAdmin;
+      saveGroups();
       showToast(`✅ Grupo "${g.name}" actualizado`,'success');
       adminLogAction('✏️', `Grupo editado: ${g.name}`);
     };
@@ -2498,11 +2506,9 @@
   window.adminDeleteGroup = function(gid, name) {
     showConfirm('🗑️','¿Eliminar grupo?',`Se eliminará el grupo "${name}" y todo su contenido.`, () => {
       window._adminGroups = window._adminGroups.filter(g => g.id !== gid);
+      saveGroups();
       document.getElementById('statGroups').textContent = window._adminGroups.length;
-      // Remove from DOM immediately
-      const el = document.getElementById('grp-'+gid);
-      if (el) { el.style.opacity='0'; el.style.transition='opacity .3s'; setTimeout(()=>el.remove(),300); }
-      else renderAdminGroups();
+      renderAdminGroups();
       showToast(`🗑️ Grupo "${name}" eliminado`, 'error');
       adminLogAction('🗑️', `Grupo eliminado: ${name}`);
     });
@@ -2623,19 +2629,11 @@ window._coverPhoto = null;
 window._firestorePosts = [];
 window._firestoreStories = [];
 
-const SAMPLE_POSTS = [
-  { id:'sp1', author:'María García', emoji:'👩', bg:'linear-gradient(135deg,#f093fb,#f5576c)', text:'¡Qué hermoso día en Montevideo! 🌞 Aprovechando el sol con amigos.', time:'hace 2 horas', privacy:'🌎', reactions:{total:47,types:['❤️','😂','👍']}, comments:[{author:'Carlos R.',text:'¡Qué lindo! Disfrútenlo 😍',time:'hace 1h'},{author:'Ana M.',text:'Ojalá pudiera estar ahí!',time:'hace 45min'}], shares:3 },
-  { id:'sp2', author:'Carlos Rodríguez', emoji:'👨', bg:'linear-gradient(135deg,#4facfe,#00f2fe)', text:'¡Acabo de terminar mi primer proyecto en React! 🚀 #desarrollo #programación', time:'hace 5 horas', privacy:'🌎', reactions:{total:124,types:['👍','🔥','❤️']}, comments:[{author:'Luis P.',text:'¡Felicitaciones! ¿Qué construiste?',time:'hace 4h'}], shares:8 },
-  { id:'sp3', author:'Ana Martínez', emoji:'👩‍🦰', bg:'linear-gradient(135deg,#43e97b,#38f9d7)', text:'🎂 ¡Hoy es mi cumpleaños! Gracias a todos por los mensajes y el cariño ❤️', time:'hace 7 horas', privacy:'🌎', reactions:{total:312,types:['❤️','🎉','😍']}, comments:[{author:'María G.',text:'¡¡FELIZ CUMPLE!! 🎉🎉🎉',time:'hace 6h'},{author:'Carlos R.',text:'¡Que lo pases genial! 🎂',time:'hace 5h'}], shares:12 },
-];
+const SAMPLE_POSTS = [];
 
-const CONTACTS = [
-  { name:'María García', emoji:'👩', bg:'linear-gradient(135deg,#f093fb,#f5576c)', online:true },
-  { name:'Carlos Rodríguez', emoji:'👨', bg:'linear-gradient(135deg,#4facfe,#00f2fe)', online:true },
-  { name:'Ana Martínez', emoji:'👩‍🦰', bg:'linear-gradient(135deg,#43e97b,#38f9d7)', online:false },
-  { name:'Luis Pérez', emoji:'👨‍💻', bg:'linear-gradient(135deg,#fa709a,#fee140)', online:true },
-  { name:'Sofía López', emoji:'👩‍🎨', bg:'linear-gradient(135deg,#667eea,#764ba2)', online:false },
-];
+
+const CONTACTS = [];
+
 
 const MATCH_PROFILES = [
   { id:1, name:'Valentina', age:24, city:'Montevideo', distance:'2 km', online:true, emoji:'👩‍🦱', bg:'linear-gradient(135deg,#f093fb,#f5576c)', bio:'Amante del café ☕ y los atardeceres. Busco alguien para explorar la ciudad.', tags:['Música','Viajes','Fotografía'], gender:'mujeres' },
@@ -2666,8 +2664,25 @@ function renderContacts() {
 // ══ PROFILE PHOTOS ══
 function renderProfilePhotos() {
   const grid = document.getElementById('profilePhotosGrid'); if (!grid) return;
-  const colors = ['linear-gradient(135deg,#f093fb,#f5576c)','linear-gradient(135deg,#4facfe,#00f2fe)','linear-gradient(135deg,#43e97b,#38f9d7)','linear-gradient(135deg,#fa709a,#fee140)','linear-gradient(135deg,#667eea,#764ba2)','linear-gradient(135deg,#1877F2,#42b72a)','linear-gradient(135deg,#f7971e,#ffd200)','linear-gradient(135deg,#ee0979,#ff6a00)','linear-gradient(135deg,#00b09b,#96c93d)'];
-  grid.innerHTML = colors.map((bg,i)=>`<div class="photo-thumb"><div class="ph-placeholder" style="background:${bg}">${['🌅','🏖️','🎉','🍕','🌿','🎨','🏃','🌙','✨'][i]}</div></div>`).join('');
+  // Load real user photos from Firestore if available
+  const uid = window._currentUser?.uid;
+  if (uid) {
+    import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js').then(({collection, query, where, getDocs, orderBy}) => {
+      // Try to get photos from posts
+    }).catch(()=>{});
+  }
+  // Show uploaded photos from posts
+  const userPhotos = (window._firestorePosts || [])
+    .filter(p => p.uid === window._currentUser?.uid && p.image)
+    .map(p => p.image);
+
+  if (userPhotos.length > 0) {
+    grid.innerHTML = userPhotos.map(url =>
+      `<div class="photo-thumb"><img src="${url}" style="width:100%;height:100%;object-fit:cover;border-radius:8px;" onerror="this.parentElement.style.display='none'"/></div>`
+    ).join('');
+  } else {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--gray-text);padding:20px;font-size:14px;">📷 Publicá fotos para que aparezcan aquí</div>';
+  }
 }
 
 // ══ MATCH ══
@@ -3087,22 +3102,9 @@ window.closeGroupPage = function() {
 });
 
 // ══ MESSENGER ══
-const MSP_CONTACTS = [
-  { id:'mc1', name:'María García', emoji:'👩', bg:'linear-gradient(135deg,#f093fb,#f5576c)', online:true, lastMsg:'¡Qué hermoso día! 🌞', time:'2 min', unread:true },
-  { id:'mc2', name:'Carlos Rodríguez', emoji:'👨', bg:'linear-gradient(135deg,#4facfe,#00f2fe)', online:true, lastMsg:'¿Viste el partido?', time:'15 min', unread:true },
-  { id:'mc3', name:'Ana Martínez', emoji:'👩‍🦰', bg:'linear-gradient(135deg,#43e97b,#38f9d7)', online:false, lastMsg:'Gracias por el mensaje 💙', time:'1 h', unread:false },
-  { id:'mc4', name:'Luis Pérez', emoji:'👨‍💻', bg:'linear-gradient(135deg,#fa709a,#fee140)', online:true, lastMsg:'Dale, nos vemos mañana', time:'3 h', unread:false },
-  { id:'mc5', name:'Sofía López', emoji:'👩‍🎨', bg:'linear-gradient(135deg,#667eea,#764ba2)', online:false, lastMsg:'😂😂😂', time:'ayer', unread:false },
-  { id:'mc6', name:'Valentina R.', emoji:'👩‍🦱', bg:'linear-gradient(135deg,#ee0979,#ff6a00)', online:true, lastMsg:'¡Felicitaciones! 🎉', time:'ayer', unread:true },
-];
-const mspConversations = {
-  mc1:[{from:'them',text:'¡Hola! ¿Cómo estás? 😊',time:'10:30'},{from:'me',text:'¡Todo bien! ¿Y vos?',time:'10:31'},{from:'them',text:'¡Qué hermoso día! 🌞',time:'10:45'}],
-  mc2:[{from:'them',text:'¡Hola! ¿Viste el partido?',time:'ayer'},{from:'me',text:'Sí, estuvo increíble 🔥',time:'ayer'},{from:'them',text:'¿Viste el partido?',time:'15 min'}],
-  mc3:[{from:'me',text:'Hola Ana, ¿cómo estás?',time:'ayer'},{from:'them',text:'Gracias por el mensaje 💙',time:'ayer'}],
-  mc4:[{from:'them',text:'Hola! Nos reunimos mañana?',time:'hace 3h'},{from:'me',text:'Dale, nos vemos mañana',time:'hace 3h'}],
-  mc5:[{from:'them',text:'¡Mirá esto jajaja!',time:'ayer'},{from:'me',text:'Jaja muy bueno',time:'ayer'},{from:'them',text:'😂😂😂',time:'ayer'}],
-  mc6:[{from:'them',text:'¡Felicitaciones por tu logro! 🎉',time:'ayer'},{from:'me',text:'¡Muchas gracias! 🙏',time:'ayer'}],
-};
+const MSP_CONTACTS = [];
+const mspConversations = {};
+
 let mspCurrentContact = null;
 let _mspContactsFiltered = [...MSP_CONTACTS];
 
@@ -3225,11 +3227,8 @@ window.openNewChat = function() {
   window.showToast('💬 Nuevo mensaje — próximamente', '');
 };
 
-// Show messenger badge on load (3 unread)
-setTimeout(() => {
-  const badge = document.getElementById('messengerBadge');
-  if (badge) { badge.style.display = 'flex'; }
-}, 1500);
+// No sample unread messages
+
 </script>
 </body>
 </html>
