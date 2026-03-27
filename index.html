@@ -270,6 +270,60 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,sa
 .pill{display:inline-flex;align-items:center;gap:4px;background:var(--bg);border-radius:20px;padding:4px 12px;font-size:13px;font-weight:600;color:var(--text2);cursor:pointer;border:1px solid var(--border);transition:all .15s}
 .pill:hover,.pill.active{background:#FEE2E5;color:var(--k);border-color:#FECDD3}
 
+/* ── STORIES ── */
+.stories-bar{display:flex;gap:10px;overflow-x:auto;padding:12px 16px;background:var(--white);border-radius:8px;border:1px solid var(--border);margin-bottom:16px;scrollbar-width:none}
+.stories-bar::-webkit-scrollbar{display:none}
+.story-item{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;flex-shrink:0;width:72px}
+.story-ring{width:62px;height:62px;border-radius:50%;padding:2px;background:linear-gradient(135deg,var(--k),#FF8FA3);position:relative;transition:transform .15s}
+.story-ring:hover{transform:scale(1.07)}
+.story-ring.seen{background:linear-gradient(135deg,#ccc,#999)}
+.story-ring.create-ring{background:linear-gradient(135deg,#E4E6EB,#E4E6EB)}
+.story-av{width:100%;height:100%;border-radius:50%;background:var(--bg);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:#fff;border:3px solid var(--white);overflow:hidden;background-size:cover;background-position:center}
+.story-plus{position:absolute;bottom:0;right:0;width:22px;height:22px;border-radius:50%;background:var(--k);border:2px solid var(--white);display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff;font-weight:700;line-height:1}
+.story-label{font-size:11px;font-weight:600;color:var(--text2);text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:72px}
+
+/* STORY VIEWER */
+.story-viewer{display:none;position:fixed;inset:0;background:#000;z-index:1000;flex-direction:column}
+.story-viewer.open{display:flex}
+.sv-progress{display:flex;gap:3px;padding:12px 12px 6px;position:relative;z-index:2}
+.sv-bar{flex:1;height:3px;background:rgba(255,255,255,.35);border-radius:2px;overflow:hidden}
+.sv-bar-fill{height:100%;background:#fff;width:0%;transition:width linear}
+.sv-bar-fill.done{width:100%}
+.sv-header{display:flex;align-items:center;gap:10px;padding:6px 12px 10px;position:relative;z-index:2}
+.sv-av{width:38px;height:38px;border-radius:50%;border:2px solid #fff;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:14px;flex-shrink:0;background-size:cover;background-position:center}
+.sv-name{color:#fff;font-size:14px;font-weight:700}
+.sv-time{color:rgba(255,255,255,.7);font-size:12px;margin-top:1px}
+.sv-close{margin-left:auto;background:none;border:none;color:#fff;font-size:24px;cursor:pointer;padding:4px;line-height:1}
+.sv-body{flex:1;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.sv-media{max-width:100%;max-height:100%;object-fit:contain;display:none}
+.sv-media.active{display:block}
+.sv-text-slide{display:none;position:absolute;inset:0;align-items:center;justify-content:center;flex-direction:column;padding:32px;text-align:center}
+.sv-text-slide.active{display:flex}
+.sv-text-content{font-size:24px;font-weight:700;color:#fff;line-height:1.4;text-shadow:0 2px 8px rgba(0,0,0,.5);max-width:400px}
+.sv-tap-left{position:absolute;left:0;top:0;width:40%;height:100%;cursor:pointer;z-index:3}
+.sv-tap-right{position:absolute;right:0;top:0;width:40%;height:100%;cursor:pointer;z-index:3}
+
+/* STORY CREATE MODAL */
+.sc-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:600;align-items:center;justify-content:center}
+.sc-ov.open{display:flex}
+.sc-m{background:var(--white);border-radius:16px;width:100%;max-width:420px;margin:20px;overflow:hidden;animation:popIn .2s ease}
+.sc-h{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border)}
+.sc-h-title{font-size:17px;font-weight:700}
+.sc-tabs{display:flex;gap:0;border-bottom:1px solid var(--border)}
+.sc-tab{flex:1;padding:10px;border:none;background:none;font-size:14px;font-weight:600;color:var(--text2);cursor:pointer;font-family:'Inter',sans-serif;border-bottom:3px solid transparent;transition:all .15s}
+.sc-tab.active{color:var(--k);border-bottom-color:var(--k)}
+.sc-body{padding:20px}
+.sc-preview{width:100%;height:200px;border-radius:10px;background:linear-gradient(135deg,#f0f2f5,#e4e6eb);display:flex;align-items:center;justify-content:center;font-size:56px;margin-bottom:16px;position:relative;overflow:hidden;cursor:pointer;border:2px dashed var(--border)}
+.sc-preview img{width:100%;height:100%;object-fit:cover;border-radius:8px}
+.sc-preview-hint{text-align:center;color:var(--text2);font-size:14px;font-weight:600;pointer-events:none}
+.sc-text-inp{width:100%;padding:12px;border:1px solid var(--border);border-radius:8px;font-size:18px;font-weight:600;font-family:'Inter',sans-serif;outline:none;resize:none;min-height:100px;margin-bottom:12px}
+.sc-text-inp:focus{border-color:var(--k)}
+.sc-colors{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.sc-color{width:28px;height:28px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:border-color .15s;flex-shrink:0}
+.sc-color.sel{border-color:var(--text)}
+.sc-pub{width:100%;padding:13px;background:var(--k);border:none;border-radius:8px;color:#fff;font-size:16px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:background .15s}
+.sc-pub:hover{background:var(--k2)}
+
 @media(max-width:1100px){.layout{grid-template-columns:240px 1fr 0}.sidebar-right{display:none}}
 @media(max-width:768px){.layout{grid-template-columns:1fr}.sidebar-left{display:none}.nav-center{display:none}.main-content{padding:8px}}
 </style>
@@ -362,6 +416,58 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,sa
   </div>
 </div>
 
+<!-- STORY VIEWER -->
+<div class="story-viewer" id="story-viewer">
+  <div class="sv-progress" id="sv-progress"></div>
+  <div class="sv-header">
+    <div class="sv-av" id="sv-av"></div>
+    <div>
+      <div class="sv-name" id="sv-name"></div>
+      <div class="sv-time" id="sv-time"></div>
+    </div>
+    <button class="sv-close" onclick="closeStoryViewer()">✕</button>
+  </div>
+  <div class="sv-body" id="sv-body">
+    <div class="sv-tap-left" onclick="storyPrev()"></div>
+    <div class="sv-tap-right" onclick="storyNext()"></div>
+    <img class="sv-media" id="sv-img" src="" alt="">
+    <div class="sv-text-slide active" id="sv-text-slide">
+      <div class="sv-text-content" id="sv-text-content"></div>
+    </div>
+  </div>
+</div>
+
+<!-- STORY CREATE MODAL -->
+<div class="sc-ov" id="sc-ov" onclick="if(event.target===this)closeStoryCreate()">
+  <div class="sc-m">
+    <div class="sc-h">
+      <span class="sc-h-title">➕ Crear historia</span>
+      <button class="mx" onclick="closeStoryCreate()">✕</button>
+    </div>
+    <div class="sc-tabs">
+      <button class="sc-tab active" id="sct-photo" onclick="switchStoryTab('photo')">📷 Foto</button>
+      <button class="sc-tab" id="sct-text" onclick="switchStoryTab('text')">✏️ Texto</button>
+    </div>
+    <div class="sc-body">
+      <!-- Photo tab -->
+      <div id="sc-photo-tab">
+        <div class="sc-preview" id="sc-photo-preview" onclick="document.getElementById('sc-file').click()">
+          <div class="sc-preview-hint"><div style="font-size:40px;margin-bottom:8px">📷</div>Tocá para subir una foto</div>
+        </div>
+        <input type="file" id="sc-file" accept="image/*" style="display:none" onchange="handleStoryPhoto(event)">
+        <input class="sc-text-inp" id="sc-photo-caption" placeholder="Agregá un texto encima (opcional)..." style="min-height:60px;font-size:15px;font-weight:400">
+      </div>
+      <!-- Text tab -->
+      <div id="sc-text-tab" style="display:none">
+        <textarea class="sc-text-inp" id="sc-text-content" placeholder="¿Qué querés contar?" rows="4"></textarea>
+        <div style="font-size:13px;font-weight:600;color:var(--text2);margin-bottom:8px">Color de fondo:</div>
+        <div class="sc-colors" id="sc-colors"></div>
+      </div>
+      <button class="sc-pub" onclick="publishStory()">Publicar historia (24 hs)</button>
+    </div>
+  </div>
+</div>
+
 <!-- TOAST -->
 <div class="toast" id="toast-el"></div>
 
@@ -408,6 +514,8 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,sa
 
     <!-- ── FEED ── -->
     <div class="view active" id="view-feed">
+      <!-- STORIES BAR -->
+      <div class="stories-bar" id="stories-bar"></div>
       <div class="create-post">
         <div class="cp-top">
           <div class="cp-av" id="cp-av">G</div>
@@ -689,6 +797,8 @@ function updateUI(user){
     renderLikesReceived(user);
     // render matches
     renderMatches(user);
+    // render stories bar
+    if(window.renderStoriesBar) window.renderStoriesBar();
   } else {
     navRight.innerHTML=`<button class="btn-nav ghost" onclick="openAuth('login')">Entrar</button><button class="btn-nav" onclick="openAuth('register')">Crear cuenta</button>`;
     locked.classList.add('show');
@@ -1219,10 +1329,280 @@ window.addLocation=()=>{ const inp=document.getElementById('cp-txt'); const user
 window.autoResize=(el)=>{ el.style.height='auto'; el.style.height=el.scrollHeight+'px'; };
 window.handleSearch=(val)=>{ if(val.length>1) toast('🔍 Búsqueda próximamente'); };
 
-document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ closeAuth(); if(window.closeEP)closeEP(); } });
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ closeAuth(); if(window.closeEP)closeEP(); closeStoryViewer(); closeStoryCreate(); } });
 document.addEventListener('click',e=>{
   if(!e.target.closest('.react-popup')&&!e.target.closest('.pact')) document.querySelectorAll('.react-popup.open').forEach(el=>el.classList.remove('open'));
 });
 </script>
-</body>
-</html>
+
+<script>
+// ════════════════════════════════════════════
+// ── STORIES SYSTEM ──
+// ════════════════════════════════════════════
+
+const STORY_TTL = 24 * 60 * 60 * 1000; // 24 hours in ms
+const STORY_DURATION = 5000; // ms per story slide
+const SC_BG_COLORS = ['#E8273A','#1877F2','#00B09B','#7B2FBE','#F7971E','#111','#fff'];
+
+// ── STORAGE HELPERS ──
+function getStories(uid){ return JSON.parse(localStorage.getItem('kstories-'+uid)||'[]'); }
+function saveStories(uid,arr){ localStorage.setItem('kstories-'+uid,JSON.stringify(arr)); }
+
+// Remove expired stories from a user's list
+function purgeExpired(uid){
+  const now=Date.now();
+  const arr=getStories(uid).filter(s=>now-s.ts < STORY_TTL);
+  saveStories(uid,arr);
+  return arr;
+}
+
+// ── RENDER STORIES BAR ──
+function renderStoriesBar(){
+  const user=window._auth&&window._auth.currentUser;
+  const bar=document.getElementById('stories-bar');
+  if(!bar) return;
+  bar.innerHTML='';
+
+  // "Create story" button
+  const profile=user?JSON.parse(localStorage.getItem('kp-'+user.uid)||'{}'):{};
+  const myInitial=profile.name?profile.name.charAt(0):'G';
+  const myPhoto=profile.photo||'';
+  const createItem=document.createElement('div');
+  createItem.className='story-item';
+  createItem.innerHTML=`
+    <div class="story-ring create-ring" onclick="openStoryCreate()">
+      <div class="sv-av story-av" style="${myPhoto?'background-image:url('+myPhoto+');background-size:cover':'background:linear-gradient(135deg,var(--k),#FF8FA3)'}">
+        ${myPhoto?'':myInitial}
+      </div>
+      <div class="story-plus">+</div>
+    </div>
+    <span class="story-label">Tu historia</span>`;
+  bar.appendChild(createItem);
+
+  // My own stories if any
+  if(user){
+    const myStories=purgeExpired(user.uid);
+    if(myStories.length){
+      const seenKey='kstories-seen-'+user.uid+'-'+user.uid;
+      const seen=localStorage.getItem(seenKey)==='1';
+      const item=document.createElement('div');
+      item.className='story-item';
+      item.innerHTML=`
+        <div class="story-ring${seen?' seen':''}" onclick="openStoryViewer('${user.uid}','${esc(profile.name||'Yo')}','${myPhoto}',0)">
+          <div class="story-av" style="${myPhoto?'background-image:url('+myPhoto+');background-size:cover':'background:linear-gradient(135deg,var(--k),#FF8FA3)'}">
+            ${myPhoto?'':myInitial}
+          </div>
+        </div>
+        <span class="story-label">${esc(profile.name||'Yo')}</span>`;
+      bar.appendChild(item);
+    }
+  }
+
+  // Demo / other users' stories
+  const demoStoryUsers=[
+    {id:'demo1',name:'Valentina',initial:'V',grad:'linear-gradient(135deg,#F7971E,#FFD200)',stories:[{type:'text',text:'¡Buen día desde Montevideo! ☀️',bg:'#E8273A',ts:Date.now()-3600000},{type:'text',text:'¿Quién quiere un mate?',bg:'#00B09B',ts:Date.now()-1800000}]},
+    {id:'demo2',name:'Sebastián',initial:'S',grad:'linear-gradient(135deg,#1877F2,#42B0FF)',stories:[{type:'text',text:'Tarde de asado 🔥🥩',bg:'#F7971E',ts:Date.now()-7200000}]},
+    {id:'demo3',name:'Camila',initial:'C',grad:'linear-gradient(135deg,#7B2FBE,#C77DFF)',stories:[{type:'text',text:'Nueva semana, nueva energía 💪',bg:'#7B2FBE',ts:Date.now()-900000}]},
+    {id:'demo4',name:'Mateo',initial:'M',grad:'linear-gradient(135deg,#00B09B,#96C93D)',stories:[{type:'text',text:'River de noche... qué linda ciudad 🌆',bg:'#111',ts:Date.now()-5400000}]},
+  ];
+  demoStoryUsers.forEach(u=>{
+    const seenKey='kstories-seen-demo-'+u.id;
+    const seen=localStorage.getItem(seenKey)==='1';
+    const item=document.createElement('div');
+    item.className='story-item';
+    item.innerHTML=`
+      <div class="story-ring${seen?' seen':''}" onclick="openDemoStoryViewer('${u.id}')">
+        <div class="story-av" style="background:${u.grad}">${u.initial}</div>
+      </div>
+      <span class="story-label">${u.name}</span>`;
+    bar.appendChild(item);
+    // store demo stories locally for viewer
+    window._demoStories=window._demoStories||{};
+    window._demoStories[u.id]={...u};
+  });
+}
+window.renderStoriesBar=renderStoriesBar;
+
+// ── OPEN STORY VIEWER ──
+let _svStories=[], _svIdx=0, _svTimer=null, _svStart=0, _svAnimFrame=null;
+
+function openStoryViewer(uid, name, photo, startIdx){
+  const stories=uid.startsWith('demo')?[]:(purgeExpired(uid)||[]);
+  if(!stories.length) return;
+  _openViewer(stories, name, photo, startIdx||0, uid);
+}
+window.openStoryViewer=openStoryViewer;
+
+function openDemoStoryViewer(demoId){
+  const u=window._demoStories&&window._demoStories[demoId];
+  if(!u) return;
+  localStorage.setItem('kstories-seen-demo-'+demoId,'1');
+  _openViewer(u.stories, u.name, '', 0, 'demo-'+demoId);
+  renderStoriesBar();
+}
+window.openDemoStoryViewer=openDemoStoryViewer;
+
+function _openViewer(stories, name, photo, startIdx, ownerKey){
+  _svStories=stories; _svIdx=startIdx; window._svOwnerKey=ownerKey;
+  const viewer=document.getElementById('story-viewer');
+  viewer.classList.add('open');
+  document.getElementById('sv-name').textContent=name;
+  if(photo){
+    document.getElementById('sv-av').style.cssText=`background-image:url(${photo});background-size:cover`;
+    document.getElementById('sv-av').textContent='';
+  } else {
+    document.getElementById('sv-av').style.cssText=`background:linear-gradient(135deg,var(--k),#FF8FA3)`;
+    document.getElementById('sv-av').textContent=name.charAt(0);
+  }
+  _buildProgressBars();
+  _showStorySlide(_svIdx);
+}
+
+function _buildProgressBars(){
+  const prog=document.getElementById('sv-progress');
+  prog.innerHTML='';
+  _svStories.forEach((_,i)=>{
+    const bar=document.createElement('div'); bar.className='sv-bar';
+    const fill=document.createElement('div'); fill.className='sv-bar-fill'; fill.id='svb-'+i;
+    bar.appendChild(fill); prog.appendChild(bar);
+  });
+}
+
+function _showStorySlide(idx){
+  if(idx>=_svStories.length){ closeStoryViewer(); return; }
+  _svIdx=idx;
+  const s=_svStories[idx];
+  const img=document.getElementById('sv-img');
+  const txtSlide=document.getElementById('sv-text-slide');
+  const txtContent=document.getElementById('sv-text-content');
+
+  // Time ago
+  const mins=Math.round((Date.now()-s.ts)/60000);
+  document.getElementById('sv-time').textContent=mins<60?mins+'m atrás':Math.round(mins/60)+'h atrás';
+
+  // Show correct media type
+  if(s.type==='photo'&&s.data){
+    img.src=s.data; img.className='sv-media active';
+    txtSlide.className='sv-text-slide';
+    document.getElementById('sv-body').style.background='#000';
+  } else {
+    img.className='sv-media';
+    txtContent.textContent=s.text||s.caption||'';
+    txtSlide.className='sv-text-slide active';
+    document.getElementById('sv-body').style.background=s.bg||'#E8273A';
+  }
+
+  // Mark previous bars as done
+  for(let i=0;i<_svStories.length;i++){
+    const fill=document.getElementById('svb-'+i);
+    if(!fill) continue;
+    fill.style.transition='none';
+    fill.style.width=i<idx?'100%':'0%';
+  }
+
+  // Animate current bar
+  clearTimeout(_svTimer); cancelAnimationFrame(_svAnimFrame);
+  _svStart=Date.now();
+  const fill=document.getElementById('svb-'+idx);
+  if(fill){
+    fill.style.transition=`width ${STORY_DURATION}ms linear`;
+    fill.style.width='100%';
+  }
+  _svTimer=setTimeout(()=>_showStorySlide(idx+1), STORY_DURATION);
+}
+
+function storyNext(){ clearTimeout(_svTimer); _showStorySlide(_svIdx+1); }
+function storyPrev(){ clearTimeout(_svTimer); _showStorySlide(_svIdx>0?_svIdx-1:0); }
+window.storyNext=storyNext; window.storyPrev=storyPrev;
+
+function closeStoryViewer(){
+  document.getElementById('story-viewer').classList.remove('open');
+  clearTimeout(_svTimer); cancelAnimationFrame(_svAnimFrame);
+  // mark seen
+  if(window._svOwnerKey){
+    const user=window._auth&&window._auth.currentUser;
+    if(user&&!window._svOwnerKey.startsWith('demo'))
+      localStorage.setItem('kstories-seen-'+user.uid+'-'+window._svOwnerKey,'1');
+    renderStoriesBar();
+  }
+}
+window.closeStoryViewer=closeStoryViewer;
+
+// ── STORY CREATE ──
+let _scTab='photo', _scPhotoData=null, _scSelectedBg='#E8273A';
+
+function openStoryCreate(){
+  const user=window._auth&&window._auth.currentUser;
+  if(!user){ openAuth('login'); return; }
+  _scPhotoData=null;
+  document.getElementById('sc-photo-preview').innerHTML=`<div class="sc-preview-hint"><div style="font-size:40px;margin-bottom:8px">📷</div>Tocá para subir una foto</div>`;
+  document.getElementById('sc-photo-caption').value='';
+  document.getElementById('sc-text-content').value='';
+  // Build color swatches
+  const colorsCont=document.getElementById('sc-colors');
+  colorsCont.innerHTML='';
+  SC_BG_COLORS.forEach((c,i)=>{
+    const sw=document.createElement('div');
+    sw.className='sc-color'+(i===0?' sel':'');
+    sw.style.background=c; sw.style.border=c==='#fff'?'2px solid #ccc':'';
+    sw.onclick=()=>{ document.querySelectorAll('.sc-color').forEach(x=>x.classList.remove('sel')); sw.classList.add('sel'); _scSelectedBg=c; };
+    colorsCont.appendChild(sw);
+  });
+  _scSelectedBg=SC_BG_COLORS[0];
+  switchStoryTab('photo');
+  document.getElementById('sc-ov').classList.add('open');
+}
+window.openStoryCreate=openStoryCreate;
+
+function closeStoryCreate(){ document.getElementById('sc-ov').classList.remove('open'); }
+window.closeStoryCreate=closeStoryCreate;
+
+function switchStoryTab(tab){
+  _scTab=tab;
+  document.getElementById('sct-photo').className='sc-tab'+(tab==='photo'?' active':'');
+  document.getElementById('sct-text').className='sc-tab'+(tab==='text'?' active':'');
+  document.getElementById('sc-photo-tab').style.display=tab==='photo'?'':'none';
+  document.getElementById('sc-text-tab').style.display=tab==='text'?'':'none';
+}
+window.switchStoryTab=switchStoryTab;
+
+function handleStoryPhoto(e){
+  const f=e.target.files[0]; if(!f)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    _scPhotoData=ev.target.result;
+    const prev=document.getElementById('sc-photo-preview');
+    prev.innerHTML=`<img src="${_scPhotoData}" style="width:100%;height:100%;object-fit:cover;border-radius:8px">`;
+  };
+  reader.readAsDataURL(f);
+}
+window.handleStoryPhoto=handleStoryPhoto;
+
+function publishStory(){
+  const user=window._auth&&window._auth.currentUser;
+  if(!user){ closeStoryCreate(); openAuth('login'); return; }
+  let story;
+  if(_scTab==='photo'){
+    if(!_scPhotoData){ toast('📷 Seleccioná una foto primero'); return; }
+    story={ type:'photo', data:_scPhotoData, caption:document.getElementById('sc-photo-caption').value.trim(), ts:Date.now() };
+  } else {
+    const txt=document.getElementById('sc-text-content').value.trim();
+    if(!txt){ toast('✏️ Escribí algo para tu historia'); return; }
+    story={ type:'text', text:txt, bg:_scSelectedBg, ts:Date.now() };
+  }
+  const existing=purgeExpired(user.uid);
+  existing.push(story);
+  saveStories(user.uid, existing);
+  closeStoryCreate();
+  toast('✅ Historia publicada — dura 24 hs');
+  renderStoriesBar();
+  // clear seen mark for own story so it shows fresh
+  localStorage.removeItem('kstories-seen-'+user.uid+'-'+user.uid);
+}
+window.publishStory=publishStory;
+
+// Init stories bar on load
+document.addEventListener('DOMContentLoaded', ()=>{ setTimeout(renderStoriesBar, 300); });
+// Also re-render when auth state changes (hook into existing system)
+const _origRenderStoriesBar=window.renderStoriesBar;
+</script>
