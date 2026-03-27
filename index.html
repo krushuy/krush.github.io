@@ -556,6 +556,59 @@
     .group-page-feed {}
     @media(max-width:900px){ .group-page-content { grid-template-columns:1fr; } .group-page-sidebar { display:none; } }
 
+    /* ── Messenger Panel ── */
+    .msp-overlay { display:none; }
+    .msp-box { position:fixed; bottom:0; right:80px; width:340px; height:520px; background:white; border-radius:14px 14px 0 0; box-shadow:0 4px 32px rgba(0,0,0,0.22); z-index:1200; display:flex; flex-direction:column; overflow:hidden; animation:slideUp .25s ease; }
+    .msp-header { padding:14px 16px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--gray-border); }
+    .msp-title { font-family:'Nunito',sans-serif; font-size:20px; font-weight:900; color:var(--dark); }
+    .msp-icon-btn { width:34px; height:34px; border-radius:50%; background:var(--gray-bg); border:none; cursor:pointer; font-size:15px; display:flex; align-items:center; justify-content:center; transition:background .2s; }
+    .msp-icon-btn:hover { background:#e4e6eb; }
+    .msp-search { padding:10px 14px; border-bottom:1px solid var(--gray-border); }
+    .msp-search input { width:100%; padding:9px 14px; border-radius:20px; border:none; background:var(--gray-bg); font-size:14px; outline:none; }
+    .msp-section-label { padding:8px 16px 4px; font-size:12px; font-weight:700; color:var(--gray-text); text-transform:uppercase; letter-spacing:.5px; }
+    #mspContactList { overflow-y:auto; flex:1; }
+    .msp-contact-item { display:flex; align-items:center; gap:12px; padding:10px 14px; cursor:pointer; border-radius:10px; margin:2px 6px; transition:background .15s; }
+    .msp-contact-item:hover { background:var(--gray-bg); }
+    .msp-contact-item.unread .msp-contact-name { font-weight:800; color:var(--dark); }
+    .msp-contact-item.unread .msp-last-msg { font-weight:700; color:var(--dark); }
+    .msp-contact-avatar { width:46px; height:46px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0; position:relative; overflow:hidden; }
+    .msp-contact-avatar img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
+    .msp-contact-online { position:absolute; bottom:1px; right:1px; width:12px; height:12px; border-radius:50%; background:var(--green); border:2px solid white; }
+    .msp-contact-info { flex:1; min-width:0; }
+    .msp-contact-name { font-size:14px; font-weight:600; color:var(--dark); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .msp-last-msg { font-size:12px; color:var(--gray-text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:2px; }
+    .msp-contact-meta { display:flex; flex-direction:column; align-items:flex-end; gap:4px; flex-shrink:0; }
+    .msp-time { font-size:11px; color:var(--gray-text); }
+    .msp-unread-dot { width:10px; height:10px; border-radius:50%; background:var(--blue); }
+    /* Chat view */
+    #mspChatView { display:none; flex-direction:column; }
+    #mspChatView.active { display:flex; flex:1; overflow:hidden; }
+    .msp-chat-header { padding:10px 14px; border-bottom:1px solid var(--gray-border); display:flex; align-items:center; gap:10px; }
+    .msp-back { background:none; border:none; font-size:18px; cursor:pointer; color:var(--blue); font-weight:800; padding:4px; }
+    .msp-chat-avatar { width:38px; height:38px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; overflow:hidden; }
+    .msp-chat-avatar img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
+    .msp-chat-name { font-size:14px; font-weight:800; color:var(--dark); }
+    .msp-chat-status { font-size:12px; color:var(--green); font-weight:600; }
+    .msp-messages { flex:1; overflow-y:auto; padding:12px 14px; display:flex; flex-direction:column; gap:8px; }
+    .msp-msg { display:flex; flex-direction:column; max-width:75%; }
+    .msp-msg.sent { align-self:flex-end; align-items:flex-end; }
+    .msp-msg.received { align-self:flex-start; align-items:flex-start; }
+    .msp-bubble { padding:10px 14px; border-radius:18px; font-size:14px; line-height:1.4; }
+    .msp-msg.sent .msp-bubble { background:var(--blue); color:white; border-bottom-right-radius:4px; }
+    .msp-msg.received .msp-bubble { background:var(--gray-bg); color:var(--dark); border-bottom-left-radius:4px; }
+    .msp-msg-time { font-size:10px; color:var(--gray-text); margin-top:2px; padding:0 4px; }
+    .msp-input-row { padding:10px 12px; border-top:1px solid var(--gray-border); display:flex; align-items:center; gap:6px; }
+    .msp-media-btn { width:34px; height:34px; border:none; background:none; cursor:pointer; font-size:18px; border-radius:50%; transition:background .2s; }
+    .msp-media-btn:hover { background:var(--gray-bg); }
+    .msp-input { flex:1; padding:9px 14px; border-radius:20px; border:none; background:var(--gray-bg); font-size:14px; outline:none; font-family:'Lato',sans-serif; }
+    .msp-send-btn { width:34px; height:34px; border-radius:50%; background:var(--blue); color:white; border:none; font-size:14px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+    .msp-send-btn:hover { background:var(--blue-dark); }
+    .msp-typing { display:flex; gap:4px; padding:8px 14px; align-items:center; }
+    .msp-typing span { width:8px; height:8px; border-radius:50%; background:var(--gray-text); animation:typing .9s infinite; }
+    .msp-typing span:nth-child(2) { animation-delay:.2s; }
+    .msp-typing span:nth-child(3) { animation-delay:.4s; }
+    @keyframes typing { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-6px)} }
+
     /* ── Report row ── */
     .report-row { display:flex; align-items:center; gap:14px; padding:14px 20px; border-bottom:1px solid #f0f2f5; }
     .report-row:last-child { border-bottom:none; }
@@ -593,6 +646,10 @@
     </div>
     <div class="nav-right">
       <span class="realtime-badge"><span class="realtime-dot"></span>En vivo</span>
+      <button class="nav-icon-btn" id="messengerNavBtn" onclick="toggleMessenger()" title="Mensajes" style="position:relative;">
+        💬
+        <span id="messengerBadge" style="display:none;position:absolute;top:2px;right:2px;background:#e44040;color:white;border-radius:50%;width:16px;height:16px;font-size:10px;font-weight:800;align-items:center;justify-content:center;">3</span>
+      </button>
       <div id="navAvatarWrap"></div>
       <button onclick="handleLogout()" style="background:none;border:1.5px solid #e44040;color:#e44040;padding:6px 14px;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px;">Salir</button>
     </div>
@@ -1179,6 +1236,50 @@
       </div>
     </div>
   </div>
+
+<!-- ══ MESSENGER PANEL ══ -->
+<div id="messengerPanel" style="display:none;">
+  <div class="msp-overlay" onclick="closeMessenger()"></div>
+  <div class="msp-box">
+    <div class="msp-header">
+      <span class="msp-title">💬 Messenger</span>
+      <div style="display:flex;gap:6px;">
+        <button class="msp-icon-btn" title="Nuevo mensaje" onclick="openNewChat()">✏️</button>
+        <button class="msp-icon-btn" onclick="closeMessenger()">✕</button>
+      </div>
+    </div>
+    <div class="msp-search">
+      <input type="text" id="mspSearch" placeholder="🔍 Buscar en Messenger..." oninput="filterMspContacts()"/>
+    </div>
+    <!-- Views: list vs chat -->
+    <div id="mspListView">
+      <div class="msp-section-label">Mensajes recientes</div>
+      <div id="mspContactList"></div>
+    </div>
+    <div id="mspChatView" style="display:none;flex-direction:column;height:100%;">
+      <div class="msp-chat-header">
+        <button class="msp-back" onclick="closeMspChat()">← </button>
+        <div class="msp-chat-avatar" id="mspChatAvatar"></div>
+        <div>
+          <div class="msp-chat-name" id="mspChatName"></div>
+          <div class="msp-chat-status" id="mspChatStatus">En línea</div>
+        </div>
+        <div style="margin-left:auto;display:flex;gap:6px;">
+          <button class="msp-icon-btn">📞</button>
+          <button class="msp-icon-btn">📹</button>
+          <button class="msp-icon-btn">ℹ️</button>
+        </div>
+      </div>
+      <div class="msp-messages" id="mspMessages"></div>
+      <div class="msp-input-row">
+        <button class="msp-media-btn" title="Foto">📎</button>
+        <button class="msp-media-btn" title="Emoji">😊</button>
+        <input class="msp-input" id="mspInput" placeholder="Aa" onkeydown="if(event.key==='Enter')sendMspMsg()"/>
+        <button class="msp-send-btn" onclick="sendMspMsg()">➤</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
@@ -2116,12 +2217,24 @@
       const postsSnap = await getDocs(collection(db, 'posts'));
       const usersArr = [];
       usersSnap.forEach(d => usersArr.push({id: d.id, ...d.data()}));
-      window._adminUsers = usersArr;
-      document.getElementById('statUsers').textContent = usersArr.length || '0';
+
+      // Auto-purge fábrica users from Firestore permanently
+      const fabricaUsers = usersArr.filter(u => {
+        const name = ((u.firstName||'') + ' ' + (u.lastName||'')).toLowerCase();
+        const email = (u.email||'').toLowerCase();
+        return name.includes('fabrica') || name.includes('fábrica') || email.includes('fabrica') || email.includes('fábrica') || name.includes('de prueba') || name.includes('test') && email.includes('fabrica');
+      });
+      for (const fu of fabricaUsers) {
+        try { await deleteDoc(doc(db, 'users', fu.id)); } catch(e) {}
+      }
+      const cleanUsers = usersArr.filter(u => !fabricaUsers.some(f => f.id === u.id));
+
+      window._adminUsers = cleanUsers;
+      document.getElementById('statUsers').textContent = cleanUsers.length || '0';
       document.getElementById('statPosts').textContent = postsSnap.size || '0';
       document.getElementById('statGroups').textContent = window._adminGroups.length;
       document.getElementById('statBanned').textContent = Object.values(window._adminBanned).filter(Boolean).length;
-      renderAdminUsersTable(usersArr);
+      renderAdminUsersTable(cleanUsers);
       renderAdminPosts(postsSnap);
     } catch(e) {
       document.getElementById('statUsers').textContent = '—';
@@ -2384,10 +2497,13 @@
 
   window.adminDeleteGroup = function(gid, name) {
     showConfirm('🗑️','¿Eliminar grupo?',`Se eliminará el grupo "${name}" y todo su contenido.`, () => {
-      window._adminGroups = window._adminGroups.filter(g=>g.id!==gid);
+      window._adminGroups = window._adminGroups.filter(g => g.id !== gid);
       document.getElementById('statGroups').textContent = window._adminGroups.length;
-      renderAdminGroups();
-      showToast(`🗑️ Grupo "${name}" eliminado`,'error');
+      // Remove from DOM immediately
+      const el = document.getElementById('grp-'+gid);
+      if (el) { el.style.opacity='0'; el.style.transition='opacity .3s'; setTimeout(()=>el.remove(),300); }
+      else renderAdminGroups();
+      showToast(`🗑️ Grupo "${name}" eliminado`, 'error');
       adminLogAction('🗑️', `Grupo eliminado: ${name}`);
     });
   };
@@ -2969,6 +3085,151 @@ window.closeGroupPage = function() {
     }
   });
 });
+
+// ══ MESSENGER ══
+const MSP_CONTACTS = [
+  { id:'mc1', name:'María García', emoji:'👩', bg:'linear-gradient(135deg,#f093fb,#f5576c)', online:true, lastMsg:'¡Qué hermoso día! 🌞', time:'2 min', unread:true },
+  { id:'mc2', name:'Carlos Rodríguez', emoji:'👨', bg:'linear-gradient(135deg,#4facfe,#00f2fe)', online:true, lastMsg:'¿Viste el partido?', time:'15 min', unread:true },
+  { id:'mc3', name:'Ana Martínez', emoji:'👩‍🦰', bg:'linear-gradient(135deg,#43e97b,#38f9d7)', online:false, lastMsg:'Gracias por el mensaje 💙', time:'1 h', unread:false },
+  { id:'mc4', name:'Luis Pérez', emoji:'👨‍💻', bg:'linear-gradient(135deg,#fa709a,#fee140)', online:true, lastMsg:'Dale, nos vemos mañana', time:'3 h', unread:false },
+  { id:'mc5', name:'Sofía López', emoji:'👩‍🎨', bg:'linear-gradient(135deg,#667eea,#764ba2)', online:false, lastMsg:'😂😂😂', time:'ayer', unread:false },
+  { id:'mc6', name:'Valentina R.', emoji:'👩‍🦱', bg:'linear-gradient(135deg,#ee0979,#ff6a00)', online:true, lastMsg:'¡Felicitaciones! 🎉', time:'ayer', unread:true },
+];
+const mspConversations = {
+  mc1:[{from:'them',text:'¡Hola! ¿Cómo estás? 😊',time:'10:30'},{from:'me',text:'¡Todo bien! ¿Y vos?',time:'10:31'},{from:'them',text:'¡Qué hermoso día! 🌞',time:'10:45'}],
+  mc2:[{from:'them',text:'¡Hola! ¿Viste el partido?',time:'ayer'},{from:'me',text:'Sí, estuvo increíble 🔥',time:'ayer'},{from:'them',text:'¿Viste el partido?',time:'15 min'}],
+  mc3:[{from:'me',text:'Hola Ana, ¿cómo estás?',time:'ayer'},{from:'them',text:'Gracias por el mensaje 💙',time:'ayer'}],
+  mc4:[{from:'them',text:'Hola! Nos reunimos mañana?',time:'hace 3h'},{from:'me',text:'Dale, nos vemos mañana',time:'hace 3h'}],
+  mc5:[{from:'them',text:'¡Mirá esto jajaja!',time:'ayer'},{from:'me',text:'Jaja muy bueno',time:'ayer'},{from:'them',text:'😂😂😂',time:'ayer'}],
+  mc6:[{from:'them',text:'¡Felicitaciones por tu logro! 🎉',time:'ayer'},{from:'me',text:'¡Muchas gracias! 🙏',time:'ayer'}],
+};
+let mspCurrentContact = null;
+let _mspContactsFiltered = [...MSP_CONTACTS];
+
+window.toggleMessenger = function() {
+  const panel = document.getElementById('messengerPanel');
+  const isOpen = panel.style.display === 'block';
+  if (isOpen) { closeMessenger(); } else { openMessenger(); }
+};
+
+window.openMessenger = function() {
+  const panel = document.getElementById('messengerPanel');
+  panel.style.display = 'block';
+  // Mark badge as seen
+  const badge = document.getElementById('messengerBadge');
+  if (badge) badge.style.display = 'none';
+  renderMspContacts(MSP_CONTACTS);
+  // Reset to list view
+  closeMspChat();
+};
+
+window.closeMessenger = function() {
+  document.getElementById('messengerPanel').style.display = 'none';
+};
+
+function renderMspContacts(contacts) {
+  const list = document.getElementById('mspContactList'); if (!list) return;
+  list.innerHTML = contacts.map(c => {
+    const avatarContent = c.photo ? `<img src="${c.photo}"/>` : c.emoji;
+    return `
+    <div class="msp-contact-item ${c.unread ? 'unread' : ''}" onclick="openMspChat('${c.id}')">
+      <div class="msp-contact-avatar" style="${!c.photo ? 'background:'+c.bg : ''}">
+        ${c.photo ? `<img src="${c.photo}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"/>` : c.emoji}
+        ${c.online ? '<div class="msp-contact-online"></div>' : ''}
+      </div>
+      <div class="msp-contact-info">
+        <div class="msp-contact-name">${c.name}</div>
+        <div class="msp-last-msg">${c.lastMsg}</div>
+      </div>
+      <div class="msp-contact-meta">
+        <div class="msp-time">${c.time}</div>
+        ${c.unread ? '<div class="msp-unread-dot"></div>' : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+window.filterMspContacts = function() {
+  const q = document.getElementById('mspSearch').value.toLowerCase();
+  const filtered = MSP_CONTACTS.filter(c => c.name.toLowerCase().includes(q));
+  renderMspContacts(filtered);
+};
+
+window.openMspChat = function(contactId) {
+  const contact = MSP_CONTACTS.find(c => c.id === contactId);
+  if (!contact) return;
+  mspCurrentContact = contact;
+  contact.unread = false;
+
+  // Switch view
+  document.getElementById('mspListView').style.display = 'none';
+  const chatView = document.getElementById('mspChatView');
+  chatView.style.display = 'flex';
+  chatView.style.flexDirection = 'column';
+  chatView.style.flex = '1';
+  chatView.style.overflow = 'hidden';
+
+  // Set header
+  const avatarEl = document.getElementById('mspChatAvatar');
+  avatarEl.style.background = contact.bg;
+  avatarEl.innerHTML = contact.photo ? `<img src="${contact.photo}"/>` : contact.emoji;
+  document.getElementById('mspChatName').textContent = contact.name;
+  document.getElementById('mspChatStatus').textContent = contact.online ? '● En línea' : 'Desconectado';
+  document.getElementById('mspChatStatus').style.color = contact.online ? 'var(--green)' : 'var(--gray-text)';
+
+  renderMspMessages(contactId);
+  document.getElementById('mspInput').focus();
+};
+
+window.closeMspChat = function() {
+  document.getElementById('mspListView').style.display = 'block';
+  document.getElementById('mspChatView').style.display = 'none';
+  mspCurrentContact = null;
+  renderMspContacts(MSP_CONTACTS);
+};
+
+function renderMspMessages(contactId) {
+  const msgs = mspConversations[contactId] || [];
+  const container = document.getElementById('mspMessages');
+  container.innerHTML = msgs.map(m => `
+    <div class="msp-msg ${m.from==='me'?'sent':'received'}">
+      <div class="msp-bubble">${m.text}</div>
+      <div class="msp-msg-time">${m.time}</div>
+    </div>`).join('');
+  setTimeout(() => { container.scrollTop = container.scrollHeight; }, 50);
+}
+
+window.sendMspMsg = function() {
+  const input = document.getElementById('mspInput');
+  const text = input.value.trim(); if (!text || !mspCurrentContact) return;
+  const cid = mspCurrentContact.id;
+  if (!mspConversations[cid]) mspConversations[cid] = [];
+  const now = new Date().toLocaleTimeString('es-UY',{hour:'2-digit',minute:'2-digit'});
+  mspConversations[cid].push({ from:'me', text, time: now });
+  mspCurrentContact.lastMsg = text;
+  input.value = '';
+  renderMspMessages(cid);
+
+  // Auto reply
+  setTimeout(() => {
+    const replies = ['¡Qué bueno! 😊','Entendido 👍','¡Dale!','Jajaja sí! 😂','¿En serio? Contame más','¡Perfecto!','🙌🙌','Sí, estoy de acuerdo'];
+    const reply = replies[Math.floor(Math.random()*replies.length)];
+    const replyTime = new Date().toLocaleTimeString('es-UY',{hour:'2-digit',minute:'2-digit'});
+    mspConversations[cid].push({ from:'them', text: reply, time: replyTime });
+    mspCurrentContact.lastMsg = reply;
+    renderMspMessages(cid);
+  }, 1000 + Math.random()*800);
+};
+
+window.openNewChat = function() {
+  window.showToast('💬 Nuevo mensaje — próximamente', '');
+};
+
+// Show messenger badge on load (3 unread)
+setTimeout(() => {
+  const badge = document.getElementById('messengerBadge');
+  if (badge) { badge.style.display = 'flex'; }
+}, 1500);
 </script>
 </body>
 </html>
