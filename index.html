@@ -1856,12 +1856,6 @@
   // ══ STORIES (Firestore) ══
   let storyBg = 'linear-gradient(135deg,#667eea,#764ba2)', storyType = 'text', storyPhotoData = null, storyAutoCloseTimer = null;
 
-  const SAMPLE_STORIES = [
-    { id:'s1', name:'María G.', emoji:'👩', bg:'linear-gradient(135deg,#f093fb,#f5576c)', text:'☀️ Buenos días!', time:'hace 2h' },
-    { id:'s2', name:'Carlos R.', emoji:'👨', bg:'linear-gradient(135deg,#4facfe,#00f2fe)', text:'🏖️ En la playa!', time:'hace 4h' },
-    { id:'s3', name:'Ana M.', emoji:'👩‍🦰', bg:'linear-gradient(135deg,#43e97b,#38f9d7)', text:'🎉 Cumpleaños!', time:'hace 6h' },
-  ];
-
   function renderStories() {
     const row = document.getElementById('storiesRow'); if (!row) return;
     const addCard = row.querySelector('.add-story');
@@ -2182,20 +2176,21 @@
   }
 
   window._adminLog = [];
-  const DEFAULT_GROUPS = [
-    {id:'g1', emoji:'📸', bg:'linear-gradient(135deg,#f093fb,#f5576c)', name:'Fotografía Uruguay', desc:'Apasionados de la fotografía', category:'Arte & Cultura', members:12400, privacy:'public', created:'Ene 2026'},
-    {id:'g2', emoji:'💻', bg:'linear-gradient(135deg,#4facfe,#00f2fe)', name:'Devs de Montevideo', desc:'Comunidad de desarrolladores', category:'Tecnología', members:8700, privacy:'public', created:'Feb 2026'},
-    {id:'g3', emoji:'🏃', bg:'linear-gradient(135deg,#43e97b,#38f9d7)', name:'Running Club MVD', desc:'Corremos juntos cada mañana', category:'Deportes', members:5200, privacy:'public', created:'Ene 2026'},
-    {id:'g4', emoji:'🎨', bg:'linear-gradient(135deg,#667eea,#764ba2)', name:'Arte & Cultura UY', desc:'Arte y cultura uruguaya', category:'Arte & Cultura', members:15000, privacy:'public', created:'Mar 2026'},
-    {id:'g5', emoji:'🍕', bg:'linear-gradient(135deg,#fa709a,#fee140)', name:'Foodies Montevideo', desc:'Gastronomía y sabores locales', category:'Gastronomía', members:23000, privacy:'public', created:'Feb 2026'},
-    {id:'g6', emoji:'🎮', bg:'linear-gradient(135deg,#1877F2,#42b72a)', name:'Gamers Uruguay', desc:'Gaming community uruguaya', category:'Tecnología', members:18000, privacy:'public', created:'Mar 2026'},
-  ];
   function loadGroups() {
     try {
       const saved = localStorage.getItem('connectme_groups');
-      if (saved) return JSON.parse(saved);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        // Si tiene grupos de ejemplo viejos (ids g1-g6 hardcodeados), limpiar
+        const hasOldExamples = parsed.some(g => ['Fotografía Uruguay','Devs de Montevideo','Running Club MVD','Arte & Cultura UY','Foodies Montevideo','Gamers Uruguay'].includes(g.name));
+        if (hasOldExamples) {
+          localStorage.removeItem('connectme_groups');
+          return [];
+        }
+        return parsed;
+      }
     } catch(e) {}
-    return DEFAULT_GROUPS.map(g => ({...g}));
+    return [];
   }
   function saveGroups() {
     try { localStorage.setItem('connectme_groups', JSON.stringify(window._adminGroups)); } catch(e) {}
@@ -2518,29 +2513,9 @@
   };
 
   // ── REPORTS ──
-  const SAMPLE_REPORTS = [
-    {id:'r1', type:'Spam', reporter:'Ana M.', target:'Carlos R.', content:'Publicación con spam de productos', time:'hace 2h'},
-    {id:'r2', type:'Contenido inapropiado', reporter:'Diego P.', target:'Publicación #A12', content:'Imagen con contenido ofensivo', time:'hace 5h'},
-    {id:'r3', type:'Acoso', reporter:'Valentina R.', target:'Usuario @jperez', content:'Mensajes de acoso reiterados', time:'hace 1 día'},
-    {id:'r4', type:'Desinformación', reporter:'Pablo S.', target:'Publicación #B77', content:'Información falsa sobre salud', time:'hace 2 días'},
-  ];
-
   function renderAdminReports() {
     const container = document.getElementById('adminReportsList');
-    container.innerHTML = SAMPLE_REPORTS.map(r => `
-      <div class="report-row" id="rep-${r.id}">
-        <div style="font-size:24px;">🚨</div>
-        <div class="report-info">
-          <div style="font-weight:700;font-size:14px;">${r.target}</div>
-          <div style="font-size:13px;color:var(--gray-text);margin:2px 0;">${r.content}</div>
-          <div style="font-size:12px;color:var(--gray-text);">Reportado por ${r.reporter} · ${r.time}</div>
-        </div>
-        <span class="report-type">${r.type}</span>
-        <div class="action-btns" style="margin-left:8px;">
-          <button class="btn-action btn-edit-a" onclick="resolveReport('${r.id}')">✅ Resolver</button>
-          <button class="btn-action btn-delete-a" onclick="resolveReport('${r.id}')">🗑️ Descartar</button>
-        </div>
-      </div>`).join('');
+    container.innerHTML = '<div class="admin-empty">No hay reportes pendientes.</div>';
   }
 
   window.resolveReport = function(rid) {
@@ -2813,54 +2788,24 @@ window.copyShareLink = function() {
 
 // ══ FRIENDS ══
 function renderFriends() {
-  const sugg = [
-    {name:'Valentina R.', emoji:'👩‍🦱', bg:'linear-gradient(135deg,#f093fb,#f5576c)', mutual:'5 amigos en común'},
-    {name:'Diego M.', emoji:'👨‍🦳', bg:'linear-gradient(135deg,#4facfe,#00f2fe)', mutual:'3 amigos en común'},
-    {name:'Paula S.', emoji:'👩‍🎨', bg:'linear-gradient(135deg,#43e97b,#38f9d7)', mutual:'8 amigos en común'},
-    {name:'Ramiro T.', emoji:'👨‍💻', bg:'linear-gradient(135deg,#667eea,#764ba2)', mutual:'2 amigos en común'},
-    {name:'Florencia B.', emoji:'👩‍🦰', bg:'linear-gradient(135deg,#fa709a,#fee140)', mutual:'6 amigos en común'},
-    {name:'Nicolás G.', emoji:'👨', bg:'linear-gradient(135deg,#1877F2,#42b72a)', mutual:'4 amigos en común'},
-  ];
   const grid = document.getElementById('friendsGrid');
-  if (grid) grid.innerHTML = sugg.map(f=>`<div class="friend-card"><div class="friend-avatar" style="background:${f.bg}">${f.emoji}</div><div class="friend-name">${f.name}</div><div class="friend-mutual">${f.mutual}</div></div>`).join('');
+  if (grid) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:30px;color:var(--gray-text);font-size:15px;">👥 Las sugerencias de amigos aparecerán cuando haya más usuarios registrados.</div>';
+  }
   const myGrid = document.getElementById('myFriendsGrid');
-  if (myGrid) myGrid.innerHTML = CONTACTS.map(f=>`<div class="friend-card"><div class="friend-avatar" style="background:${f.bg}">${f.emoji}</div><div class="friend-name">${f.name}</div></div>`).join('');
+  if (myGrid) myGrid.innerHTML = '<div style="text-align:center;padding:20px;color:var(--gray-text);font-size:14px;">Aún no tenés amigos agregados.</div>';
 }
 
 // ══ WATCH ══
 function renderWatch() {
-  const videos = [
-    {emoji:'🌅',bg:'linear-gradient(135deg,#f093fb,#f5576c)',title:'Amanecer en Montevideo',views:'12K views',time:'hace 2 días'},
-    {emoji:'🎸',bg:'linear-gradient(135deg,#667eea,#764ba2)',title:'Rock en vivo – Festival 2026',views:'45K views',time:'hace 1 semana'},
-    {emoji:'🍳',bg:'linear-gradient(135deg,#fa709a,#fee140)',title:'Receta: Asado perfecto',views:'8K views',time:'hace 3 días'},
-    {emoji:'🏋️',bg:'linear-gradient(135deg,#43e97b,#38f9d7)',title:'Rutina de gym en casa',views:'22K views',time:'hace 5 días'},
-    {emoji:'🎨',bg:'linear-gradient(135deg,#4facfe,#00f2fe)',title:'Cómo pintar al óleo – Tutorial',views:'5K views',time:'hace 1 día'},
-    {emoji:'🐶',bg:'linear-gradient(135deg,#1877F2,#42b72a)',title:'Perros graciosos 2026',views:'150K views',time:'hace 4 días'},
-  ];
   const grid = document.getElementById('watchGrid'); if (!grid) return;
-  grid.innerHTML = videos.map(v=>`
-    <div class="watch-card" onclick="window.showToast('▶️ Reproduciendo: ${v.title}','')">
-      <div class="watch-thumb" style="background:${v.bg}"><span>${v.emoji}</span><div class="watch-play">▶️</div></div>
-      <div class="watch-info"><div class="watch-title">${v.title}</div><div class="watch-meta">${v.views} · ${v.time}</div></div>
-    </div>`).join('');
+  grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--gray-text);font-size:15px;">📺 Próximamente — los videos publicados por usuarios aparecerán aquí.</div>';
 }
 
 // ══ EVENTS ══
 function renderEvents() {
-  const events = [
-    {day:'28',month:'Mar',title:'Feria de Arte Montevideo',desc:'Espacio Maturana, 18:00 hs · 320 personas van'},
-    {day:'02',month:'Abr',title:'Festival de Música en el Parque',desc:'Parque Rodó, 15:00 hs · 1.2K personas van'},
-    {day:'05',month:'Abr',title:'Hackathon ConnectMe 2026',desc:'Online y presencial · 450 participantes'},
-    {day:'12',month:'Abr',title:'Maratón Nocturna',desc:'Rambla Sur, 21:00 hs · 800 personas van'},
-    {day:'20',month:'Abr',title:'Noche de Cine Indie',desc:'Cinemateca Uruguaya · 180 personas van'},
-  ];
   const list = document.getElementById('eventsList'); if (!list) return;
-  list.innerHTML = events.map(e=>`
-    <div class="event-item">
-      <div class="event-date-box"><div class="event-day">${e.day}</div><div class="event-month">${e.month}</div></div>
-      <div class="event-info"><h4>${e.title}</h4><p>${e.desc}</p></div>
-      <button style="margin-left:auto;padding:8px 14px;border-radius:8px;background:var(--blue-light);color:var(--blue);border:none;font-weight:700;cursor:pointer;white-space:nowrap;" onclick="window.showToast('✅ ¡Vas al evento!','success')">Asistiré</button>
-    </div>`).join('');
+  list.innerHTML = '<div style="text-align:center;padding:40px;color:var(--gray-text);font-size:15px;">📅 Próximamente — los eventos creados por usuarios aparecerán aquí.</div>';
 }
 
 // ══ GROUPS ══
@@ -2868,15 +2813,12 @@ const joinedGroups = {};
 const groupPosts = {};
 
 function renderGroups() {
-  const groups = window._adminGroups || [
-    {id:'g1', emoji:'📸', bg:'linear-gradient(135deg,#f093fb,#f5576c)', name:'Fotografía Uruguay', members:12400, desc:'Apasionados de la fotografía', privacy:'public'},
-    {id:'g2', emoji:'💻', bg:'linear-gradient(135deg,#4facfe,#00f2fe)', name:'Devs de Montevideo', members:8700, desc:'Comunidad de desarrolladores', privacy:'public'},
-    {id:'g3', emoji:'🏃', bg:'linear-gradient(135deg,#43e97b,#38f9d7)', name:'Running Club MVD', members:5200, desc:'Corremos juntos cada mañana', privacy:'public'},
-    {id:'g4', emoji:'🎨', bg:'linear-gradient(135deg,#667eea,#764ba2)', name:'Arte & Cultura UY', members:15000, desc:'Arte y cultura uruguaya', privacy:'public'},
-    {id:'g5', emoji:'🍕', bg:'linear-gradient(135deg,#fa709a,#fee140)', name:'Foodies Montevideo', members:23000, desc:'Gastronomía y sabores locales', privacy:'public'},
-    {id:'g6', emoji:'🎮', bg:'linear-gradient(135deg,#1877F2,#42b72a)', name:'Gamers Uruguay', members:18000, desc:'Gaming community uruguaya', privacy:'public'},
-  ];
+  const groups = window._adminGroups || [];
   const grid = document.getElementById('groupsGrid'); if (!grid) return;
+  if (!groups.length) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--gray-text);font-size:15px;">🏘️ Aún no hay grupos creados. ¡El admin puede crear uno desde el Panel de Administración!</div>';
+    return;
+  }
   grid.innerHTML = groups.map(g => {
     const isJoined = joinedGroups[g.id];
     return `
@@ -2911,10 +2853,7 @@ window.openGroupPage = function(gid) {
   if (!g) return;
 
   if (!groupPosts[gid]) {
-    groupPosts[gid] = [
-      { id: gid+'_p1', author: 'María García', emoji: '👩', bg: 'linear-gradient(135deg,#f093fb,#f5576c)', text: `¡Hola a todos en ${g.name}! 🎉 ¿Alguien tiene recomendaciones?`, time: 'hace 2h', reactions: {total:24, types:['👍','❤️']}, comments: [{author:'Carlos R.', text:'¡Bienvenida! 😊', time:'hace 1h'}], shares: 2 },
-      { id: gid+'_p2', author: 'Carlos Rodríguez', emoji: '👨', bg: 'linear-gradient(135deg,#4facfe,#00f2fe)', text: `Compartiendo esto con la comunidad de ${g.name} 📢`, time: 'hace 5h', reactions: {total:61, types:['🔥','👍']}, comments: [], shares: 5 },
-    ];
+    groupPosts[gid] = [];
   }
 
   // Build group page HTML
