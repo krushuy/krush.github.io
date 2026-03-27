@@ -3,1123 +3,227 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Krush — Encontrá tu match en Uruguay</title>
+  <title>Krush — Red Social Uruguay</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
-      --k-red: #E8273A;
-      --k-red-dark: #B01E2C;
-      --k-red-soft: #FF4D62;
-      --k-red-glow: rgba(232,39,58,0.15);
-      --k-pink: #FF8FA3;
-      --bg: #0A0608;
-      --bg2: #110A0C;
-      --bg3: #160C0F;
-      --card: #1A0F12;
-      --card2: #221318;
-      --border: #2E1A1F;
-      --border2: #3D2229;
-      --text: #FAF0F2;
-      --text-soft: #C4A8AE;
-      --text-muted: #7A5A62;
+      --k: #E8273A; --k2: #FF4D62; --bg: #F0F2F5; --white: #FFFFFF;
+      --border: #E4E6EB; --text: #050505; --text2: #65676B; --text3: #8A8D91;
+      --hover: #F2F2F2; --blue: #1877F2; --story-h: 180px;
     }
-
     html { scroll-behavior: smooth; }
-
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 300;
-      overflow-x: hidden;
-    }
-
-    /* NAV */
-    nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 100;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 20px 56px;
-      transition: all 0.4s;
-    }
-
-    nav.scrolled {
-      background: rgba(10,6,8,0.95);
-      backdrop-filter: blur(20px);
-      border-bottom: 0.5px solid var(--border);
-      padding: 14px 56px;
-    }
-
-    .nav-logo {
-      font-family: 'Syne', sans-serif;
-      font-size: 26px;
-      font-weight: 800;
-      color: #fff;
-      text-decoration: none;
-      letter-spacing: -0.5px;
-    }
-
-    .nav-logo span { color: var(--k-red); }
-
-    .nav-links { display: flex; align-items: center; gap: 36px; list-style: none; }
-
-    .nav-links a {
-      font-size: 13px;
-      color: var(--text-muted);
-      text-decoration: none;
-      transition: color 0.2s;
-    }
-
-    .nav-links a:hover { color: var(--text); }
-
-    .nav-right { display: flex; align-items: center; gap: 12px; }
-
-    .btn-nav-ghost {
-      font-size: 13px;
-      color: var(--text-soft);
-      text-decoration: none;
-      padding: 8px 16px;
-      transition: color 0.2s;
-    }
-
-    .btn-nav-ghost:hover { color: #fff; }
-
-    .btn-nav-primary {
-      font-size: 13px;
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 500;
-      color: #fff;
-      background: var(--k-red);
-      border: none;
-      border-radius: 8px;
-      padding: 9px 20px;
-      text-decoration: none;
-      transition: all 0.2s;
-    }
-
-    .btn-nav-primary:hover { background: var(--k-red-soft); transform: translateY(-1px); }
-
-    /* HERO */
-    .hero {
-      min-height: 100vh;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      align-items: center;
-      padding: 100px 56px 60px;
-      gap: 60px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .hero::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background-image:
-        linear-gradient(var(--border) 1px, transparent 1px),
-        linear-gradient(90deg, var(--border) 1px, transparent 1px);
-      background-size: 60px 60px;
-      opacity: 0.3;
-      mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 20%, transparent 80%);
-    }
-
-    .hero-left { position: relative; z-index: 2; }
-
-    .hero-flag {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 14px;
-      background: var(--card);
-      border: 0.5px solid var(--border2);
-      border-radius: 6px;
-      font-size: 11px;
-      color: var(--text-muted);
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      margin-bottom: 28px;
-      opacity: 0;
-      animation: fadeUp 0.7s ease 0.2s forwards;
-    }
-
-    .hero-title {
-      font-family: 'Syne', sans-serif;
-      font-size: clamp(52px, 7vw, 88px);
-      font-weight: 800;
-      line-height: 0.92;
-      letter-spacing: -3px;
-      color: #fff;
-      margin-bottom: 12px;
-      opacity: 0;
-      animation: fadeUp 0.8s ease 0.35s forwards;
-    }
-
-    .hero-title .accent { color: var(--k-red); }
-
-    .hero-title .italic {
-      font-family: 'Instrument Serif', serif;
-      font-style: italic;
-      font-weight: 400;
-      color: var(--text-soft);
-    }
-
-    .hero-desc {
-      font-size: 16px;
-      color: var(--text-soft);
-      line-height: 1.65;
-      max-width: 420px;
-      margin-bottom: 40px;
-      font-weight: 300;
-      opacity: 0;
-      animation: fadeUp 0.8s ease 0.5s forwards;
-    }
-
-    .hero-desc strong { color: var(--text); font-weight: 400; }
-
-    .hero-actions {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      flex-wrap: wrap;
-      opacity: 0;
-      animation: fadeUp 0.8s ease 0.65s forwards;
-    }
-
-    .btn-big {
-      padding: 15px 36px;
-      background: var(--k-red);
-      border: none;
-      border-radius: 10px;
-      color: #fff;
-      font-size: 15px;
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 500;
-      text-decoration: none;
-      transition: all 0.3s;
-    }
-
-    .btn-big:hover {
-      background: var(--k-red-soft);
-      transform: translateY(-2px);
-      box-shadow: 0 16px 48px rgba(232,39,58,0.35);
-    }
-
-    .btn-big-ghost {
-      padding: 15px 28px;
-      background: transparent;
-      border: 0.5px solid var(--border2);
-      border-radius: 10px;
-      color: var(--text-soft);
-      font-size: 15px;
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 300;
-      text-decoration: none;
-      transition: all 0.3s;
-    }
-
-    .btn-big-ghost:hover { border-color: var(--text-muted); color: var(--text); }
-
-    .hero-trust {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-top: 28px;
-      opacity: 0;
-      animation: fadeUp 0.8s ease 0.8s forwards;
-    }
-
-    .trust-avatars { display: flex; }
-
-    .trust-av {
-      width: 28px; height: 28px;
-      border-radius: 50%;
-      border: 2px solid var(--bg);
-      margin-left: -8px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 11px;
-      font-weight: 700;
-      font-family: 'Syne', sans-serif;
-    }
-
-    .trust-av:first-child { margin-left: 0; }
-
-    .trust-text { font-size: 12px; color: var(--text-muted); line-height: 1.4; }
-    .trust-text strong { color: var(--text-soft); font-weight: 400; }
-
-    /* HERO RIGHT */
-    .hero-right {
-      position: relative;
-      z-index: 2;
-      display: flex;
-      justify-content: center;
-      opacity: 0;
-      animation: fadeUp 1s ease 0.5s forwards;
-    }
-
-    .phone-mockup {
-      width: 280px;
-      background: var(--card);
-      border: 0.5px solid var(--border2);
-      border-radius: 36px;
-      overflow: hidden;
-      box-shadow: 0 40px 100px rgba(0,0,0,0.6), 0 0 0 0.5px var(--border);
-    }
-
-    .phone-notch {
-      height: 28px;
-      background: var(--bg);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .notch-pill { width: 80px; height: 6px; background: var(--bg3); border-radius: 3px; }
-
-    .profile-card-phone {
-      position: relative;
-      height: 360px;
-      background: linear-gradient(180deg, var(--bg3) 0%, #2A0A12 100%);
-      overflow: hidden;
-    }
-
-    .profile-bg-art {
-      position: absolute;
-      inset: 0;
-      background:
-        radial-gradient(circle at 30% 20%, rgba(232,39,58,0.2) 0%, transparent 50%),
-        radial-gradient(circle at 80% 80%, rgba(255,143,163,0.1) 0%, transparent 40%);
-    }
-
-    .profile-info {
-      position: absolute;
-      bottom: 0; left: 0; right: 0;
-      padding: 20px;
-      background: linear-gradient(to top, rgba(10,6,8,0.95) 0%, transparent 100%);
-    }
-
-    .profile-name-phone {
-      font-family: 'Syne', sans-serif;
-      font-size: 22px;
-      font-weight: 700;
-      color: #fff;
-      margin-bottom: 4px;
-    }
-
-    .profile-tags-phone { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
-
-    .ptag {
-      padding: 3px 10px;
-      background: rgba(255,255,255,0.08);
-      border: 0.5px solid rgba(255,255,255,0.12);
-      border-radius: 20px;
-      font-size: 10px;
-      color: var(--text-soft);
-    }
-
-    .profile-percent {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      padding: 3px 10px;
-      background: rgba(232,39,58,0.15);
-      border: 0.5px solid rgba(232,39,58,0.3);
-      border-radius: 20px;
-      font-size: 10px;
-      color: var(--k-red-soft);
-    }
-
-    .swipe-btns {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 16px;
-      padding: 16px 20px;
-      background: var(--card);
-    }
-
-    .swipe-btn {
-      width: 52px; height: 52px;
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 20px;
-      border: 0.5px solid var(--border2);
-      background: var(--bg3);
-    }
-
-    .swipe-btn.like {
-      width: 60px; height: 60px;
-      background: var(--k-red);
-      border: none;
-      box-shadow: 0 8px 24px rgba(232,39,58,0.4);
-      font-size: 24px;
-    }
-
-    .match-notif {
-      margin: 0 14px 10px;
-      padding: 12px 14px;
-      background: linear-gradient(135deg, rgba(232,39,58,0.12), rgba(232,39,58,0.05));
-      border: 0.5px solid rgba(232,39,58,0.25);
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .match-notif-text { font-size: 11px; color: var(--text-soft); }
-    .match-notif-text strong { color: var(--k-red-soft); font-weight: 500; display: block; font-size: 12px; }
-
-    .locked-badge {
-      margin: 0 14px 14px;
-      padding: 10px 14px;
-      background: var(--bg3);
-      border: 0.5px solid var(--border);
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .lb-left { font-size: 11px; color: var(--text-muted); }
-    .lb-left span { color: var(--k-red-soft); font-weight: 500; display: block; font-size: 12px; margin-bottom: 1px; }
-
-    .lb-btn {
-      padding: 5px 12px;
-      background: var(--k-red);
-      border: none;
-      border-radius: 6px;
-      color: #fff;
-      font-size: 10px;
-      font-weight: 500;
-      font-family: 'DM Sans', sans-serif;
-    }
-
-    .float-badge {
-      position: absolute;
-      background: var(--card2);
-      border: 0.5px solid var(--border2);
-      border-radius: 12px;
-      padding: 10px 14px;
-      animation: floatUpDown 4s ease-in-out infinite;
-    }
-
-    .float-badge-1 { top: 28%; right: -44px; animation-delay: 0s; }
-    .float-badge-2 { top: 58%; left: -52px; animation-delay: -2s; }
-
-    @keyframes floatUpDown {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-8px); }
-    }
-
-    .fb-label { font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 3px; }
-    .fb-val { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; color: #fff; }
-    .fb-val span { color: var(--k-red); }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* MARQUEE */
-    .marquee-section {
-      border-top: 0.5px solid var(--border);
-      border-bottom: 0.5px solid var(--border);
-      padding: 16px 0;
-      overflow: hidden;
-      background: var(--bg2);
-    }
-
-    .marquee-track {
-      display: flex;
-      gap: 48px;
-      animation: marquee 22s linear infinite;
-      width: max-content;
-    }
-
-    .marquee-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      white-space: nowrap;
-      font-family: 'Syne', sans-serif;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text-muted);
-      letter-spacing: 1px;
-      text-transform: uppercase;
-    }
-
-    .marquee-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--k-red); }
-
-    @keyframes marquee {
-      from { transform: translateX(0); }
-      to { transform: translateX(-50%); }
-    }
-
-    /* SECTIONS */
-    .features-section { padding: 100px 56px; }
-    .freemium-section { padding: 100px 56px; background: var(--bg2); border-top: 0.5px solid var(--border); }
-    .how-section { padding: 100px 56px; }
-    .testi-section { padding: 80px 56px; border-top: 0.5px solid var(--border); background: var(--bg2); }
-    .cta-section { padding: 120px 56px; text-align: center; position: relative; overflow: hidden; }
-
-    .section-eyebrow {
-      font-size: 11px;
-      font-weight: 500;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: var(--k-red);
-      margin-bottom: 16px;
-    }
-
-    .section-h {
-      font-family: 'Syne', sans-serif;
-      font-size: clamp(32px, 4.5vw, 56px);
-      font-weight: 800;
-      letter-spacing: -2px;
-      line-height: 1;
-      color: #fff;
-      margin-bottom: 14px;
-    }
-
-    .section-h .dim { color: var(--text-muted); }
-
-    .section-p {
-      font-size: 15px;
-      color: var(--text-soft);
-      line-height: 1.65;
-      max-width: 400px;
-      margin-bottom: 56px;
-    }
-
-    /* BENTO */
-    .bento {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      grid-template-rows: auto auto;
-      gap: 12px;
-    }
-
-    .bento-card {
-      background: var(--card);
-      border: 0.5px solid var(--border);
-      border-radius: 16px;
-      padding: 28px;
-      transition: border-color 0.3s, background 0.3s;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .bento-card::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at 0% 0%, var(--k-red-glow), transparent 60%);
-      opacity: 0;
-      transition: opacity 0.4s;
-    }
-
-    .bento-card:hover { border-color: var(--border2); background: var(--card2); }
-    .bento-card:hover::after { opacity: 1; }
-    .bento-card.wide { grid-column: span 2; }
-
-    .bento-icon {
-      width: 40px; height: 40px;
-      border-radius: 10px;
-      background: rgba(232,39,58,0.1);
-      border: 0.5px solid rgba(232,39,58,0.2);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 18px;
-      margin-bottom: 18px;
-      position: relative; z-index: 1;
-    }
-
-    .bento-title {
-      font-family: 'Syne', sans-serif;
-      font-size: 18px;
-      font-weight: 700;
-      color: #fff;
-      margin-bottom: 8px;
-      letter-spacing: -0.5px;
-      position: relative; z-index: 1;
-    }
-
-    .bento-desc { font-size: 13px; color: var(--text-muted); line-height: 1.6; position: relative; z-index: 1; }
-
-    .bento-stat {
-      font-family: 'Syne', sans-serif;
-      font-size: 56px;
-      font-weight: 800;
-      color: #fff;
-      line-height: 1;
-      letter-spacing: -3px;
-      margin: 12px 0 4px;
-      position: relative; z-index: 1;
-    }
-
-    .bento-stat span { color: var(--k-red); }
-
-    .bento-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      margin-top: 14px;
-      padding: 4px 10px;
-      border-radius: 20px;
-      font-size: 10px;
-      font-weight: 500;
-      letter-spacing: 0.5px;
-      position: relative; z-index: 1;
-    }
-
-    .pill-free { background: rgba(255,255,255,0.05); border: 0.5px solid var(--border2); color: var(--text-muted); }
-    .pill-gold { background: rgba(232,39,58,0.1); border: 0.5px solid rgba(232,39,58,0.25); color: var(--k-red-soft); }
-
-    /* PLANS */
-    .plans-container {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 16px;
-      margin-top: 56px;
-      max-width: 900px;
-    }
-
-    .plan {
-      background: var(--card);
-      border: 0.5px solid var(--border);
-      border-radius: 20px;
-      padding: 32px 28px;
-      position: relative;
-      transition: transform 0.3s;
-    }
-
-    .plan:hover { transform: translateY(-4px); }
-
-    .plan.hot { background: var(--card2); border-color: var(--k-red-dark); }
-
-    .hot-label {
-      position: absolute;
-      top: -11px; left: 28px;
-      background: var(--k-red);
-      color: #fff;
-      font-size: 9px;
-      font-weight: 700;
-      font-family: 'Syne', sans-serif;
-      letter-spacing: 1.5px;
-      padding: 4px 12px;
-      border-radius: 20px;
-      text-transform: uppercase;
-    }
-
-    .plan-name {
-      font-family: 'Syne', sans-serif;
-      font-size: 20px;
-      font-weight: 800;
-      color: #fff;
-      letter-spacing: -0.5px;
-      margin-bottom: 4px;
-    }
-
-    .plan-tagline { font-size: 12px; color: var(--text-muted); margin-bottom: 20px; }
-
-    .plan-price {
-      font-family: 'Syne', sans-serif;
-      font-size: 44px;
-      font-weight: 800;
-      color: #fff;
-      letter-spacing: -2px;
-      line-height: 1;
-    }
-
-    .plan-price.red { color: var(--k-red-soft); }
-    .plan-currency { font-size: 16px; color: var(--text-muted); vertical-align: super; font-family: 'DM Sans', sans-serif; font-weight: 300; }
-    .plan-period { font-size: 12px; color: var(--text-muted); font-family: 'DM Sans', sans-serif; margin-top: 4px; }
-    .plan-usd { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
-    .plan-divider { height: 0.5px; background: var(--border); margin: 20px 0; }
-
-    .plan-feats { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
-
-    .plan-feats li {
-      display: flex;
-      align-items: flex-start;
-      gap: 8px;
-      font-size: 13px;
-      color: var(--text-soft);
-      line-height: 1.4;
-    }
-
-    .fi-check { color: var(--k-red-soft); flex-shrink: 0; }
-    .fi-lock { color: var(--border2); flex-shrink: 0; }
-
-    .plan-cta {
-      width: 100%;
-      padding: 13px;
-      border-radius: 10px;
-      font-size: 14px;
-      font-family: 'Syne', sans-serif;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.25s;
-      text-align: center;
-    }
-
-    .cta-ghost { background: transparent; border: 0.5px solid var(--border2); color: var(--text-soft); }
-    .cta-ghost:hover { border-color: var(--text-muted); color: var(--text); }
-
-    .cta-red { background: var(--k-red); border: none; color: #fff; }
-    .cta-red:hover { background: var(--k-red-soft); box-shadow: 0 8px 32px rgba(232,39,58,0.4); transform: translateY(-1px); }
-
-    /* HOW */
-    .how-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 0;
-      margin-top: 60px;
-      position: relative;
-    }
-
-    .how-grid::before {
-      content: '';
-      position: absolute;
-      top: 24px;
-      left: 12.5%; right: 12.5%;
-      height: 0.5px;
-      background: var(--border);
-    }
-
-    .how-step { padding: 0 24px; }
-
-    .step-circle {
-      width: 48px; height: 48px;
-      border-radius: 50%;
-      background: var(--card);
-      border: 0.5px solid var(--border2);
-      display: flex; align-items: center; justify-content: center;
-      font-family: 'Syne', sans-serif;
-      font-size: 16px;
-      font-weight: 800;
-      color: var(--k-red-soft);
-      margin-bottom: 20px;
-      position: relative; z-index: 1;
-      transition: all 0.3s;
-    }
-
-    .how-step:hover .step-circle { background: var(--k-red); border-color: var(--k-red); color: #fff; }
-
-    .step-name { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 8px; letter-spacing: -0.3px; }
-    .step-desc { font-size: 12px; color: var(--text-muted); line-height: 1.6; }
-
-    /* TESTIMONIALS */
-    .testi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 48px; }
-
-    .testi-card {
-      background: var(--card);
-      border: 0.5px solid var(--border);
-      border-radius: 14px;
-      padding: 22px;
-      transition: border-color 0.3s;
-    }
-
-    .testi-card:hover { border-color: var(--border2); }
-
-    .testi-stars { color: var(--k-red); font-size: 12px; letter-spacing: 2px; margin-bottom: 10px; }
-
-    .testi-quote {
-      font-family: 'Instrument Serif', serif;
-      font-style: italic;
-      font-size: 15px;
-      color: var(--text-soft);
-      line-height: 1.6;
-      margin-bottom: 14px;
-    }
-
-    .testi-author { display: flex; align-items: center; gap: 10px; }
-
-    .testi-av {
-      width: 32px; height: 32px;
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 12px;
-      font-weight: 700;
-      font-family: 'Syne', sans-serif;
-      flex-shrink: 0;
-    }
-
-    .testi-name { font-size: 13px; color: var(--text); font-weight: 400; }
-    .testi-city { font-size: 11px; color: var(--text-muted); }
-
-    /* CTA FINAL */
-    .cta-section::before {
-      content: '';
-      position: absolute;
-      width: 800px; height: 400px;
-      background: radial-gradient(ellipse, rgba(232,39,58,0.08) 0%, transparent 65%);
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      pointer-events: none;
-    }
-
-    .cta-bg-text {
-      position: absolute;
-      font-family: 'Syne', sans-serif;
-      font-size: 200px;
-      font-weight: 800;
-      color: rgba(232,39,58,0.03);
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      letter-spacing: -10px;
-      pointer-events: none;
-      white-space: nowrap;
-    }
-
-    .cta-h {
-      font-family: 'Syne', sans-serif;
-      font-size: clamp(40px, 6vw, 80px);
-      font-weight: 800;
-      letter-spacing: -3px;
-      color: #fff;
-      line-height: 0.95;
-      margin-bottom: 20px;
-      position: relative; z-index: 1;
-    }
-
-    .cta-h span { color: var(--k-red); }
-
-    .cta-sub { font-size: 15px; color: var(--text-muted); margin-bottom: 40px; position: relative; z-index: 1; }
-
-    .cta-form {
-      display: flex;
-      gap: 10px;
-      max-width: 420px;
-      margin: 0 auto;
-      position: relative; z-index: 1;
-    }
-
-    .cta-email {
-      flex: 1;
-      padding: 14px 18px;
-      background: var(--card);
-      border: 0.5px solid var(--border2);
-      border-radius: 10px;
-      color: var(--text);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 14px;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-
-    .cta-email::placeholder { color: var(--text-muted); }
-    .cta-email:focus { border-color: var(--k-red-dark); }
-
-    .cta-submit {
-      padding: 14px 28px;
-      background: var(--k-red);
-      border: none;
-      border-radius: 10px;
-      color: #fff;
-      font-size: 14px;
-      font-family: 'Syne', sans-serif;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.25s;
-      white-space: nowrap;
-    }
-
-    .cta-submit:hover { background: var(--k-red-soft); box-shadow: 0 8px 32px rgba(232,39,58,0.4); }
-    .cta-note { font-size: 11px; color: var(--text-muted); margin-top: 14px; position: relative; z-index: 1; }
-
-    /* FOOTER */
-    footer {
-      border-top: 0.5px solid var(--border);
-      padding: 36px 56px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .footer-logo { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; color: var(--text-muted); letter-spacing: -0.5px; }
-    .footer-logo span { color: var(--k-red); }
-
-    .footer-links { display: flex; gap: 28px; list-style: none; }
-
-    .footer-links a { font-size: 12px; color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
-    .footer-links a:hover { color: var(--text-soft); }
-
-    .footer-right { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--text-muted); }
-
-    /* REVEAL */
-    .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s ease; }
-    .reveal.visible { opacity: 1; transform: translateY(0); }
-
-    /* GOOGLE BTN */
-    .auth-btn-google {
-      width: 100%;
-      padding: 13px 16px;
-      background: #fff;
-      border: 0.5px solid #ddd;
-      border-radius: 10px;
-      color: #333;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      margin-bottom: 12px;
-      transition: all 0.2s;
-    }
-    .auth-btn-google:hover { background: #f5f5f5; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-
-    .auth-divider {
-      text-align: center;
-      position: relative;
-      margin-bottom: 12px;
-    }
-    .auth-divider::before {
-      content: '';
-      position: absolute;
-      top: 50%; left: 0; right: 0;
-      height: 0.5px;
-      background: var(--border2);
-    }
-    .auth-divider span {
-      position: relative;
-      background: var(--card);
-      padding: 0 12px;
-      font-size: 11px;
-      color: var(--text-muted);
-    }
-
-    /* AUTH MODAL */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.75);
-      backdrop-filter: blur(8px);
-      z-index: 999;
-      align-items: center;
-      justify-content: center;
-    }
+    body { background: var(--bg); color: var(--text); font-family: 'Inter', -apple-system, sans-serif; font-size: 15px; overflow-x: hidden; }
+    /* NAVBAR */
+    .navbar { position: fixed; top: 0; left: 0; right: 0; height: 56px; background: var(--white); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 16px; z-index: 200; box-shadow: 0 2px 4px rgba(0,0,0,0.08); }
+    .nav-left { display: flex; align-items: center; gap: 8px; flex: 1; }
+    .nav-logo { font-size: 28px; font-weight: 700; color: var(--k); text-decoration: none; letter-spacing: -1px; }
+    .nav-search { display: flex; align-items: center; background: var(--bg); border-radius: 20px; padding: 8px 14px; gap: 8px; max-width: 240px; flex: 1; }
+    .nav-search input { border: none; background: transparent; outline: none; font-size: 15px; color: var(--text); width: 100%; font-family: 'Inter', sans-serif; }
+    .nav-search input::placeholder { color: var(--text3); }
+    .nav-center { display: flex; align-items: center; gap: 4px; flex: 1; justify-content: center; }
+    .nav-tab { display: flex; align-items: center; justify-content: center; width: 96px; height: 48px; border-radius: 8px; text-decoration: none; color: var(--text3); font-size: 22px; transition: all 0.15s; border-bottom: 3px solid transparent; cursor: pointer; }
+    .nav-tab:hover { background: var(--hover); color: var(--text2); }
+    .nav-tab.active { color: var(--k); border-bottom-color: var(--k); }
+    .nav-right { display: flex; align-items: center; gap: 8px; flex: 1; justify-content: flex-end; }
+    .btn-login-nav { background: var(--k); color: #fff; border: none; border-radius: 6px; padding: 8px 16px; font-size: 15px; font-weight: 600; font-family: 'Inter', sans-serif; cursor: pointer; transition: background 0.15s; }
+    .btn-login-nav:hover { background: var(--k2); }
+    .btn-login-nav.ghost { background: var(--hover); color: var(--text); }
+    .btn-login-nav.ghost:hover { background: var(--border); }
+    /* LAYOUT */
+    .layout { display: grid; grid-template-columns: 280px 1fr 280px; padding-top: 56px; min-height: 100vh; }
+    /* SIDEBARS */
+    .sidebar-left, .sidebar-right { position: sticky; top: 56px; height: calc(100vh - 56px); overflow-y: auto; padding: 12px 8px; scrollbar-width: none; }
+    .sidebar-left::-webkit-scrollbar, .sidebar-right::-webkit-scrollbar { display: none; }
+    .sidebar-menu { list-style: none; }
+    .sidebar-menu li a, .sidebar-menu li div { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 8px; text-decoration: none; color: var(--text); font-size: 15px; font-weight: 500; cursor: pointer; transition: background 0.15s; }
+    .sidebar-menu li a:hover, .sidebar-menu li div:hover { background: var(--hover); }
+    .sidebar-menu li.active a { background: #FEE2E5; color: var(--k); }
+    .menu-icon { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+    .mi-red { background: linear-gradient(135deg, var(--k), #FF8FA3); }
+    .mi-gray { background: #E4E6EB; }
+    .mi-blue { background: linear-gradient(135deg, #1877F2, #42B0FF); }
+    .mi-green { background: linear-gradient(135deg, #00B09B, #96C93D); }
+    .mi-purple { background: linear-gradient(135deg, #7B2FBE, #C77DFF); }
+    .mi-orange { background: linear-gradient(135deg, #F7971E, #FFD200); }
+    .sidebar-divider { height: 1px; background: var(--border); margin: 8px 12px; }
+    .sidebar-section-title { padding: 8px 12px; font-size: 17px; font-weight: 700; }
+    .sidebar-footer { padding: 8px 12px; font-size: 12px; color: var(--text3); line-height: 1.6; }
+    /* FEED */
+    .feed { padding: 16px 12px; max-width: 680px; margin: 0 auto; width: 100%; }
+    /* STORIES */
+    .stories-row { display: flex; gap: 8px; margin-bottom: 16px; overflow-x: auto; scrollbar-width: none; }
+    .stories-row::-webkit-scrollbar { display: none; }
+    .story-card { flex-shrink: 0; width: 116px; height: var(--story-h); border-radius: 12px; overflow: hidden; position: relative; cursor: pointer; border: 1px solid var(--border); }
+    .story-add { background: var(--white); display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 14px; }
+    .story-add-photo { width: 100%; height: 120px; background: #F5C6CC; display: flex; align-items: center; justify-content: center; font-size: 32px; position: relative; }
+    .story-add-plus { position: absolute; bottom: -14px; width: 30px; height: 30px; border-radius: 50%; background: var(--k); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 700; border: 3px solid var(--white); }
+    .story-add-label { font-size: 13px; font-weight: 600; text-align: center; margin-top: 4px; }
+    .story-bg-img { position: absolute; inset: 0; background-size: cover; background-position: center; }
+    .story-overlay { position: absolute; bottom: 0; left: 0; right: 0; height: 60%; background: linear-gradient(to top, rgba(0,0,0,0.7), transparent); }
+    .story-avatar { position: absolute; top: 10px; left: 10px; width: 38px; height: 38px; border-radius: 50%; border: 3px solid var(--k); display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; color: #fff; z-index: 1; }
+    .story-name { position: absolute; bottom: 10px; left: 10px; right: 10px; font-size: 13px; font-weight: 700; color: #fff; z-index: 1; }
+    /* CREATE POST */
+    .create-post { background: var(--white); border-radius: 8px; border: 1px solid var(--border); padding: 12px 16px; margin-bottom: 16px; }
+    .create-post-top { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .post-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--k), #FF8FA3); display: flex; align-items: center; justify-content: center; font-weight: 700; color: #fff; font-size: 15px; flex-shrink: 0; }
+    .create-post-input { flex: 1; background: var(--bg); border: none; border-radius: 20px; padding: 10px 16px; font-size: 15px; color: var(--text2); cursor: pointer; font-family: 'Inter', sans-serif; outline: none; transition: background 0.15s; }
+    .create-post-input:hover { background: var(--border); }
+    .create-post-divider { height: 1px; background: var(--border); margin: 0 -16px; }
+    .create-post-actions { display: flex; padding-top: 6px; }
+    .create-action { flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 8px; border-radius: 8px; cursor: pointer; transition: background 0.15s; font-size: 14px; font-weight: 600; color: var(--text2); border: none; background: transparent; font-family: 'Inter', sans-serif; }
+    .create-action:hover { background: var(--hover); }
+    /* POST CARD */
+    .post-card { background: var(--white); border-radius: 8px; border: 1px solid var(--border); margin-bottom: 16px; overflow: hidden; }
+    .post-header { display: flex; align-items: flex-start; gap: 10px; padding: 12px 16px 8px; }
+    .post-avatar-sm { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #fff; font-size: 15px; flex-shrink: 0; }
+    .post-meta { flex: 1; }
+    .post-name { font-size: 15px; font-weight: 600; }
+    .post-sub { font-size: 13px; color: var(--text3); }
+    .post-menu { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 18px; color: var(--text2); transition: background 0.15s; }
+    .post-menu:hover { background: var(--hover); }
+    .post-body { padding: 4px 16px 12px; font-size: 15px; line-height: 1.5; }
+    .post-image { width: 100%; display: flex; align-items: center; justify-content: center; font-size: 80px; padding: 40px 0; }
+    .post-stats { display: flex; align-items: center; justify-content: space-between; padding: 8px 16px; border-top: 1px solid var(--border); }
+    .post-reactions { display: flex; align-items: center; gap: 4px; font-size: 14px; color: var(--text2); }
+    .reaction-icons { display: flex; }
+    .reaction-icon { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--white); font-size: 12px; display: flex; align-items: center; justify-content: center; margin-right: -4px; }
+    .post-comments-count { font-size: 14px; color: var(--text2); }
+    .post-divider { height: 1px; background: var(--border); margin: 0 16px; }
+    .post-actions { display: flex; padding: 4px 8px; }
+    .post-action { flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 8px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; color: var(--text2); transition: background 0.15s; border: none; background: transparent; font-family: 'Inter', sans-serif; }
+    .post-action:hover { background: var(--hover); }
+    .post-action.liked { color: var(--k); }
+    /* MATCH BANNER */
+    .match-banner { background: linear-gradient(135deg, var(--k), #FF8FA3); border-radius: 8px; padding: 20px; margin-bottom: 16px; color: #fff; position: relative; overflow: hidden; }
+    .match-banner::before { content: '💘'; position: absolute; font-size: 120px; right: -20px; top: -20px; opacity: 0.15; }
+    .match-banner h3 { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+    .match-banner p { font-size: 14px; opacity: 0.9; margin-bottom: 16px; }
+    .match-banner-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+    .btn-match-primary { background: #fff; color: var(--k); border: none; border-radius: 6px; padding: 8px 16px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: 'Inter', sans-serif; }
+    .btn-match-ghost { background: rgba(255,255,255,0.2); color: #fff; border: 1px solid rgba(255,255,255,0.4); border-radius: 6px; padding: 8px 16px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif; }
+    /* WIDGETS */
+    .widget-box { background: var(--white); border-radius: 8px; border: 1px solid var(--border); margin-bottom: 12px; overflow: hidden; }
+    .widget-title { padding: 12px 16px 8px; font-size: 17px; font-weight: 700; }
+    .profile-widget { padding: 20px 16px; display: flex; flex-direction: column; align-items: center; text-align: center; }
+    .profile-widget-av { width: 72px; height: 72px; border-radius: 50%; background: linear-gradient(135deg, var(--k), #FF8FA3); display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 700; color: #fff; margin-bottom: 10px; border: 3px solid var(--k); }
+    .profile-widget-name { font-size: 17px; font-weight: 700; margin-bottom: 2px; }
+    .profile-widget-sub { font-size: 13px; color: var(--text3); margin-bottom: 14px; }
+    .profile-widget-stats { display: flex; gap: 16px; margin-bottom: 16px; }
+    .pstat { text-align: center; }
+    .pstat-num { font-size: 18px; font-weight: 700; color: var(--k); }
+    .pstat-label { font-size: 12px; color: var(--text3); }
+    .btn-edit-profile { width: 100%; background: var(--hover); border: none; border-radius: 6px; padding: 8px; font-size: 14px; font-weight: 600; color: var(--text); cursor: pointer; font-family: 'Inter', sans-serif; transition: background 0.15s; }
+    .btn-edit-profile:hover { background: var(--border); }
+    .suggestion-item { display: flex; align-items: center; gap: 10px; padding: 8px 16px; }
+    .sug-av { width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; color: #fff; flex-shrink: 0; }
+    .sug-info { flex: 1; }
+    .sug-name { font-size: 14px; font-weight: 600; }
+    .sug-detail { font-size: 12px; color: var(--text3); }
+    .btn-follow { background: #FEE2E5; color: var(--k); border: none; border-radius: 6px; padding: 6px 12px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif; white-space: nowrap; }
+    .btn-follow:hover { background: #FECDD3; }
+    .msg-item { display: flex; align-items: center; gap: 10px; padding: 8px 16px; cursor: pointer; transition: background 0.15s; }
+    .msg-item:hover { background: var(--hover); }
+    .msg-av { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700; color: #fff; flex-shrink: 0; position: relative; }
+    .online-dot { position: absolute; bottom: 1px; right: 1px; width: 11px; height: 11px; border-radius: 50%; background: #31A24C; border: 2px solid var(--white); }
+    .msg-info { flex: 1; min-width: 0; }
+    .msg-name { font-size: 14px; font-weight: 600; }
+    .msg-preview { font-size: 13px; color: var(--text3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .msg-preview.unread { font-weight: 600; color: var(--text); }
+    .msg-meta { text-align: right; }
+    .msg-time { font-size: 12px; color: var(--text3); }
+    .msg-unread { background: var(--k); color: #fff; font-size: 11px; font-weight: 700; border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; margin-left: auto; margin-top: 2px; }
+    .plan-widget-item { padding: 10px 16px; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: background 0.15s; }
+    .plan-widget-item:hover { background: var(--hover); }
+    .plan-icon { width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+    .plan-info { flex: 1; }
+    .plan-w-name { font-size: 14px; font-weight: 600; }
+    .plan-w-price { font-size: 12px; color: var(--text3); }
+    .btn-upgrade { background: var(--k); color: #fff; border: none; border-radius: 6px; padding: 5px 12px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif; }
+    /* MODAL */
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(255,255,255,0.8); backdrop-filter: blur(4px); z-index: 999; align-items: center; justify-content: center; }
     .modal-overlay.active { display: flex; }
-
-    .modal {
-      background: var(--card);
-      border: 0.5px solid var(--border2);
-      border-radius: 20px;
-      padding: 40px 36px;
-      width: 100%;
-      max-width: 400px;
-      margin: 20px;
-      position: relative;
-      animation: fadeUp 0.3s ease forwards;
-    }
-
-    .modal-close {
-      position: absolute;
-      top: 16px; right: 16px;
-      background: var(--bg3);
-      border: 0.5px solid var(--border);
-      border-radius: 50%;
-      width: 32px; height: 32px;
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer;
-      color: var(--text-muted);
-      font-size: 14px;
-      transition: all 0.2s;
-    }
-    .modal-close:hover { color: var(--text); border-color: var(--border2); }
-
-    .modal-logo {
-      font-family: 'Syne', sans-serif;
-      font-size: 28px;
-      font-weight: 800;
-      color: #fff;
-      text-align: center;
-      margin-bottom: 6px;
-    }
-    .modal-logo span { color: var(--k-red); }
-
-    .modal-subtitle {
-      text-align: center;
-      font-size: 13px;
-      color: var(--text-muted);
-      margin-bottom: 28px;
-    }
-
-    .modal-tabs {
-      display: flex;
-      background: var(--bg3);
-      border-radius: 10px;
-      padding: 4px;
-      margin-bottom: 24px;
-    }
-
-    .modal-tab {
-      flex: 1;
-      padding: 9px;
-      border: none;
-      background: transparent;
-      border-radius: 8px;
-      color: var(--text-muted);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 13px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .modal-tab.active {
-      background: var(--k-red);
-      color: #fff;
-    }
-
-    .auth-input {
-      width: 100%;
-      padding: 13px 16px;
-      background: var(--bg3);
-      border: 0.5px solid var(--border2);
-      border-radius: 10px;
-      color: var(--text);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 14px;
-      outline: none;
-      margin-bottom: 12px;
-      transition: border-color 0.2s;
-    }
-    .auth-input::placeholder { color: var(--text-muted); }
-    .auth-input:focus { border-color: var(--k-red-dark); }
-
-    .auth-btn {
-      width: 100%;
-      padding: 14px;
-      background: var(--k-red);
-      border: none;
-      border-radius: 10px;
-      color: #fff;
-      font-family: 'Syne', sans-serif;
-      font-size: 14px;
-      font-weight: 700;
-      cursor: pointer;
-      margin-top: 4px;
-      transition: all 0.25s;
-    }
-    .auth-btn:hover { background: var(--k-red-soft); box-shadow: 0 8px 24px rgba(232,39,58,0.35); }
+    .modal { background: var(--white); border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.18); width: 100%; max-width: 432px; margin: 20px; overflow: hidden; animation: modalIn 0.2s ease forwards; }
+    @keyframes modalIn { from { transform: scale(0.97); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .modal-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid var(--border); }
+    .modal-title { font-size: 20px; font-weight: 700; }
+    .modal-close { width: 36px; height: 36px; border-radius: 50%; background: var(--hover); border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 18px; color: var(--text2); }
+    .modal-close:hover { background: var(--border); }
+    .modal-body { padding: 20px; }
+    .modal-logo { font-size: 32px; font-weight: 700; color: var(--k); text-align: center; margin-bottom: 4px; letter-spacing: -1px; }
+    .modal-sub { text-align: center; font-size: 14px; color: var(--text2); margin-bottom: 20px; }
+    .modal-tabs { display: flex; border-bottom: 1px solid var(--border); margin: 0 -20px 20px; padding: 0 20px; }
+    .modal-tab { flex: 1; padding: 10px; border: none; background: transparent; font-size: 15px; font-weight: 600; color: var(--text2); cursor: pointer; font-family: 'Inter', sans-serif; border-bottom: 3px solid transparent; margin-bottom: -1px; transition: all 0.15s; }
+    .modal-tab.active { color: var(--k); border-bottom-color: var(--k); }
+    .auth-btn-google { width: 100%; padding: 12px; background: var(--white); border: 1px solid var(--border); border-radius: 6px; font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 600; color: var(--text); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 12px; transition: background 0.15s; }
+    .auth-btn-google:hover { background: var(--hover); }
+    .auth-divider { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+    .auth-divider::before, .auth-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+    .auth-divider span { font-size: 13px; color: var(--text3); }
+    .auth-input { width: 100%; padding: 12px 14px; background: var(--white); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-family: 'Inter', sans-serif; font-size: 15px; outline: none; margin-bottom: 10px; transition: border-color 0.15s; }
+    .auth-input::placeholder { color: var(--text3); }
+    .auth-input:focus { border-color: var(--k); box-shadow: 0 0 0 2px rgba(232,39,58,0.15); }
+    .auth-btn { width: 100%; padding: 13px; background: var(--k); border: none; border-radius: 6px; color: #fff; font-family: 'Inter', sans-serif; font-size: 17px; font-weight: 700; cursor: pointer; margin-top: 4px; transition: background 0.15s; }
+    .auth-btn:hover { background: var(--k2); }
     .auth-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
-    .auth-error {
-      background: rgba(232,39,58,0.1);
-      border: 0.5px solid rgba(232,39,58,0.3);
-      border-radius: 8px;
-      padding: 10px 14px;
-      font-size: 12px;
-      color: var(--k-red-soft);
-      margin-bottom: 12px;
-      display: none;
-    }
+    .auth-error { background: #FEE2E5; border: 1px solid #FECDD3; border-radius: 6px; padding: 10px 14px; font-size: 13px; color: #B91C1C; margin-bottom: 12px; display: none; }
     .auth-error.show { display: block; }
-
-    .auth-success {
-      text-align: center;
-      padding: 20px 0;
-    }
-    .auth-success .success-icon { font-size: 48px; margin-bottom: 12px; }
-    .auth-success h3 { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 8px; }
-    .auth-success p { font-size: 13px; color: var(--text-muted); }
-
-    /* USER NAV */
-    .user-nav {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .user-avatar {
-      width: 32px; height: 32px;
-      border-radius: 50%;
-      background: var(--k-red);
-      display: flex; align-items: center; justify-content: center;
-      font-family: 'Syne', sans-serif;
-      font-size: 13px;
-      font-weight: 700;
-      color: #fff;
-    }
-    .user-email-nav {
-      font-size: 12px;
-      color: var(--text-muted);
-      max-width: 120px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-    .btn-logout {
-      font-size: 12px;
-      color: var(--text-muted);
-      background: none;
-      border: 0.5px solid var(--border);
-      border-radius: 6px;
-      padding: 6px 12px;
-      cursor: pointer;
-      font-family: 'DM Sans', sans-serif;
-      transition: all 0.2s;
-    }
-    .btn-logout:hover { border-color: var(--border2); color: var(--text); }
-
-    /* RESPONSIVE */
-    @media (max-width: 900px) {
-      nav, nav.scrolled { padding: 16px 20px; }
-      .nav-links { display: none; }
-      .hero { grid-template-columns: 1fr; padding: 90px 20px 60px; gap: 40px; }
-      .hero-right { order: -1; }
-      .phone-mockup { width: 240px; }
-      .float-badge { display: none; }
-      .features-section, .freemium-section, .how-section, .testi-section, .cta-section { padding: 60px 20px; }
-      .bento { grid-template-columns: 1fr; }
-      .bento-card.wide { grid-column: span 1; }
-      .plans-container { grid-template-columns: 1fr; max-width: 360px; }
-      .how-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
-      .how-grid::before { display: none; }
-      .testi-grid { grid-template-columns: 1fr; }
-      .cta-form { flex-direction: column; }
-      footer { flex-direction: column; gap: 20px; text-align: center; padding: 28px 20px; }
-      .footer-links { flex-wrap: wrap; justify-content: center; gap: 16px; }
-    }
+    .auth-success { text-align: center; padding: 20px 0; }
+    .auth-success .success-icon { font-size: 52px; margin-bottom: 12px; }
+    .auth-success h3 { font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+    .auth-success p { font-size: 14px; color: var(--text2); }
+    .modal-link { margin-top: 14px; text-align: center; font-size: 14px; color: var(--text2); }
+    .modal-link a { color: var(--k); font-weight: 600; text-decoration: none; cursor: pointer; }
+    .user-nav { display: flex; align-items: center; gap: 8px; }
+    .user-avatar-nav { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--k), #FF8FA3); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; color: #fff; }
+    .user-email-nav { font-size: 13px; color: var(--text2); max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .btn-logout { background: var(--hover); border: none; border-radius: 6px; padding: 7px 12px; font-size: 13px; font-weight: 600; color: var(--text2); cursor: pointer; font-family: 'Inter', sans-serif; }
+    .btn-logout:hover { background: var(--border); }
+    @media (max-width: 1100px) { .layout { grid-template-columns: 240px 1fr 0; } .sidebar-right { display: none; } }
+    @media (max-width: 768px) { .layout { grid-template-columns: 1fr; } .sidebar-left { display: none; } .nav-center { display: none; } .feed { padding: 8px; } }
   </style>
 </head>
 <body>
 
-  <nav id="nav">
-    <a href="#" class="nav-logo">Kr<span>u</span>sh</a>
-    <ul class="nav-links">
-      <li><a href="#features">Funciones</a></li>
-      <li><a href="#planes">Planes</a></li>
-      <li><a href="#como">Cómo funciona</a></li>
-    </ul>
-    <div class="nav-right" id="nav-right">
-      <a href="#" class="btn-nav-ghost" onclick="openModal('login');return false;">Entrar</a>
-      <a href="#" class="btn-nav-primary" onclick="openModal('register');return false;">Crear cuenta</a>
+<nav class="navbar">
+  <div class="nav-left">
+    <a href="#" class="nav-logo">Krush</a>
+    <div class="nav-search">
+      <span style="color:var(--text3);font-size:14px;">🔍</span>
+      <input type="text" placeholder="Buscar en Krush...">
     </div>
-  </nav>
+  </div>
+  <div class="nav-center">
+    <a href="#" class="nav-tab active">🏠</a>
+    <a href="#" class="nav-tab" onclick="openModal('login');return false;">💘</a>
+    <a href="#" class="nav-tab" onclick="openModal('login');return false;">💬</a>
+    <a href="#" class="nav-tab" onclick="openModal('login');return false;">🔔</a>
+  </div>
+  <div class="nav-right" id="nav-right">
+    <button class="btn-login-nav ghost" onclick="openModal('login')">Entrar</button>
+    <button class="btn-login-nav" onclick="openModal('register')">Crear cuenta</button>
+  </div>
+</nav>
 
-  <!-- AUTH MODAL -->
-  <div class="modal-overlay" id="modal-overlay" onclick="handleOverlayClick(event)">
-    <div class="modal">
-      <div class="modal-close" onclick="closeModal()">✕</div>
-      <div class="modal-logo">Kr<span>u</span>sh</div>
-      <div class="modal-subtitle">La red social 🇺🇾 hecha para uruguayos</div>
+<!-- AUTH MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="handleOverlayClick(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Krush 💘</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-logo">Krush</div>
+      <div class="modal-sub">🇺🇾 La red social hecha para uruguayos</div>
       <div class="modal-tabs">
         <button class="modal-tab active" id="tab-login" onclick="switchTab('login')">Entrar</button>
         <button class="modal-tab" id="tab-register" onclick="switchTab('register')">Crear cuenta</button>
       </div>
       <div id="auth-error" class="auth-error"></div>
       <div id="form-login">
-        <button class="auth-btn-google" id="btn-google-login" onclick="doGoogle()">
+        <button class="auth-btn-google" onclick="doGoogle()">
           <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20H24v8h11.3C33.6 33.1 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.1 8 3l5.7-5.7C34.1 6.5 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20c11 0 19.7-8 19.7-20 0-1.3-.1-2.7-.1-4z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.5 15.1 18.9 12 24 12c3.1 0 5.9 1.1 8 3l5.7-5.7C34.1 6.5 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-1.9 13.5-5l-6.2-5.2C29.5 35.6 26.9 36 24 36c-5.2 0-9.6-2.9-11.3-7.1l-6.6 4.9C9.6 39.6 16.3 44 24 44z"/><path fill="#1976D2" d="M43.6 20H24v8h11.3c-.9 2.4-2.5 4.4-4.6 5.8l6.2 5.2C40.7 35.7 44 30.3 44 24c0-1.3-.1-2.7-.4-4z"/></svg>
           Continuar con Google
         </button>
@@ -1127,9 +231,10 @@
         <input class="auth-input" type="email" id="login-email" placeholder="Correo electrónico">
         <input class="auth-input" type="password" id="login-password" placeholder="Contraseña">
         <button class="auth-btn" id="btn-login" onclick="doLogin()">Entrar a Krush</button>
+        <div class="modal-link"><a onclick="switchTab('register')">¿No tenés cuenta? Creá una gratis</a></div>
       </div>
       <div id="form-register" style="display:none;">
-        <button class="auth-btn-google" id="btn-google-register" onclick="doGoogle()">
+        <button class="auth-btn-google" onclick="doGoogle()">
           <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20H24v8h11.3C33.6 33.1 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.1 8 3l5.7-5.7C34.1 6.5 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20c11 0 19.7-8 19.7-20 0-1.3-.1-2.7-.1-4z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.5 15.1 18.9 12 24 12c3.1 0 5.9 1.1 8 3l5.7-5.7C34.1 6.5 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-1.9 13.5-5l-6.2-5.2C29.5 35.6 26.9 36 24 36c-5.2 0-9.6-2.9-11.3-7.1l-6.6 4.9C9.6 39.6 16.3 44 24 44z"/><path fill="#1976D2" d="M43.6 20H24v8h11.3c-.9 2.4-2.5 4.4-4.6 5.8l6.2 5.2C40.7 35.7 44 30.3 44 24c0-1.3-.1-2.7-.4-4z"/></svg>
           Registrarse con Google
         </button>
@@ -1138,462 +243,290 @@
         <input class="auth-input" type="email" id="reg-email" placeholder="Correo electrónico">
         <input class="auth-input" type="password" id="reg-password" placeholder="Contraseña (mínimo 6 caracteres)">
         <button class="auth-btn" id="btn-register" onclick="doRegister()">Crear cuenta gratis</button>
+        <div class="modal-link"><a onclick="switchTab('login')">¿Ya tenés cuenta? Entrá</a></div>
       </div>
       <div id="auth-success" class="auth-success" style="display:none;">
         <div class="success-icon">💘</div>
         <h3 id="success-title">¡Bienvenido a Krush!</h3>
-        <p id="success-msg">Tu cuenta fue creada. ¡Empezá a buscar tu match!</p>
+        <p id="success-msg">Tu cuenta fue creada.</p>
       </div>
     </div>
   </div>
+</div>
 
-  <!-- HERO -->
-  <section class="hero">
-    <div class="hero-left">
-      <div class="hero-flag">🇺🇾 Hecho en Uruguay · Para uruguayos</div>
-
-      <h1 class="hero-title">
-        Encontrá<br>
-        tu <span class="accent">Krush</span><br>
-        <span class="italic">de verdad</span>
-      </h1>
-
-      <p class="hero-desc">
-        La primera red social de citas <strong>100% uruguaya</strong>. Conocé personas reales cerca tuyo, chateá gratis y desbloqueá lo mejor con Krush Gold.
-      </p>
-
-      <div class="hero-actions">
-        <a href="#" class="btn-big">Empezar gratis</a>
-        <a href="#planes" class="btn-big-ghost">Ver planes</a>
-      </div>
-
-      <div class="hero-trust">
-        <div class="trust-avatars">
-          <div class="trust-av" style="background:linear-gradient(135deg,#3A1A2A,#1A2A3A);">M</div>
-          <div class="trust-av" style="background:linear-gradient(135deg,#1A3A1A,#2A1A3A);">V</div>
-          <div class="trust-av" style="background:linear-gradient(135deg,#2A2A1A,#1A1A3A);">R</div>
-          <div class="trust-av" style="background:linear-gradient(135deg,#3A1A1A,#1A3A2A);">L</div>
-        </div>
-        <div class="trust-text"><strong>+12.000 uruguayos</strong> ya están en Krush</div>
-      </div>
-    </div>
-
-    <div class="hero-right">
-      <div class="float-badge float-badge-1">
-        <div class="fb-label">Matches hoy</div>
-        <div class="fb-val"><span>247</span> 🔥</div>
-      </div>
-      <div class="float-badge float-badge-2">
-        <div class="fb-label">Compatibilidad</div>
-        <div class="fb-val"><span>94</span>%</div>
-      </div>
-
-      <div class="phone-mockup">
-        <div class="phone-notch"><div class="notch-pill"></div></div>
-        <div>
-          <div class="profile-card-phone">
-            <div class="profile-bg-art"></div>
-            <div style="position:absolute;top:16px;left:16px;right:16px;display:flex;justify-content:space-between;align-items:center;">
-              <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:#fff;letter-spacing:-0.5px;">Krush</div>
-            </div>
-            <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:100px;height:100px;border-radius:50%;background:linear-gradient(135deg,#3A1A2A,rgba(232,39,58,0.13));border:2px solid rgba(232,39,58,0.3);display:flex;align-items:center;justify-content:center;font-size:40px;">💃</div>
-            <div class="profile-info">
-              <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
-                <div class="profile-name-phone">Valentina, 24</div>
-                <div class="profile-percent">💘 94%</div>
-              </div>
-              <div style="font-size:11px;color:var(--text-muted);margin-bottom:8px;">📍 Pocitos, Montevideo</div>
-              <div class="profile-tags-phone">
-                <div class="ptag">🎵 Cumbia</div>
-                <div class="ptag">☕ Mate</div>
-                <div class="ptag">🏖️ Punta</div>
-              </div>
-            </div>
-          </div>
-          <div class="swipe-btns">
-            <div class="swipe-btn">✕</div>
-            <div class="swipe-btn like">💘</div>
-            <div class="swipe-btn">⭐</div>
-          </div>
-          <div class="match-notif">
-            <div style="font-size:18px;">🎉</div>
-            <div class="match-notif-text"><strong>¡Es un match!</strong>Vos y Valentina se gustaron</div>
-          </div>
-          <div class="locked-badge">
-            <div class="lb-left"><span>🔒 3 te dieron like</span>Desbloqueá con Gold</div>
-            <div class="lb-btn">Gold</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- MARQUEE -->
-  <div class="marquee-section">
-    <div class="marquee-track">
-      <div class="marquee-item"><div class="marquee-dot"></div>Hecho en Uruguay</div>
-      <div class="marquee-item"><div class="marquee-dot"></div>Gratis para empezar</div>
-      <div class="marquee-item"><div class="marquee-dot"></div>Matches reales</div>
-      <div class="marquee-item"><div class="marquee-dot"></div>Sin bots ni perfiles falsos</div>
-      <div class="marquee-item"><div class="marquee-dot"></div>Gold en pesos uruguayos</div>
-      <div class="marquee-item"><div class="marquee-dot"></div>Privacidad garantizada</div>
-      <div class="marquee-item"><div class="marquee-dot"></div>Comunidades locales</div>
-      <div class="marquee-item"><div class="marquee-dot"></div>Hecho en Uruguay</div>
-      <div class="marquee-item"><div class="marquee-dot"></div>Gratis para empezar</div>
-      <div class="marquee-item"><div class="marquee-dot"></div>Matches reales</div>
-      <div class="marquee-item"><div class="marquee-dot"></div>Sin bots ni perfiles falsos</div>
-      <div class="marquee-item"><div class="marquee-dot"></div>Gold en pesos uruguayos</div>
-      <div class="marquee-item"><div class="marquee-dot"></div>Privacidad garantizada</div>
-      <div class="marquee-item"><div class="marquee-dot"></div>Comunidades locales</div>
-    </div>
-  </div>
-
-  <!-- FEATURES -->
-  <section class="features-section" id="features">
-    <div class="reveal">
-      <div class="section-eyebrow">✦ Funciones</div>
-      <h2 class="section-h">Todo lo que<br><span class="dim">necesitás,</span> acá</h2>
-      <p class="section-p">Diseñado para conexiones reales en Uruguay. Sin algoritmos raros, sin perfiles falsos.</p>
-    </div>
-    <div class="bento reveal">
-      <div class="bento-card wide">
-        <div class="bento-icon">💘</div>
-        <div class="bento-title">Match inteligente</div>
-        <div class="bento-desc">El algoritmo analiza personalidad, intereses y compatibilidad real con personas cerca tuyo en Uruguay.</div>
-        <div class="bento-stat">94<span>%</span></div>
-        <div style="font-size:11px;color:var(--text-muted);">compatibilidad promedio</div>
-        <div class="bento-pill pill-free">✓ Gratis</div>
-      </div>
-      <div class="bento-card">
-        <div class="bento-icon">💬</div>
-        <div class="bento-title">Chat gratis</div>
-        <div class="bento-desc">5 mensajes diarios sin pagar. Suficiente para romper el hielo con alguien especial.</div>
-        <div class="bento-pill pill-free">✓ Gratis</div>
-      </div>
-      <div class="bento-card">
-        <div class="bento-icon">👁</div>
-        <div class="bento-title">Quién te vio</div>
-        <div class="bento-desc">Mirá quién visitó tu perfil y quién te dio like. Exclusivo Gold.</div>
-        <div class="bento-pill pill-gold">★ Gold</div>
-      </div>
-      <div class="bento-card">
-        <div class="bento-icon">🔒</div>
-        <div class="bento-title">Privacidad total</div>
-        <div class="bento-desc">Modo invisible, bloqueos y reportes. Vos controlás quién te ve y cuándo.</div>
-        <div class="bento-pill pill-free">✓ Gratis</div>
-      </div>
-      <div class="bento-card wide">
-        <div class="bento-icon">⭐</div>
-        <div class="bento-title">Super Like · Destacate entre todos</div>
-        <div class="bento-desc">Mandá un Super Like para que la persona sepa que te interesa antes del match. 5 por día con Gold, ilimitados con Platinum.</div>
-        <div class="bento-pill pill-gold">★ Gold</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- PLANS -->
-  <section class="freemium-section" id="planes">
-    <div class="reveal">
-      <div class="section-eyebrow">★ Planes</div>
-      <h2 class="section-h">Empezá gratis.<br><span class="dim">Crecé con Gold.</span></h2>
-      <p class="section-p">Precios en pesos uruguayos. Sin sorpresas, sin dólares. Cancelás cuando querés.</p>
-    </div>
-    <div class="plans-container reveal">
-
-      <div class="plan">
-        <div class="plan-name">Básico</div>
-        <div class="plan-tagline">Para explorar sin pagar</div>
-        <div style="margin-bottom:20px;">
-          <div class="plan-price"><span class="plan-currency">$</span>0</div>
-          <div class="plan-period">Gratis para siempre</div>
-        </div>
-        <div class="plan-divider"></div>
-        <ul class="plan-feats">
-          <li><span class="fi-check">✓</span> 5 mensajes por día</li>
-          <li><span class="fi-check">✓</span> Matches ilimitados</li>
-          <li><span class="fi-check">✓</span> Ver perfiles cercanos</li>
-          <li><span class="fi-lock">🔒</span> <span style="color:var(--text-muted)">Ver quién te dio like</span></li>
-          <li><span class="fi-lock">🔒</span> <span style="color:var(--text-muted)">Mensajes ilimitados</span></li>
-          <li><span class="fi-lock">🔒</span> <span style="color:var(--text-muted)">Modo invisible</span></li>
-        </ul>
-        <button class="plan-cta cta-ghost">Crear cuenta gratis</button>
-      </div>
-
-      <div class="plan hot">
-        <div class="hot-label">MÁS POPULAR</div>
-        <div class="plan-name" style="color:var(--k-red-soft);">Krush Gold</div>
-        <div class="plan-tagline">La experiencia completa</div>
-        <div style="margin-bottom:20px;">
-          <div class="plan-price red"><span class="plan-currency" style="color:var(--k-red-soft);">$</span>390</div>
-          <div class="plan-period">pesos uruguayos / mes</div>
-          <div class="plan-usd">≈ U$S 9.90 / mes</div>
-        </div>
-        <div class="plan-divider" style="background:var(--border2);"></div>
-        <ul class="plan-feats">
-          <li><span class="fi-check">✓</span> Mensajes ilimitados</li>
-          <li><span class="fi-check">✓</span> Ver quién te dio like</li>
-          <li><span class="fi-check">✓</span> Quién visitó tu perfil</li>
-          <li><span class="fi-check">✓</span> Modo invisible</li>
-          <li><span class="fi-check">✓</span> 5 Super Likes por día</li>
-          <li><span class="fi-check">✓</span> Prioridad en búsquedas</li>
-        </ul>
-        <button class="plan-cta cta-red">Activar Gold ahora</button>
-      </div>
-
-      <div class="plan">
-        <div class="plan-name">Platinum</div>
-        <div class="plan-tagline">Para los más exigentes</div>
-        <div style="margin-bottom:20px;">
-          <div class="plan-price"><span class="plan-currency">$</span>790</div>
-          <div class="plan-period">pesos uruguayos / mes</div>
-          <div class="plan-usd">≈ U$S 19.90 / mes</div>
-        </div>
-        <div class="plan-divider"></div>
-        <ul class="plan-feats">
-          <li><span class="fi-check">✓</span> Todo lo de Gold</li>
-          <li><span class="fi-check">✓</span> Super Likes ilimitados</li>
-          <li><span class="fi-check">✓</span> Boost de perfil diario</li>
-          <li><span class="fi-check">✓</span> Videollamadas en la app</li>
-          <li><span class="fi-check">✓</span> Historial de matches</li>
-          <li><span class="fi-check">✓</span> Soporte prioritario</li>
-        </ul>
-        <button class="plan-cta cta-ghost">Elegir Platinum</button>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- HOW -->
-  <section class="how-section" id="como">
-    <div class="reveal" style="text-align:center;">
-      <div class="section-eyebrow">◈ Cómo funciona</div>
-      <h2 class="section-h">Simple como<br><span class="dim">un mate</span></h2>
-    </div>
-    <div class="how-grid reveal">
-      <div class="how-step">
-        <div class="step-circle">01</div>
-        <div class="step-name">Creá tu perfil</div>
-        <div class="step-desc">En 2 minutos. Fotos, intereses, lo que buscás. Nada de formularios kilométricos.</div>
-      </div>
-      <div class="how-step">
-        <div class="step-circle">02</div>
-        <div class="step-name">Explorá perfiles</div>
-        <div class="step-desc">Personas reales cerca tuyo en Uruguay. El algoritmo muestra los más compatibles primero.</div>
-      </div>
-      <div class="how-step">
-        <div class="step-circle">03</div>
-        <div class="step-name">Conectá gratis</div>
-        <div class="step-desc">5 mensajes por día sin pagar. Perfectos para presentarte y ver si hay onda.</div>
-      </div>
-      <div class="how-step">
-        <div class="step-circle">04</div>
-        <div class="step-name">Activá Gold</div>
-        <div class="step-desc">Cuando encontrás a alguien especial, Gold elimina todos los límites por $390 UYU al mes.</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- TESTIMONIALS -->
-  <section class="testi-section">
-    <div class="reveal" style="text-align:center;">
-      <div class="section-eyebrow">💬 Lo que dicen</div>
-      <h2 class="section-h" style="font-size:clamp(28px,4vw,48px);">Historias <span class="dim">reales</span><br>de uruguayos</h2>
-    </div>
-    <div class="testi-grid reveal">
-      <div class="testi-card">
-        <div class="testi-stars">★★★★★</div>
-        <div class="testi-quote">"Conocí a mi novia en Krush. Vivía a 10 cuadras y no lo sabíamos. Gracias Krush 💘"</div>
-        <div class="testi-author">
-          <div class="testi-av" style="background:linear-gradient(135deg,#3A1A2A,#1A2A3A);">M</div>
-          <div><div class="testi-name">Marcos D.</div><div class="testi-city">Pocitos · Gold</div></div>
-        </div>
-      </div>
-      <div class="testi-card">
-        <div class="testi-stars">★★★★★</div>
-        <div class="testi-quote">"Me encanta que sea en pesos. Las otras apps cobran en dólares y es un garrón. Acá no."</div>
-        <div class="testi-author">
-          <div class="testi-av" style="background:linear-gradient(135deg,#1A3A1A,#2A1A3A);">L</div>
-          <div><div class="testi-name">Lucía M.</div><div class="testi-city">Punta Carretas · Platinum</div></div>
-        </div>
-      </div>
-      <div class="testi-card">
-        <div class="testi-stars">★★★★★</div>
-        <div class="testi-quote">"Probé Tinder y Badoo. Krush es otra cosa. Los perfiles son reales y la gente responde."</div>
-        <div class="testi-author">
-          <div class="testi-av" style="background:linear-gradient(135deg,#2A1A1A,#1A2A3A);">R</div>
-          <div><div class="testi-name">Rodrigo S.</div><div class="testi-city">Salto · Gold</div></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- CTA FINAL -->
-  <section class="cta-section">
-    <div class="cta-bg-text">KRUSH</div>
-    <div class="reveal">
-      <h2 class="cta-h">Tu <span>Krush</span><br>te está esperando</h2>
-      <p class="cta-sub">Gratis para siempre · Gold desde $390 UYU al mes</p>
-      <div class="cta-form">
-        <input type="email" class="cta-email" placeholder="Tu correo electrónico">
-        <button class="cta-submit">Empezar</button>
-      </div>
-      <p class="cta-note">Sin tarjeta de crédito · Cancelás cuando querés · 🇺🇾 Hecho en Uruguay</p>
-    </div>
-  </section>
-
-  <footer>
-    <div class="footer-logo">Kr<span>u</span>sh</div>
-    <ul class="footer-links">
-      <li><a href="#">Funciones</a></li>
-      <li><a href="#">Planes</a></li>
-      <li><a href="#">Privacidad</a></li>
-      <li><a href="#">Términos</a></li>
-      <li><a href="#">Contacto</a></li>
+<div class="layout">
+  <!-- LEFT -->
+  <aside class="sidebar-left">
+    <ul class="sidebar-menu">
+      <li class="active"><a href="#"><div class="menu-icon mi-red">😊</div> Tu perfil</a></li>
+      <li><div onclick="openModal('login')"><div class="menu-icon" style="background:#FEE2E5;">💘</div> Matches</div></li>
+      <li><div onclick="openModal('login')"><div class="menu-icon mi-blue">💬</div> Mensajes</div></li>
+      <li><div onclick="openModal('login')"><div class="menu-icon mi-green">⭐</div> Likes recibidos</div></li>
+      <li><div onclick="openModal('login')"><div class="menu-icon mi-purple">🔔</div> Notificaciones</div></li>
+      <li><div onclick="openModal('login')"><div class="menu-icon mi-orange">🏆</div> Krush Gold</div></li>
     </ul>
-    <div class="footer-right">🇺🇾 <span>© 2025 Krush Uruguay</span></div>
-  </footer>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section-title">Explorar</div>
+    <ul class="sidebar-menu">
+      <li><div><div class="menu-icon mi-gray">📍</div> Cerca tuyo</div></li>
+      <li><div><div class="menu-icon mi-gray">🎯</div> Compatibles</div></li>
+      <li><div><div class="menu-icon mi-gray">🆕</div> Nuevos usuarios</div></li>
+      <li><div><div class="menu-icon mi-gray">🇺🇾</div> Por ciudad</div></li>
+    </ul>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-footer">Privacidad · Términos · Ayuda<br>Krush Uruguay © 2025 · Hecho con 💘 en Uruguay</div>
+  </aside>
 
-  <!-- FIREBASE SDK -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  <!-- FEED -->
+  <main class="feed">
+    <!-- STORIES -->
+    <div class="stories-row">
+      <div class="story-card story-add">
+        <div class="story-add-photo">😊<div class="story-add-plus">+</div></div>
+        <div class="story-add-label" style="margin-top:18px;color:var(--text);">Tu story</div>
+      </div>
+      <div class="story-card">
+        <div class="story-bg-img" style="background:linear-gradient(160deg,#FFB3BA,#FF6B8A);"></div>
+        <div class="story-overlay"></div>
+        <div class="story-avatar" style="background:linear-gradient(135deg,#FF6B8A,#FF8FA3);">V</div>
+        <div class="story-name">Valentina</div>
+      </div>
+      <div class="story-card">
+        <div class="story-bg-img" style="background:linear-gradient(160deg,#A8D8EA,#7EC8E3);"></div>
+        <div class="story-overlay"></div>
+        <div class="story-avatar" style="background:linear-gradient(135deg,#7EC8E3,#0090C1);">R</div>
+        <div class="story-name">Rodrigo</div>
+      </div>
+      <div class="story-card">
+        <div class="story-bg-img" style="background:linear-gradient(160deg,#B5EAD7,#78C2AD);"></div>
+        <div class="story-overlay"></div>
+        <div class="story-avatar" style="background:linear-gradient(135deg,#78C2AD,#00897B);">L</div>
+        <div class="story-name">Lucía</div>
+      </div>
+      <div class="story-card">
+        <div class="story-bg-img" style="background:linear-gradient(160deg,#FFDAC1,#FFB347);"></div>
+        <div class="story-overlay"></div>
+        <div class="story-avatar" style="background:linear-gradient(135deg,#FFB347,#FF7043);">M</div>
+        <div class="story-name">Marcos</div>
+      </div>
+    </div>
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyD7wDuUvGwkwb6ekSfgqLpPdRucfHgV6Tk",
-      authDomain: "krush-8d3cf.firebaseapp.com",
-      projectId: "krush-8d3cf",
-      storageBucket: "krush-8d3cf.firebasestorage.app",
-      messagingSenderId: "760726538346",
-      appId: "1:760726538346:web:5e7cf7c8c97dc75184a213"
-    };
+    <!-- BANNER -->
+    <div class="match-banner">
+      <h3>¡Encontrá tu Krush hoy 🔥</h3>
+      <p>+12.000 uruguayos activos te están esperando. Gratis, sin tarjeta.</p>
+      <div class="match-banner-btns">
+        <button class="btn-match-primary" onclick="openModal('register')">Crear cuenta gratis</button>
+        <button class="btn-match-ghost" onclick="openModal('login')">Ya tengo cuenta</button>
+      </div>
+    </div>
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
+    <!-- CREATE POST -->
+    <div class="create-post">
+      <div class="create-post-top">
+        <div class="post-avatar">T</div>
+        <input class="create-post-input" type="text" placeholder="¿Qué estás buscando?" onclick="openModal('register')" readonly>
+      </div>
+      <div class="create-post-divider"></div>
+      <div class="create-post-actions">
+        <button class="create-action" onclick="openModal('register')"><span>📷</span> Foto</button>
+        <button class="create-action" onclick="openModal('register')"><span>😊</span> Feeling</button>
+        <button class="create-action" onclick="openModal('register')"><span>📍</span> Ubicación</button>
+      </div>
+    </div>
 
-    const nav = document.getElementById("nav");
-    window.addEventListener("scroll", () => nav.classList.toggle("scrolled", window.scrollY > 50));
+    <!-- POST 1 -->
+    <div class="post-card">
+      <div class="post-header">
+        <div class="post-avatar-sm" style="background:linear-gradient(135deg,#FF6B8A,#FF8FA3);">V</div>
+        <div class="post-meta">
+          <div class="post-name">Valentina R.</div>
+          <div class="post-sub">Pocitos, Montevideo · hace 2 horas 🌐</div>
+        </div>
+        <div class="post-menu">···</div>
+      </div>
+      <div class="post-body">Probé Krush y literalmente conocí a mi persona a 10 cuadras 😭💘 Si están dudando, dense una oportunidad. Los perfiles son reales y la gente responde. ¡Gracias Krush! 🇺🇾</div>
+      <div class="post-image" style="background:linear-gradient(135deg,#FFE4E8,#FFC8D0);">💃</div>
+      <div class="post-stats">
+        <div class="post-reactions">
+          <div class="reaction-icons">
+            <div class="reaction-icon" style="background:#E8273A;">❤️</div>
+            <div class="reaction-icon" style="background:#F7B731;">😂</div>
+            <div class="reaction-icon" style="background:#1877F2;">👍</div>
+          </div>
+          &nbsp;Marcos y 847 más
+        </div>
+        <div class="post-comments-count">312 comentarios · 58 compartidos</div>
+      </div>
+      <div class="post-divider"></div>
+      <div class="post-actions">
+        <button class="post-action liked"><span>❤️</span> Me encanta</button>
+        <button class="post-action" onclick="openModal('login')"><span>💬</span> Comentar</button>
+        <button class="post-action" onclick="openModal('login')"><span>↗️</span> Compartir</button>
+      </div>
+    </div>
 
-    const reveals = document.querySelectorAll(".reveal");
-    const obs = new IntersectionObserver(entries => {
-      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add("visible"); });
-    }, { threshold: 0.1 });
-    reveals.forEach(r => obs.observe(r));
+    <!-- POST 2 -->
+    <div class="post-card">
+      <div class="post-header">
+        <div class="post-avatar-sm" style="background:linear-gradient(135deg,#7EC8E3,#0090C1);">R</div>
+        <div class="post-meta">
+          <div class="post-name">Rodrigo S.</div>
+          <div class="post-sub">Salto · hace 5 horas 🔒</div>
+        </div>
+        <div class="post-menu">···</div>
+      </div>
+      <div class="post-body">Sinceramente pensé que era otra app más. Error mío. Krush tiene algo distinto: la gente es real, del barrio. Y encima en pesos 🇺🇾, nada de pagar en dólares. Activé Gold y fue la mejor inversión romántica que hice 😂</div>
+      <div class="post-stats">
+        <div class="post-reactions">
+          <div class="reaction-icons">
+            <div class="reaction-icon" style="background:#E8273A;">❤️</div>
+            <div class="reaction-icon" style="background:#1877F2;">👍</div>
+          </div>
+          &nbsp;523 personas
+        </div>
+        <div class="post-comments-count">87 comentarios</div>
+      </div>
+      <div class="post-divider"></div>
+      <div class="post-actions">
+        <button class="post-action" onclick="openModal('login')"><span>👍</span> Me gusta</button>
+        <button class="post-action" onclick="openModal('login')"><span>💬</span> Comentar</button>
+        <button class="post-action" onclick="openModal('login')"><span>↗️</span> Compartir</button>
+      </div>
+    </div>
 
-    onAuthStateChanged(auth, (user) => {
-      const navRight = document.getElementById("nav-right");
-      if (user) {
-        const initial = (user.displayName || user.email).charAt(0).toUpperCase();
-        const emailShort = user.email.length > 18 ? user.email.substring(0, 18) + "..." : user.email;
-        navRight.innerHTML = '<div class="user-nav"><div class="user-avatar">' + initial + '</div><span class="user-email-nav">' + emailShort + '</span><button class="btn-logout" id="btn-logout">Salir</button></div>';
-        document.getElementById("btn-logout").onclick = () => signOut(auth);
-      } else {
-        navRight.innerHTML = '<a href="#" class="btn-nav-ghost" onclick="openModal(\'login\');return false;">Entrar</a><a href="#" class="btn-nav-primary" onclick="openModal(\'register\');return false;">Crear cuenta</a>';
-      }
-    });
+    <!-- POST 3 GOLD -->
+    <div class="post-card" style="border-color:var(--k);">
+      <div style="background:#FEE2E5;padding:8px 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid #FECDD3;">
+        <span>⭐</span><span style="font-size:13px;font-weight:600;color:var(--k);">Contenido Krush Gold</span>
+      </div>
+      <div class="post-header">
+        <div class="post-avatar-sm" style="background:linear-gradient(135deg,#78C2AD,#00897B);">L</div>
+        <div class="post-meta">
+          <div class="post-name">Lucía M. <span style="font-size:12px;background:#FEE2E5;color:var(--k);border-radius:4px;padding:1px 6px;font-weight:600;">Gold</span></div>
+          <div class="post-sub">Punta Carretas · hace 1 día</div>
+        </div>
+        <div class="post-menu">···</div>
+      </div>
+      <div class="post-body">Con Gold podés ver quién visitó tu perfil 👀 Esta semana tuve 47 vistas y matcheé con 3. Sin Gold nunca lo hubiera sabido. Vale cada peso. Gold desde $390 UYU 💛</div>
+      <div class="post-stats">
+        <div class="post-reactions">
+          <div class="reaction-icons"><div class="reaction-icon" style="background:var(--k);">❤️</div></div>
+          &nbsp;1.2K personas
+        </div>
+        <div class="post-comments-count">204 comentarios</div>
+      </div>
+      <div class="post-divider"></div>
+      <div class="post-actions">
+        <button class="post-action" onclick="openModal('login')"><span>👍</span> Me gusta</button>
+        <button class="post-action" onclick="openModal('login')"><span>💬</span> Comentar</button>
+        <button class="post-action" onclick="openModal('register')" style="color:var(--k);">⭐ Activar Gold</button>
+      </div>
+    </div>
+  </main>
 
-    document.querySelector(".cta-submit").addEventListener("click", () => openModal("register"));
-    document.querySelectorAll(".plan-cta").forEach(btn => btn.addEventListener("click", () => openModal("register")));
+  <!-- RIGHT -->
+  <aside class="sidebar-right">
+    <div class="widget-box">
+      <div class="profile-widget">
+        <div class="profile-widget-av">T</div>
+        <div class="profile-widget-name">Tu nombre</div>
+        <div class="profile-widget-sub">Montevideo · Plan Gratis</div>
+        <div class="profile-widget-stats">
+          <div class="pstat"><div class="pstat-num">0</div><div class="pstat-label">Matches</div></div>
+          <div class="pstat"><div class="pstat-num">0</div><div class="pstat-label">Likes</div></div>
+          <div class="pstat"><div class="pstat-num">0</div><div class="pstat-label">Visitas</div></div>
+        </div>
+        <button class="btn-edit-profile" onclick="openModal('register')">Completar perfil</button>
+      </div>
+    </div>
 
-    window.doGoogle = async () => {
-      const provider = new GoogleAuthProvider();
-      try {
-        await signInWithPopup(auth, provider);
-        showSuccess("Bienvenido a Krush!", "Sesion iniciada con Google!");
-        setTimeout(closeModal, 2000);
-      } catch (e) {
-        if (e.code !== "auth/popup-closed-by-user") {
-          showError(getErrorMsg(e.code));
-        }
-      }
-    };
+    <div class="widget-box">
+      <div class="widget-title">Personas que quizás conozcás</div>
+      <div class="suggestion-item">
+        <div class="sug-av" style="background:linear-gradient(135deg,#FF6B8A,#FF8FA3);">V</div>
+        <div class="sug-info"><div class="sug-name">Valentina R.</div><div class="sug-detail">📍 2.4 km · Pocitos</div></div>
+        <button class="btn-follow" onclick="openModal('register')">💘 Like</button>
+      </div>
+      <div class="suggestion-item">
+        <div class="sug-av" style="background:linear-gradient(135deg,#78C2AD,#00897B);">L</div>
+        <div class="sug-info"><div class="sug-name">Lucía M.</div><div class="sug-detail">📍 5.1 km · P. Carretas</div></div>
+        <button class="btn-follow" onclick="openModal('register')">💘 Like</button>
+      </div>
+      <div class="suggestion-item">
+        <div class="sug-av" style="background:linear-gradient(135deg,#FFB347,#FF7043);">M</div>
+        <div class="sug-info"><div class="sug-name">Marcos D.</div><div class="sug-detail">📍 0.8 km · Palermo</div></div>
+        <button class="btn-follow" onclick="openModal('register')">💘 Like</button>
+      </div>
+      <div style="padding:8px 16px 12px;"><a href="#" onclick="openModal('register');return false;" style="font-size:14px;color:var(--text2);font-weight:600;text-decoration:none;">Ver todos →</a></div>
+    </div>
 
-    window.doLogin = async () => {
-      const email = document.getElementById("login-email").value;
-      const password = document.getElementById("login-password").value;
-      const btn = document.getElementById("btn-login");
-      showError("");
-      btn.disabled = true; btn.textContent = "Entrando...";
-      try {
-        await signInWithEmailAndPassword(auth, email, password);
-        showSuccess("Bienvenido de vuelta!", "Ya estas dentro de Krush!");
-        setTimeout(() => window.location.href = 'app.html', 1500);
-      } catch (e) {
-        showError(getErrorMsg(e.code));
-        btn.disabled = false; btn.textContent = "Entrar a Krush";
-      }
-    };
+    <div class="widget-box">
+      <div class="widget-title">Mensajes</div>
+      <div class="msg-item" onclick="openModal('login')">
+        <div class="msg-av" style="background:linear-gradient(135deg,#FF6B8A,#FF8FA3);">V<div class="online-dot"></div></div>
+        <div class="msg-info"><div class="msg-name">Valentina</div><div class="msg-preview unread">¡Hola! ¿Cómo andás? 😊</div></div>
+        <div class="msg-meta"><div class="msg-time">2h</div><div class="msg-unread">3</div></div>
+      </div>
+      <div class="msg-item" onclick="openModal('login')">
+        <div class="msg-av" style="background:linear-gradient(135deg,#7EC8E3,#0090C1);">R</div>
+        <div class="msg-info"><div class="msg-name">Rodrigo</div><div class="msg-preview">dale me avisás</div></div>
+        <div class="msg-meta"><div class="msg-time">5h</div></div>
+      </div>
+      <div style="padding:8px 16px 12px;"><a href="#" onclick="openModal('login');return false;" style="font-size:14px;color:var(--text2);font-weight:600;text-decoration:none;">Ver todos →</a></div>
+    </div>
 
-    window.doRegister = async () => {
-      const name = document.getElementById("reg-name").value;
-      const email = document.getElementById("reg-email").value;
-      const password = document.getElementById("reg-password").value;
-      const btn = document.getElementById("btn-register");
-      showError("");
-      btn.disabled = true; btn.textContent = "Creando cuenta...";
-      try {
-        const cred = await createUserWithEmailAndPassword(auth, email, password);
-        if (name) await updateProfile(cred.user, { displayName: name });
-        showSuccess("Bienvenido" + (name ? ", " + name : "") + "!", "Tu cuenta fue creada. Encontra tu Krush!");
-        setTimeout(() => window.location.href = 'app.html', 1500);
-      } catch (e) {
-        showError(getErrorMsg(e.code));
-        btn.disabled = false; btn.textContent = "Crear cuenta gratis";
-      }
-    };
+    <div class="widget-box">
+      <div class="widget-title">Planes Krush</div>
+      <div class="plan-widget-item">
+        <div class="plan-icon" style="background:#E4E6EB;">🆓</div>
+        <div class="plan-info"><div class="plan-w-name">Gratis</div><div class="plan-w-price">5 msgs/día</div></div>
+        <span style="font-size:12px;color:var(--text3);">Activo</span>
+      </div>
+      <div class="plan-widget-item">
+        <div class="plan-icon" style="background:linear-gradient(135deg,var(--k),#FF8FA3);">⭐</div>
+        <div class="plan-info"><div class="plan-w-name">Gold</div><div class="plan-w-price">$390 UYU/mes</div></div>
+        <button class="btn-upgrade" onclick="openModal('register')">Activar</button>
+      </div>
+      <div class="plan-widget-item">
+        <div class="plan-icon" style="background:linear-gradient(135deg,#667EEA,#764BA2);">💎</div>
+        <div class="plan-info"><div class="plan-w-name">Platinum</div><div class="plan-w-price">$750 UYU/mes</div></div>
+        <button class="btn-upgrade" onclick="openModal('register')">Activar</button>
+      </div>
+    </div>
+  </aside>
+</div>
 
-    function getErrorMsg(code) {
-      const msgs = {
-        "auth/email-already-in-use": "Ya existe una cuenta con ese correo.",
-        "auth/invalid-email": "El correo no es valido.",
-        "auth/weak-password": "La contrasena debe tener al menos 6 caracteres.",
-        "auth/user-not-found": "No encontramos esa cuenta.",
-        "auth/wrong-password": "Contrasena incorrecta.",
-        "auth/invalid-credential": "Correo o contrasena incorrectos.",
-        "auth/too-many-requests": "Demasiados intentos. Espera unos minutos."
-      };
-      return msgs[code] || "Ocurrio un error. Intenta de nuevo.";
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  const firebaseConfig = { apiKey:"AIzaSyD7wDuUvGwkwb6ekSfgqLpPdRucfHgV6Tk", authDomain:"krush-8d3cf.firebaseapp.com", projectId:"krush-8d3cf", storageBucket:"krush-8d3cf.firebasestorage.app", messagingSenderId:"760726538346", appId:"1:760726538346:web:5e7cf7c8c97dc75184a213" };
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  onAuthStateChanged(auth, (user) => {
+    const navRight = document.getElementById("nav-right");
+    if (user) {
+      const initial = (user.displayName || user.email).charAt(0).toUpperCase();
+      const emailShort = user.email.length > 18 ? user.email.substring(0,18)+"..." : user.email;
+      navRight.innerHTML = `<div class="user-nav"><div class="user-avatar-nav">${initial}</div><span class="user-email-nav">${emailShort}</span><button class="btn-logout" id="btn-logout">Salir</button></div>`;
+      document.getElementById("btn-logout").onclick = () => signOut(auth);
+    } else {
+      navRight.innerHTML = `<button class="btn-login-nav ghost" onclick="openModal('login')">Entrar</button><button class="btn-login-nav" onclick="openModal('register')">Crear cuenta</button>`;
     }
-
-    function showError(msg) {
-      const el = document.getElementById("auth-error");
-      el.textContent = msg;
-      el.classList.toggle("show", !!msg);
-    }
-
-    function showSuccess(title, msg) {
-      document.getElementById("form-login").style.display = "none";
-      document.getElementById("form-register").style.display = "none";
-      document.getElementById("auth-error").classList.remove("show");
-      document.getElementById("success-title").textContent = title;
-      document.getElementById("success-msg").textContent = msg;
-      document.getElementById("auth-success").style.display = "block";
-    }
-  </script>
-
-  <script>
-    function openModal(tab) {
-      document.getElementById("modal-overlay").classList.add("active");
-      switchTab(tab || "login");
-      document.getElementById("auth-success").style.display = "none";
-      document.getElementById("form-login").style.display = "";
-      document.getElementById("form-register").style.display = "none";
-      document.getElementById("auth-error").classList.remove("show");
-    }
-    function closeModal() {
-      document.getElementById("modal-overlay").classList.remove("active");
-    }
-    function handleOverlayClick(e) {
-      if (e.target === document.getElementById("modal-overlay")) closeModal();
-    }
-    function switchTab(tab) {
-      document.getElementById("tab-login").classList.toggle("active", tab === "login");
-      document.getElementById("tab-register").classList.toggle("active", tab === "register");
-      document.getElementById("form-login").style.display = tab === "login" ? "" : "none";
-      document.getElementById("form-register").style.display = tab === "register" ? "" : "none";
-      document.getElementById("auth-success").style.display = "none";
-      document.getElementById("auth-error").classList.remove("show");
-    }
-    document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
-  </script>
+  });
+  window.doGoogle = async () => { const p = new GoogleAuthProvider(); try { await signInWithPopup(auth,p); showSuccess("¡Bienvenido a Krush!","Sesión iniciada con Google."); setTimeout(closeModal,2000); } catch(e){ if(e.code!=="auth/popup-closed-by-user") showError(getErrorMsg(e.code)); } };
+  window.doLogin = async () => { const e=document.getElementById("login-email").value, p=document.getElementById("login-password").value, b=document.getElementById("btn-login"); showError(""); b.disabled=true; b.textContent="Entrando..."; try { await signInWithEmailAndPassword(auth,e,p); showSuccess("¡Bienvenido de vuelta!","Ya estás dentro."); setTimeout(()=>window.location.href='app.html',1500); } catch(err){ showError(getErrorMsg(err.code)); b.disabled=false; b.textContent="Entrar a Krush"; } };
+  window.doRegister = async () => { const n=document.getElementById("reg-name").value, e=document.getElementById("reg-email").value, p=document.getElementById("reg-password").value, b=document.getElementById("btn-register"); showError(""); b.disabled=true; b.textContent="Creando cuenta..."; try { const c=await createUserWithEmailAndPassword(auth,e,p); if(n) await updateProfile(c.user,{displayName:n}); showSuccess("¡Bienvenido"+(n?", "+n:"")+"!","Tu cuenta fue creada."); setTimeout(()=>window.location.href='app.html',1500); } catch(err){ showError(getErrorMsg(err.code)); b.disabled=false; b.textContent="Crear cuenta gratis"; } };
+  function getErrorMsg(code){ const m={"auth/email-already-in-use":"Ya existe una cuenta con ese correo.","auth/invalid-email":"El correo no es válido.","auth/weak-password":"La contraseña debe tener al menos 6 caracteres.","auth/user-not-found":"No encontramos esa cuenta.","auth/wrong-password":"Contraseña incorrecta.","auth/invalid-credential":"Correo o contraseña incorrectos.","auth/too-many-requests":"Demasiados intentos. Esperá unos minutos."}; return m[code]||"Ocurrió un error. Intentá de nuevo."; }
+  function showError(msg){ const el=document.getElementById("auth-error"); el.textContent=msg; el.classList.toggle("show",!!msg); }
+  function showSuccess(title,msg){ document.getElementById("form-login").style.display="none"; document.getElementById("form-register").style.display="none"; document.getElementById("auth-error").classList.remove("show"); document.getElementById("success-title").textContent=title; document.getElementById("success-msg").textContent=msg; document.getElementById("auth-success").style.display="block"; }
+</script>
+<script>
+  function openModal(tab){ document.getElementById("modal-overlay").classList.add("active"); switchTab(tab||"login"); document.getElementById("auth-success").style.display="none"; document.getElementById("auth-error").classList.remove("show"); }
+  function closeModal(){ document.getElementById("modal-overlay").classList.remove("active"); }
+  function handleOverlayClick(e){ if(e.target===document.getElementById("modal-overlay")) closeModal(); }
+  function switchTab(tab){ document.getElementById("tab-login").classList.toggle("active",tab==="login"); document.getElementById("tab-register").classList.toggle("active",tab==="register"); document.getElementById("form-login").style.display=tab==="login"?"":"none"; document.getElementById("form-register").style.display=tab==="register"?"":"none"; document.getElementById("auth-success").style.display="none"; document.getElementById("auth-error").classList.remove("show"); }
+  document.addEventListener("keydown",e=>{ if(e.key==="Escape") closeModal(); });
+</script>
 </body>
 </html>
