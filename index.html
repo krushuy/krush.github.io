@@ -781,7 +781,7 @@
   </div>
 
   <!-- PROFILE VIEW -->
-  <div id="profileView">
+  <div id="profileView" style="display:none;">
     <div class="profile-cover" id="profileCover" onclick="triggerCoverUpload()">
       <input type="file" id="coverFileInput" accept="image/*" style="display:none;" onchange="handleCoverUpload(event)"/>
       <button class="profile-cover-edit" onclick="event.stopPropagation(); triggerCoverUpload()">📷 Editar foto de portada</button>
@@ -1303,6 +1303,7 @@
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
+  window._db = db; // expose for match profiles loader
   const provider = new GoogleAuthProvider();
 
   // ══ TOAST ══
@@ -1712,10 +1713,12 @@
     const imageHTML = post.image
       ? `<img class="post-image" src="${post.image}" alt="post" onerror="this.style.display='none'"/>`
       : '';
+    const isOwnPost = post.uid && post.uid === window._currentUser?.uid;
+    const authorClick = isOwnPost ? `onclick="showProfile()"` : `style="cursor:default;"`;
     card.innerHTML = `
       <div class="post-header">
-        <div class="post-avatar" ${avatarStyle} onclick="showProfile()">${avatarHTML}</div>
-        <div class="post-header-info"><div class="post-author" onclick="showProfile()">${post.author}</div><div class="post-meta">${post.privacy||'🌎'} · ${timeStr}</div></div>
+        <div class="post-avatar" ${avatarStyle} ${authorClick}>${avatarHTML}</div>
+        <div class="post-header-info"><div class="post-author" ${authorClick}>${post.author}</div><div class="post-meta">${post.privacy||'🌎'} · ${timeStr}</div></div>
         <button class="post-more">···</button>
       </div>
       ${post.text?`<div class="post-text ${isBigText?'big-text':''}">${post.text}</div>`:''}
@@ -2582,7 +2585,7 @@
   };
   window.showMatch = function() {
     showSection('matchView');
-    renderMatch();
+    loadMatchProfiles();
     document.querySelectorAll('.nav-icon-btn').forEach((b,i) => b.classList.toggle('active', i===1));
   };
   window.showFriends = function() { showSection('friendsView'); renderFriends(); };
@@ -2635,21 +2638,13 @@ const SAMPLE_POSTS = [];
 const CONTACTS = [];
 
 
-const MATCH_PROFILES = [
-  { id:1, name:'Valentina', age:24, city:'Montevideo', distance:'2 km', online:true, emoji:'👩‍🦱', bg:'linear-gradient(135deg,#f093fb,#f5576c)', bio:'Amante del café ☕ y los atardeceres. Busco alguien para explorar la ciudad.', tags:['Música','Viajes','Fotografía'], gender:'mujeres' },
-  { id:2, name:'Martina', age:26, city:'Montevideo', distance:'5 km', online:true, emoji:'👩', bg:'linear-gradient(135deg,#fa709a,#fee140)', bio:'Yoga lover 🧘‍♀️ Foodie empedernida. Me encanta el arte y la cultura.', tags:['Yoga','Arte','Cocina'], gender:'mujeres' },
-  { id:3, name:'Camila', age:22, city:'Punta del Este', distance:'12 km', online:false, emoji:'👩‍🦰', bg:'linear-gradient(135deg,#4facfe,#00f2fe)', bio:'Estudiante de diseño 🎨 Surfista de fin de semana. Busco aventuras.', tags:['Diseño','Surf','Viajes'], gender:'mujeres' },
-  { id:4, name:'Lucía', age:28, city:'Montevideo', distance:'3 km', online:true, emoji:'👩‍🎤', bg:'linear-gradient(135deg,#43e97b,#38f9d7)', bio:'Músico indie 🎸 Netflix & chill. Me gustan las conversaciones profundas.', tags:['Música','Cine','Literatura'], gender:'mujeres' },
-  { id:5, name:'Emilia', age:25, city:'Colonia', distance:'8 km', online:false, emoji:'👩‍💻', bg:'linear-gradient(135deg,#667eea,#764ba2)', bio:'Dev & gamer 🎮 Geek orgullosa. Busco a alguien que me haga reír.', tags:['Tech','Gaming','Series'], gender:'mujeres' },
-  { id:6, name:'Santiago', age:27, city:'Montevideo', distance:'1 km', online:true, emoji:'👨', bg:'linear-gradient(135deg,#1877F2,#42b72a)', bio:'Fotógrafo urbano 📷 Runner matutino. Amante de la arquitectura y el buen café.', tags:['Fotografía','Running','Arquitectura'], gender:'hombres' },
-  { id:7, name:'Mateo', age:23, city:'Montevideo', distance:'4 km', online:true, emoji:'👨‍🦱', bg:'linear-gradient(135deg,#f7971e,#ffd200)', bio:'Chef amateur 🍳 Futbolero. Busco a alguien con quien compartir asados.', tags:['Cocina','Fútbol','Asado'], gender:'hombres' },
-  { id:8, name:'Tomás', age:29, city:'Punta del Este', distance:'15 km', online:false, emoji:'👨‍🎨', bg:'linear-gradient(135deg,#ee0979,#ff6a00)', bio:'Artista plástico 🎨 Filósofo de fin de semana. Amo los museos y el vino tinto.', tags:['Arte','Filosofía','Vino'], gender:'hombres' },
-];
+const MATCH_PROFILES = []; // vacío — se carga desde Firestore
 
 const pmConversations = {};
 let currentPMUser = null;
 let _matchFilter = 'todos';
 const matchLoved = {};
+let _matchProfiles = []; // perfiles reales cargados de Firestore
 
 // ══ CONTACTS ══
 function renderContacts() {
@@ -2664,14 +2659,6 @@ function renderContacts() {
 // ══ PROFILE PHOTOS ══
 function renderProfilePhotos() {
   const grid = document.getElementById('profilePhotosGrid'); if (!grid) return;
-  // Load real user photos from Firestore if available
-  const uid = window._currentUser?.uid;
-  if (uid) {
-    import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js').then(({collection, query, where, getDocs, orderBy}) => {
-      // Try to get photos from posts
-    }).catch(()=>{});
-  }
-  // Show uploaded photos from posts
   const userPhotos = (window._firestorePosts || [])
     .filter(p => p.uid === window._currentUser?.uid && p.image)
     .map(p => p.image);
@@ -2685,7 +2672,44 @@ function renderProfilePhotos() {
   }
 }
 
-// ══ MATCH ══
+// ══ MATCH — carga usuarios reales de Firestore ══
+async function loadMatchProfiles() {
+  const grid = document.getElementById('matchGrid'); if (!grid) return;
+  grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--gray-text);">🔍 Buscando personas...</div>';
+  try {
+    // Firestore está disponible via window._db expuesto desde el módulo
+    if (!window._db) { renderMatch(); return; }
+    const { getDocs, collection, query, limit } = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js');
+    const snap = await getDocs(query(collection(window._db, 'users'), limit(50)));
+    const myUid = window._currentUser?.uid;
+    _matchProfiles = [];
+    snap.forEach(d => {
+      if (d.id === myUid) return; // no mostrarse a sí mismo
+      const data = d.data();
+      const name = ((data.firstName || '') + ' ' + (data.lastName || '')).trim() || 'Usuario';
+      _matchProfiles.push({
+        id: d.id,
+        name,
+        city: data.city || 'Uruguay',
+        bio: data.bio || '👋 ¡Hola! Estoy en ConnectMe.',
+        gender: data.gender || 'otro',
+        photo: data.photoURL || null,
+        relacion: data.relacion || '',
+        study: data.study || '',
+        work: data.work || '',
+        emoji: data.gender === 'mujer' ? '👩' : data.gender === 'hombre' ? '👨' : '🧑',
+        bg: ['linear-gradient(135deg,#f093fb,#f5576c)','linear-gradient(135deg,#4facfe,#00f2fe)','linear-gradient(135deg,#43e97b,#38f9d7)','linear-gradient(135deg,#667eea,#764ba2)','linear-gradient(135deg,#fa709a,#fee140)','linear-gradient(135deg,#1877F2,#42b72a)'][Math.floor(Math.random()*6)],
+        tags: [data.study, data.work, data.city].filter(Boolean).slice(0,3),
+        online: false,
+      });
+    });
+    renderMatch();
+  } catch(e) {
+    console.warn('Match load error:', e);
+    renderMatch();
+  }
+}
+
 window.filterMatch = function(filter, btn) {
   _matchFilter = filter;
   document.querySelectorAll('.match-filter-btn').forEach(b=>b.classList.remove('active'));
@@ -2695,33 +2719,37 @@ window.filterMatch = function(filter, btn) {
 
 function renderMatch() {
   const grid = document.getElementById('matchGrid'); if (!grid) return;
-  let profiles = MATCH_PROFILES;
-  if (_matchFilter==='mujeres') profiles = profiles.filter(p=>p.gender==='mujeres');
-  else if (_matchFilter==='hombres') profiles = profiles.filter(p=>p.gender==='hombres');
-  else if (_matchFilter==='cerca') profiles = profiles.filter(p=>parseInt(p.distance)<=5);
-  else if (_matchFilter==='online') profiles = profiles.filter(p=>p.online);
+  let profiles = _matchProfiles;
+  if (_matchFilter === 'mujeres') profiles = profiles.filter(p => p.gender === 'mujer');
+  else if (_matchFilter === 'hombres') profiles = profiles.filter(p => p.gender === 'hombre');
   grid.innerHTML = '';
+  if (!profiles.length) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--gray-text);font-size:16px;">👥 Aún no hay otros usuarios registrados. ¡Invitá a tus amigos!</div>';
+    return;
+  }
   profiles.forEach(p => {
     const loved = matchLoved[p.id];
     const card = document.createElement('div'); card.className = 'match-card';
+    const photoHTML = p.photo
+      ? `<img src="${p.photo}" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"/><div class="match-photo-placeholder" style="background:${p.bg};display:none;">${p.emoji}</div>`
+      : `<div class="match-photo-placeholder" style="background:${p.bg}">${p.emoji}</div>`;
     card.innerHTML = `
       <div class="match-card-photo-wrap">
-        <div class="match-photo-placeholder" style="background:${p.bg}">${p.emoji}</div>
+        ${photoHTML}
         ${p.online?'<div class="match-card-online"></div>':''}
       </div>
       <div class="match-card-body">
-        <div class="match-card-name">${p.name} <span>, ${p.age}</span></div>
-        <div class="match-card-info"><span>📍 ${p.city}</span><span>🚗 ${p.distance}</span>${p.online?'<span style="color:var(--green);font-weight:700;">● En línea</span>':''}</div>
+        <div class="match-card-name">${p.name}</div>
+        <div class="match-card-info"><span>📍 ${p.city}</span>${p.online?'<span style="color:var(--green);font-weight:700;">● En línea</span>':''}</div>
         <div class="match-card-bio">${p.bio}</div>
-        <div class="match-card-tags">${p.tags.map(t=>`<span class="match-tag">${t}</span>`).join('')}</div>
+        ${p.tags.length ? `<div class="match-card-tags">${p.tags.map(t=>`<span class="match-tag">${t}</span>`).join('')}</div>` : ''}
         <div class="match-card-actions">
-          <button class="match-btn-love ${loved?'loved':''}" onclick="toggleLove(${p.id}, this)">${loved?'✅ Match!':'❤️ Me encanta'}</button>
-          <button class="match-btn-msg" onclick="openPM(${p.id})">💬 Mensaje</button>
+          <button class="match-btn-love ${loved?'loved':''}" onclick="toggleLove('${p.id}', this)">${loved?'✅ Match!':'❤️ Me encanta'}</button>
+          <button class="match-btn-msg" onclick="openPM('${p.id}')">💬 Mensaje</button>
         </div>
       </div>`;
     grid.appendChild(card);
   });
-  if (!profiles.length) grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--gray-text);font-size:16px;">No hay perfiles con ese filtro 🔍</div>';
 }
 
 window.toggleLove = function(id, btn) {
@@ -2733,12 +2761,15 @@ window.toggleLove = function(id, btn) {
 
 // ══ PM ══
 window.openPM = function(profileId) {
-  const profile = MATCH_PROFILES.find(p=>p.id===profileId); if (!profile) return;
+  const profile = _matchProfiles.find(p=>p.id===profileId); if (!profile) return;
   currentPMUser = profile;
   if (!pmConversations[profileId]) {
     pmConversations[profileId] = [{ from:'them', text:`¡Hola! Soy ${profile.name} 😊 ¿Cómo estás?`, time:'ahora' }];
   }
-  document.getElementById('pmAvatar').innerHTML = `<span style="font-size:22px;">${profile.emoji}</span>`;
+  const avatarHTML = profile.photo
+    ? `<img src="${profile.photo}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"/>`
+    : `<span style="font-size:22px;">${profile.emoji}</span>`;
+  document.getElementById('pmAvatar').innerHTML = avatarHTML;
   document.getElementById('pmName').textContent = profile.name;
   renderPMMessages(profileId);
   document.getElementById('pmModal').classList.add('show');
