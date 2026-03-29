@@ -3921,7 +3921,7 @@ select.ep-input { cursor:pointer; }
     <div id="epTabs">
       <button class="ep-tab active" onclick="epSwitch('general',this)">👤 General</button>
       <button class="ep-tab" onclick="epSwitch('contacto',this)">✉️ Contacto</button>
-      <button class="ep-tab" onclick="epSwitch('pesca',this)">🎣 Pesca</button>
+
       <button class="ep-tab" onclick="epSwitch('redes',this)">🌐 Redes</button>
     </div>
 
@@ -4021,46 +4021,7 @@ select.ep-input { cursor:pointer; }
 
       </div><!-- /ep-contacto -->
 
-      <!-- ── Panel: Pesca ── -->
-      <div class="ep-panel" id="ep-pesca">
-
-        <div class="ep-row">
-          <div class="ep-field">
-            <label class="ep-label">Pez favorito</label>
-            <input class="ep-input" id="epFish" list="rf4FishDatalist" autocomplete="off" placeholder="Ej: Carpa, Siluro...">
-          </div>
-          <div class="ep-field">
-            <label class="ep-label">Mapa favorito</label>
-            <select class="ep-input" id="epMap">
-              <option value="">Seleccionar...</option>
-              <option>Belaya River</option><option>Volkhov River</option><option>Akhtuba River</option>
-              <option>Ladoga Lake</option><option>Sura River</option><option>Bear Lake</option>
-              <option>Mosquito Lake</option><option>Amber Lake</option><option>Yama River</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="ep-row">
-          <div class="ep-field">
-            <label class="ep-label">Técnica favorita</label>
-            <select class="ep-input" id="epTech">
-              <option value="">Seleccionar...</option>
-              <option>Spinning</option><option>Fondo</option><option>Flote</option>
-              <option>Jigging</option><option>Feeder</option><option>Pesca en hielo</option>
-              <option>Fly fishing</option><option>Carp fishing</option>
-            </select>
-          </div>
-          <div class="ep-field">
-            <label class="ep-label">Nivel de experiencia</label>
-            <select class="ep-input" id="epExp">
-              <option value="">Seleccionar...</option>
-              <option>Principiante</option><option>Intermedio</option><option>Avanzado</option>
-              <option>Experto</option><option>Profesional</option>
-            </select>
-          </div>
-        </div>
-
-      </div><!-- /ep-pesca -->
+      <!-- Panel Pesca eliminado -->
 
       <!-- ── Panel: Redes ── -->
       <div class="ep-panel" id="ep-redes">
@@ -8061,8 +8022,8 @@ function load(k,def){try{const v=localStorage.getItem('crf4_'+k);return v?JSON.p
 
 // ===== UPLOAD IMAGE TO IMGBB =====
 // ── Cloudinary config ──
-const CLOUDINARY_CLOUD = 'da0n5tg3g';
-const CLOUDINARY_PRESET = 'krush';
+const CLOUDINARY_CLOUD = 'dblmunvjx';
+const CLOUDINARY_PRESET = 'connectme_uploads';
 const CLOUDINARY_VIDEO_PRESET = 'krush_video';
 
 /* ===== ADMIN: Sin restricciones en uploads ===== */
@@ -8520,13 +8481,7 @@ function init(){
           if(window._userInfoCache) window._userInfoCache[user.uid] = {nick: window.CU.nick||'', av: window.CU.av||'', gender: window.CU.gender||'', country: window.CU.country||''};
           document.getElementById('mAuth').style.display = 'none';
           hideSplash();
-          if(!window.CU.country){
-            window._pendingGoogleOnboard = false;
-            const cpModal = document.getElementById('mCountryPick');
-            if(cpModal){ cpModal.style.display='flex'; }
-          } else {
-            onLogin();
-          }
+          onLogin();
         } else {
           hideSplash();
           document.getElementById('mAuth').style.display = 'block';
@@ -8692,13 +8647,6 @@ async function doGoogleLogin(){
       return;
     } else {
       window.CU = { id: user.uid, ...userSnap.data() };
-    }
-    if(!window.CU.country){
-      document.getElementById('mAuth').style.display = 'none';
-      window._pendingGoogleOnboard = false;
-      const cpModal = document.getElementById('mCountryPick');
-      if(cpModal){ cpModal.style.display='flex'; }
-      return;
     }
     document.getElementById('mAuth').style.display = 'none';
     onLogin();
@@ -9275,6 +9223,11 @@ window.navigateTo = navigateTo;
 // ===== FIN FACEBOOK SHARE DEEP LINK HANDLER =====
 
 window.gp = (id, pushState = true) => {
+  // Inicio redirige al sitio principal
+  if(id === 'home'){
+    window.location.href = 'https://krushuy.github.io/krush.github.io';
+    return;
+  }
   // Al salir del perfil ajeno: detener sus partículas y restaurar las del usuario propio
   const currentPage = document.querySelector('.page.active');
   if(currentPage && currentPage.id === 'page-userprofile' && id !== 'userprofile'){
@@ -11772,11 +11725,12 @@ async function fetchLinkPreview(url){
 
 async function submitPost(){
   if(!window.CU){ toast('Inicia sesión primero','err'); return; }
+  try {
   const text = document.getElementById('postText').value.trim();
-  const fish = document.getElementById('tagFish').value.trim();
-  const weight = parseFloat(document.getElementById('tagWeight').value)||0;
-  const map = document.getElementById('tagMap').value;
-  const tech = document.getElementById('tagTech').value;
+  const fish = (document.getElementById('tagFish')?.value||'').trim();
+  const weight = parseFloat(document.getElementById('tagWeight')?.value)||0;
+  const map = document.getElementById('tagMap')?.value||'';
+  const tech = document.getElementById('tagTech')?.value||'';
   const linkUrl = document.getElementById('postLinkInput')?.value.trim()||'';
   const videoUrl0 = document.getElementById('ytUrlInput')?.value.trim() || '';
   if(!text && !fish && !_postMediaFiles.length && !linkUrl && !videoUrl0){ toast('Escribe algo o agrega un video para publicar','err'); return; }
@@ -11867,6 +11821,10 @@ async function submitPost(){
   addNotif('📝 Publicaste una nueva captura'+(fish?`: ${fish} ${weight?fmtKg(weight):''}`:''));
   addXP(10,'publicación');
   toast('¡Publicado! 🎣 +10 XP','ok');
+  } catch(e) {
+    console.error('submitPost error:', e);
+    toast('Error al publicar: ' + (e?.message || 'Intentá de nuevo'), 'err');
+  }
 }
 
 // ── Emoji Picker ──
@@ -21202,7 +21160,7 @@ async function stopAndSendVoice(){
     formData.append('file', blob, 'voice_' + Date.now() + '.' + ext);
     formData.append('upload_preset', 'krush_audio');
 
-    const res = await fetch('https://api.cloudinary.com/v1_1/da0n5tg3g/video/upload', {
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/video/upload`, {
       method: 'POST',
       body: formData
     });
