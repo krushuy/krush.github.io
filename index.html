@@ -2416,24 +2416,9 @@ document.addEventListener('DOMContentLoaded', function(){
       <div class="sl-item"><span class="sl-item-icon">📸</span> Fotos</div>
       
 
-      <div class="sl-item" onclick="gp('reels');setNav(document.querySelectorAll('.tb-nav-btn')[4])"><span class="sl-item-icon">🎬</span> Reels</div>
-
-      
-      <div class="sl-item" onclick="gp('cafe')" style="background:linear-gradient(90deg,rgba(255,140,0,.08),transparent);border-left:3px solid #ff8c00;"><span class="sl-item-icon">☕</span> Pedidos Café</div>
-      <div class="sl-item" id="slTiendaBtn" style="background:linear-gradient(90deg,rgba(255,215,0,.08),transparent);border-left:3px solid #ffd700;" onclick="gp('shop');if(typeof renderShopPage==='function')renderShopPage()"><span class="sl-item-icon">🛒</span> Tienda</div>
-      <div class="sl-item" onclick="gp('casitrofeo')"><span class="sl-item-icon">🏅</span> Casi Trofeo</div>
-      
-      
-
-      
-      
-      <div class="sl-item" onclick="gp('wiki-trofeos')" id="slWikiTrofeosBtn" style="background:linear-gradient(90deg,rgba(255,215,0,.08),transparent);border-left:3px solid #ffd700;"><span class="sl-item-icon">🏆</span> Publicar Trofeos</div>
-      <div class="sl-item" onclick="gp('compartir-spot')" id="slCompartirSpotBtn" style="background:linear-gradient(90deg,rgba(46,196,182,.08),transparent);border-left:3px solid var(--accent);"><span class="sl-item-icon">📍</span> Compartir Spot</div>
+      <div class="sl-item" onclick="gp('matchs')" style="background:linear-gradient(90deg,rgba(255,80,120,.12),transparent);border-left:3px solid #ff5078;"><span class="sl-item-icon">💘</span> Matchs <span style="font-size:.6rem;background:linear-gradient(135deg,#ffd700,#ffb700);color:#000;padding:2px 7px;border-radius:100px;font-weight:800;margin-left:6px;vertical-align:middle;">PREMIUM</span></div>
 
       <div class="sl-item"><span class="sl-item-icon">🔖</span> Guardados</div>
-      
-      <div class="sl-item" onclick="gp('parches')"><span class="sl-item-icon">🔧</span> Parches y Actualizaciones</div>
-      <div class="sl-item" onclick="gp('soporte')"><span class="sl-item-icon">🆘</span> Soporte Técnico</div>
       
       <div class="sl-item" onclick="gp('privacidad')"><span class="sl-item-icon">🔒</span> Privacidad</div>
 
@@ -5668,6 +5653,613 @@ function initShopCoinsDisplay(){
 
 <div class="page" id="page-reels" style="height:0;overflow:hidden;padding:0!important;"></div>
 
+<!-- ═══════════════════════════════════════════════════════════ MATCHS PAGE -->
+<style>
+/* ─── MATCHS PAGE ─── */
+#page-matchs { min-height:100vh; padding:0 0 80px; background:var(--bg); }
+
+/* Header */
+.mh-header {
+  background:linear-gradient(135deg,#1a0a1a,#2a0a20,#1a0a1a);
+  border-bottom:1px solid rgba(255,80,120,.25);
+  padding:20px 16px 16px;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+}
+.mh-header::before {
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 0%,rgba(255,80,120,.18),transparent 70%);
+  pointer-events:none;
+}
+.mh-title {
+  font-family:'Orbitron',monospace;font-size:1.5rem;font-weight:900;
+  background:linear-gradient(90deg,#ff5078,#ff8fa0,#ff5078);
+  background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;animation:mhTitleShimmer 3s ease infinite;
+  position:relative;z-index:1;
+}
+@keyframes mhTitleShimmer{0%{background-position:0%}50%{background-position:100%}100%{background-position:0%}}
+.mh-subtitle { font-size:.78rem;color:#c084a0;margin-top:4px;font-family:'Exo 2',sans-serif;position:relative;z-index:1; }
+
+/* Premium banner */
+.mh-premium-bar {
+  display:flex;align-items:center;gap:10px;justify-content:center;
+  background:linear-gradient(90deg,rgba(255,215,0,.1),rgba(255,140,0,.08),rgba(255,215,0,.1));
+  border:1px solid rgba(255,215,0,.3);border-radius:10px;
+  padding:10px 16px;margin:14px 16px 0;
+  position:relative;z-index:1;
+}
+.mh-premium-bar .crown { font-size:1.2rem; }
+.mh-premium-bar .prem-text { font-size:.78rem;font-family:'Exo 2',sans-serif;color:#ffd700;font-weight:700; }
+.mh-premium-bar .prem-sub { font-size:.65rem;color:#b8a060;font-weight:600; }
+
+/* Counters */
+.mh-counters {
+  display:flex;gap:10px;padding:14px 16px 0;
+}
+.mh-counter-card {
+  flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:12px;
+  padding:12px;text-align:center;position:relative;overflow:hidden;
+}
+.mh-counter-card.pink { border-color:rgba(255,80,120,.35);background:rgba(255,80,120,.06); }
+.mh-counter-card.blue { border-color:rgba(46,196,182,.3);background:rgba(46,196,182,.05); }
+.mh-counter-num { font-family:'Orbitron',monospace;font-size:1.6rem;font-weight:900;line-height:1; }
+.mh-counter-card.pink .mh-counter-num { color:#ff5078; }
+.mh-counter-card.blue .mh-counter-num { color:#2ec4b6; }
+.mh-counter-label { font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-top:4px;font-family:'Exo 2',sans-serif; }
+.mh-counter-max { font-size:.58rem;color:var(--muted);margin-top:2px; }
+
+/* Filter tabs */
+.mh-tabs {
+  display:flex;gap:8px;padding:16px 16px 0;overflow-x:auto;scrollbar-width:none;
+}
+.mh-tabs::-webkit-scrollbar{display:none;}
+.mh-tab {
+  flex-shrink:0;padding:7px 16px;border-radius:100px;border:1px solid var(--border);
+  background:var(--bg2);color:var(--muted);font-size:.75rem;font-weight:700;
+  cursor:pointer;font-family:'Exo 2',sans-serif;transition:all .18s;white-space:nowrap;
+}
+.mh-tab.active { background:rgba(255,80,120,.18);border-color:#ff5078;color:#ff5078; }
+.mh-tab:hover:not(.active) { background:var(--bg3);color:var(--text); }
+
+/* Cards grid */
+.mh-grid {
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
+  gap:12px;padding:16px;
+}
+
+/* User card */
+.mh-card {
+  background:var(--bg2);border:1px solid var(--border);border-radius:16px;
+  overflow:hidden;position:relative;cursor:pointer;transition:transform .18s,box-shadow .18s,border-color .18s;
+}
+.mh-card:hover { transform:translateY(-4px);box-shadow:0 8px 28px rgba(255,80,120,.2);border-color:rgba(255,80,120,.4); }
+.mh-card-img {
+  width:100%;aspect-ratio:3/4;object-fit:cover;display:block;
+  background:linear-gradient(135deg,#2a1020,#1a0d18);
+}
+.mh-card-img-placeholder {
+  width:100%;aspect-ratio:3/4;background:linear-gradient(135deg,#2a1020,#1a0d18);
+  display:flex;align-items:center;justify-content:center;font-size:3.5rem;
+}
+.mh-card-overlay {
+  position:absolute;bottom:0;left:0;right:0;
+  background:linear-gradient(transparent,rgba(0,0,0,.85) 60%);
+  padding:30px 10px 10px;
+}
+.mh-card-name { font-weight:800;font-size:.88rem;color:#fff;font-family:'Exo 2',sans-serif; }
+.mh-card-age { font-size:.72rem;color:#c084a0; }
+.mh-card-tags { display:flex;flex-wrap:wrap;gap:4px;margin-top:5px; }
+.mh-card-tag {
+  font-size:.58rem;font-weight:700;padding:2px 7px;border-radius:100px;
+  background:rgba(255,80,120,.25);color:#ff8fa0;border:1px solid rgba(255,80,120,.3);
+}
+.mh-card-like-btn {
+  position:absolute;top:10px;right:10px;width:36px;height:36px;border-radius:50%;
+  background:rgba(255,80,120,.9);border:2px solid rgba(255,255,255,.3);
+  display:flex;align-items:center;justify-content:center;font-size:1rem;
+  cursor:pointer;transition:transform .15s,background .15s;box-shadow:0 2px 10px rgba(255,80,120,.5);
+}
+.mh-card-like-btn:hover { transform:scale(1.15);background:#ff3060; }
+.mh-card-like-btn.liked { background:#ff3060;transform:scale(1.1); }
+
+/* Empty state */
+.mh-empty {
+  text-align:center;padding:60px 24px;color:var(--muted);
+}
+.mh-empty-icon { font-size:4rem;margin-bottom:16px; }
+.mh-empty-title { font-family:'Orbitron',monospace;font-size:1rem;font-weight:900;color:var(--text);margin-bottom:8px; }
+.mh-empty-sub { font-size:.82rem;line-height:1.6; }
+
+/* MATCH modal */
+.mh-match-modal {
+  display:none;position:fixed;inset:0;z-index:9999;
+  background:rgba(0,0,0,.92);align-items:center;justify-content:center;
+  flex-direction:column;gap:0;
+}
+.mh-match-modal.show { display:flex; }
+.mh-match-explosion {
+  text-align:center;animation:mhMatchPop .5s cubic-bezier(.18,1.4,.6,1) forwards;
+}
+@keyframes mhMatchPop {
+  0%{opacity:0;transform:scale(.5) rotate(-5deg)}
+  100%{opacity:1;transform:scale(1) rotate(0)}
+}
+.mh-match-label {
+  font-family:'Orbitron',monospace;font-size:2.2rem;font-weight:900;
+  background:linear-gradient(90deg,#ff5078,#ffd700,#ff5078);
+  background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;animation:mhTitleShimmer 1.5s ease infinite;
+  margin-bottom:8px;
+}
+.mh-match-hearts { font-size:2.5rem;letter-spacing:4px;animation:mhHeartBeat .6s ease-in-out infinite; }
+@keyframes mhHeartBeat{0%,100%{transform:scale(1)}50%{transform:scale(1.2)}}
+.mh-match-avatars { display:flex;gap:20px;align-items:center;margin:20px 0; }
+.mh-match-av {
+  width:90px;height:90px;border-radius:50%;border:3px solid #ff5078;
+  object-fit:cover;background:#2a1020;display:flex;align-items:center;justify-content:center;font-size:2.5rem;
+  box-shadow:0 0 30px rgba(255,80,120,.5);
+}
+.mh-match-avplus { font-size:2rem;color:#ff5078; }
+.mh-match-name { font-family:'Exo 2',sans-serif;font-weight:800;color:#fff;font-size:1rem;margin-bottom:6px; }
+.mh-match-actions { display:flex;gap:12px;margin-top:10px; }
+.mh-match-btn {
+  padding:12px 28px;border-radius:100px;border:none;font-family:'Exo 2',sans-serif;
+  font-weight:800;font-size:.9rem;cursor:pointer;transition:transform .15s;
+}
+.mh-match-btn:hover{transform:scale(1.05);}
+.mh-match-btn.msg { background:linear-gradient(135deg,#ff5078,#ff3060);color:#fff;box-shadow:0 4px 16px rgba(255,80,120,.4); }
+.mh-match-btn.skip { background:var(--bg3);color:var(--muted);border:1px solid var(--border); }
+
+/* Chat panel */
+.mh-chat-panel {
+  display:none;position:fixed;inset:0;z-index:9998;background:var(--bg);flex-direction:column;
+}
+.mh-chat-panel.show { display:flex; }
+.mh-chat-header {
+  background:var(--bg2);border-bottom:1px solid var(--border);padding:14px 16px;
+  display:flex;align-items:center;gap:12px;
+}
+.mh-chat-back { font-size:1.3rem;cursor:pointer;color:var(--muted);transition:color .15s; }
+.mh-chat-back:hover { color:var(--text); }
+.mh-chat-av {
+  width:40px;height:40px;border-radius:50%;background:#2a1020;
+  display:flex;align-items:center;justify-content:center;font-size:1.3rem;
+  border:2px solid rgba(255,80,120,.4);flex-shrink:0;overflow:hidden;
+}
+.mh-chat-av img{width:100%;height:100%;object-fit:cover;}
+.mh-chat-info { flex:1; }
+.mh-chat-uname { font-weight:800;font-size:.9rem;font-family:'Exo 2',sans-serif; }
+.mh-chat-status { font-size:.68rem;color:#ff5078;font-weight:700; }
+.mh-chat-msg-limit {
+  font-size:.65rem;background:rgba(255,215,0,.12);border:1px solid rgba(255,215,0,.3);
+  color:#ffd700;padding:2px 10px;border-radius:100px;font-weight:700;white-space:nowrap;
+}
+.mh-chat-body { flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px; }
+.mh-bubble {
+  max-width:72%;padding:10px 14px;border-radius:18px;font-size:.88rem;
+  font-family:'Exo 2',sans-serif;line-height:1.5;
+}
+.mh-bubble.mine {
+  align-self:flex-end;background:linear-gradient(135deg,#ff5078,#c03050);color:#fff;
+  border-bottom-right-radius:4px;
+}
+.mh-bubble.theirs {
+  align-self:flex-start;background:var(--bg3);color:var(--text);
+  border-bottom-left-radius:4px;border:1px solid var(--border);
+}
+.mh-chat-footer {
+  background:var(--bg2);border-top:1px solid var(--border);padding:12px 16px;
+  display:flex;gap:10px;align-items:flex-end;
+}
+.mh-chat-input {
+  flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:20px;
+  color:var(--text);padding:10px 16px;font-family:'Exo 2',sans-serif;font-size:.9rem;
+  outline:none;resize:none;max-height:100px;min-height:40px;transition:border-color .2s;
+}
+.mh-chat-input:focus { border-color:rgba(255,80,120,.5); }
+.mh-chat-send {
+  width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#ff5078,#c03050);
+  border:none;color:#fff;font-size:1.1rem;cursor:pointer;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;transition:transform .15s;
+  box-shadow:0 2px 10px rgba(255,80,120,.4);
+}
+.mh-chat-send:hover{transform:scale(1.1);}
+.mh-chat-send:disabled{background:var(--bg3);color:var(--muted);box-shadow:none;cursor:not-allowed;transform:none;}
+
+/* Limit alert */
+.mh-limit-alert {
+  background:rgba(255,80,120,.1);border:1px solid rgba(255,80,120,.4);
+  border-radius:12px;padding:14px 16px;margin:16px;text-align:center;
+  font-family:'Exo 2',sans-serif;
+}
+.mh-limit-alert .mh-la-icon { font-size:1.8rem;margin-bottom:6px; }
+.mh-limit-alert .mh-la-title { font-weight:800;color:#ff5078;font-size:.9rem;margin-bottom:4px; }
+.mh-limit-alert .mh-la-sub { font-size:.75rem;color:var(--muted);line-height:1.5; }
+.mh-limit-alert .mh-la-time { font-size:.72rem;color:#ffd700;font-weight:700;margin-top:6px; }
+</style>
+
+<div class="page" id="page-matchs" style="display:none;">
+  <div class="mh-header">
+    <div class="mh-title">💘 Matchs</div>
+    <div class="mh-subtitle">Encontrá tu pareja en la comunidad RF4</div>
+    <div class="mh-premium-bar">
+      <span class="crown">👑</span>
+      <div>
+        <div class="prem-text">Función Premium</div>
+        <div class="prem-sub">5 matches/día · 3 mensajes/día</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mh-counters">
+    <div class="mh-counter-card pink">
+      <div class="mh-counter-num" id="mhMatchCount">5</div>
+      <div class="mh-counter-label">Matches restantes</div>
+      <div class="mh-counter-max">de 5 por día</div>
+    </div>
+    <div class="mh-counter-card blue">
+      <div class="mh-counter-num" id="mhMsgCount">3</div>
+      <div class="mh-counter-label">Mensajes restantes</div>
+      <div class="mh-counter-max">de 3 por día</div>
+    </div>
+  </div>
+
+  <div class="mh-tabs">
+    <div class="mh-tab active" onclick="mhSetTab(this,'all')">🌎 Todos</div>
+    <div class="mh-tab" onclick="mhSetTab(this,'new')">✨ Nuevos</div>
+    <div class="mh-tab" onclick="mhSetTab(this,'near')">📍 Cerca</div>
+    <div class="mh-tab" onclick="mhSetTab(this,'liked')">💜 Me gustaron</div>
+    <div class="mh-tab" onclick="mhSetTab(this,'matched')">💘 Mis Matches</div>
+  </div>
+
+  <div id="mhGrid" class="mh-grid"></div>
+  <div id="mhLimitAlert" style="display:none;" class="mh-limit-alert">
+    <div class="mh-la-icon">🔒</div>
+    <div class="mh-la-title">Límite diario alcanzado</div>
+    <div class="mh-la-sub">Usaste tus 5 matches del día.<br>Con Premium se renuevan cada 24 horas.</div>
+    <div class="mh-la-time" id="mhResetTime">Se reinicia en: --:--:--</div>
+  </div>
+</div>
+
+<!-- Match celebration modal -->
+<div class="mh-match-modal" id="mhMatchModal">
+  <div class="mh-match-explosion">
+    <div class="mh-match-hearts">💘 💗 💘</div>
+    <div class="mh-match-label">¡ES UN MATCH!</div>
+    <div class="mh-match-avatars">
+      <div class="mh-match-av" id="mhModalMyAv" style="font-size:2.5rem;">👤</div>
+      <div class="mh-match-avplus">❤️</div>
+      <div class="mh-match-av" id="mhModalTheirAv" style="font-size:2.5rem;">👤</div>
+    </div>
+    <div class="mh-match-name" id="mhModalName">¡Empiecen a hablar!</div>
+    <div class="mh-match-actions">
+      <button class="mh-match-btn msg" onclick="mhOpenChat(window._mhCurrentMatch)">💬 Enviar mensaje</button>
+      <button class="mh-match-btn skip" onclick="mhCloseMatchModal()">Seguir buscando</button>
+    </div>
+  </div>
+</div>
+
+<!-- Chat panel -->
+<div class="mh-chat-panel" id="mhChatPanel">
+  <div class="mh-chat-header">
+    <span class="mh-chat-back" onclick="mhCloseChat()">←</span>
+    <div class="mh-chat-av" id="mhChatAv">👤</div>
+    <div class="mh-chat-info">
+      <div class="mh-chat-uname" id="mhChatName">Usuario</div>
+      <div class="mh-chat-status">Match activo 💘</div>
+    </div>
+    <div class="mh-chat-msg-limit">
+      <span id="mhChatMsgLeft">3</span>/3 mensajes hoy
+    </div>
+  </div>
+  <div class="mh-chat-body" id="mhChatBody"></div>
+  <div class="mh-chat-footer">
+    <textarea class="mh-chat-input" id="mhChatInput" rows="1" placeholder="Escribí un mensaje... (3 por día)" maxlength="300"
+      oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,100)+'px'"
+      onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();mhSendMsg();}"></textarea>
+    <button class="mh-chat-send" id="mhChatSendBtn" onclick="mhSendMsg()">➤</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  'use strict';
+
+  // ─── STORAGE KEYS ────────────────────────────────────────
+  var MH_MATCH_KEY = 'mh_matches_used';   // {count, date}
+  var MH_MSG_KEY   = 'mh_msgs_used';      // {count, date}
+  var MAX_MATCHES  = 5;
+  var MAX_MSGS     = 3;
+
+  // ─── FAKE PROFILES (demo) ─────────────────────────────────
+  var MH_PROFILES = [
+    { id:'u1', name:'Valentina', age:23, emoji:'🎣', tags:['Pesca','Natura','RF4'],  bio:'Amo pescar al amanecer.' },
+    { id:'u2', name:'Luciana',   age:26, emoji:'🌊', tags:['Cañas','Aventura'],      bio:'Buscando peces y momentos únicos.' },
+    { id:'u3', name:'Sofía',     age:21, emoji:'🦋', tags:['RF4','Fotos','Viajes'],  bio:'Cada lago es una historia nueva.' },
+    { id:'u4', name:'Martina',   age:28, emoji:'🌿', tags:['Spots','Trofeos'],       bio:'Coleccionista de trofeos raros.' },
+    { id:'u5', name:'Camila',    age:24, emoji:'⭐', tags:['Premium','RF4 Pro'],     bio:'Top 10 ranking nacional.' },
+    { id:'u6', name:'Renata',    age:25, emoji:'🐟', tags:['Spots secretos'],        bio:'Los mejores spots de Uruguay.' },
+    { id:'u7', name:'Emilia',    age:22, emoji:'🌅', tags:['Madrugadoras','Pesca'],  bio:'La mejor hora es al alba.' },
+    { id:'u8', name:'Isabella',  age:27, emoji:'🎯', tags:['Competencia','RF4'],     bio:'Juego en serio, vivo en serio.' },
+  ];
+
+  // ─── DAILY COUNTER HELPERS ────────────────────────────────
+  function todayStr(){ return new Date().toISOString().slice(0,10); }
+
+  function getCounter(key){
+    try{
+      var raw = localStorage.getItem(key);
+      if(!raw) return { count:0, date:'' };
+      var obj = JSON.parse(raw);
+      if(obj.date !== todayStr()) return { count:0, date:todayStr() };
+      return obj;
+    }catch(e){ return { count:0, date:todayStr() }; }
+  }
+
+  function setCounter(key, count){
+    try{ localStorage.setItem(key, JSON.stringify({ count:count, date:todayStr() })); }catch(e){}
+  }
+
+  function matchesUsed(){ return getCounter(MH_MATCH_KEY).count; }
+  function msgsUsed(){    return getCounter(MH_MSG_KEY).count; }
+  function incMatches(){  setCounter(MH_MATCH_KEY, matchesUsed()+1); }
+  function incMsgs(){     setCounter(MH_MSG_KEY, msgsUsed()+1); }
+
+  // ─── STATE ────────────────────────────────────────────────
+  window._mhCurrentMatch = null;
+  var _mhLiked    = {};
+  var _mhMatched  = {};
+  var _mhChats    = {};
+  var _mhCurrentChatId = null;
+  var _mhTab = 'all';
+
+  // ─── UPDATE COUNTER UI ───────────────────────────────────
+  function updateCounterUI(){
+    var mu = matchesUsed(); var msgU = msgsUsed();
+    var mLeft = Math.max(0, MAX_MATCHES - mu);
+    var msgLeft = Math.max(0, MAX_MSGS - msgU);
+    var mc = document.getElementById('mhMatchCount');
+    var msgc = document.getElementById('mhMsgCount');
+    if(mc) mc.textContent = mLeft;
+    if(msgc) msgc.textContent = msgLeft;
+
+    var alert = document.getElementById('mhLimitAlert');
+    var grid  = document.getElementById('mhGrid');
+    if(mLeft <= 0){
+      if(alert){ alert.style.display='block'; startResetTimer(); }
+      if(grid)  grid.style.display='none';
+    } else {
+      if(alert) alert.style.display='none';
+      if(grid)  grid.style.display='grid';
+    }
+  }
+
+  // ─── RESET TIMER ─────────────────────────────────────────
+  function startResetTimer(){
+    function tick(){
+      var now = new Date();
+      var midnight = new Date(now.getFullYear(),now.getMonth(),now.getDate()+1);
+      var diff = midnight - now;
+      var h = Math.floor(diff/3600000);
+      var m = Math.floor((diff%3600000)/60000);
+      var s = Math.floor((diff%60000)/1000);
+      var el = document.getElementById('mhResetTime');
+      if(el) el.textContent = 'Se reinicia en: ' + pad(h) + ':' + pad(m) + ':' + pad(s);
+    }
+    function pad(n){ return n<10?'0'+n:n; }
+    tick();
+    setInterval(tick, 1000);
+  }
+
+  // ─── RENDER GRID ─────────────────────────────────────────
+  function renderGrid(){
+    var grid = document.getElementById('mhGrid');
+    if(!grid) return;
+    var profiles = MH_PROFILES;
+
+    if(_mhTab === 'liked'){
+      profiles = profiles.filter(function(p){ return _mhLiked[p.id]; });
+    } else if(_mhTab === 'matched'){
+      profiles = profiles.filter(function(p){ return _mhMatched[p.id]; });
+    } else if(_mhTab === 'new'){
+      profiles = profiles.slice(0,4);
+    }
+
+    if(profiles.length === 0){
+      grid.innerHTML = '<div class="mh-empty" style="grid-column:1/-1"><div class="mh-empty-icon">💔</div><div class="mh-empty-title">Sin resultados</div><div class="mh-empty-sub">No hay perfiles en esta categoría todavía.</div></div>';
+      return;
+    }
+
+    grid.innerHTML = profiles.map(function(p){
+      var liked   = _mhLiked[p.id]   ? ' liked'   : '';
+      var matched = _mhMatched[p.id] ? ' style="border-color:rgba(255,80,120,.6);box-shadow:0 0 14px rgba(255,80,120,.2);"' : '';
+      return '<div class="mh-card"'+matched+' onclick="mhViewProfile(\''+p.id+'\')">'
+        + '<div class="mh-card-img-placeholder">'+p.emoji+'</div>'
+        + '<div class="mh-card-overlay">'
+          + '<div class="mh-card-name">'+p.name+', '+p.age+'</div>'
+          + '<div class="mh-card-tags">'
+            + p.tags.map(function(t){ return '<span class="mh-card-tag">'+t+'</span>'; }).join('')
+          + '</div>'
+        + '</div>'
+        + '<div class="mh-card-like-btn'+liked+'" onclick="event.stopPropagation();mhLike(\''+p.id+'\')" title="Me gusta">'+
+          (_mhLiked[p.id]?'💘':'🤍')+'</div>'
+      + '</div>';
+    }).join('');
+  }
+
+  // ─── LIKE ────────────────────────────────────────────────
+  window.mhLike = function(id){
+    if(matchesUsed() >= MAX_MATCHES){
+      updateCounterUI();
+      return;
+    }
+    var p = MH_PROFILES.find(function(x){ return x.id===id; });
+    if(!p) return;
+
+    incMatches();
+    _mhLiked[id] = true;
+
+    // 50% chance of mutual match (demo)
+    var isMatch = Math.random() > 0.5;
+    if(isMatch){ _mhMatched[id] = true; }
+
+    updateCounterUI();
+    renderGrid();
+
+    if(isMatch){
+      window._mhCurrentMatch = p;
+      var modal = document.getElementById('mhMatchModal');
+      var mname = document.getElementById('mhModalName');
+      var theirAv = document.getElementById('mhModalTheirAv');
+      if(mname) mname.textContent = '¡Vos y '+p.name+' se gustaron!';
+      if(theirAv) theirAv.textContent = p.emoji;
+      if(modal){ modal.classList.add('show'); }
+    }
+  };
+
+  // ─── MATCH MODAL ─────────────────────────────────────────
+  window.mhCloseMatchModal = function(){
+    var modal = document.getElementById('mhMatchModal');
+    if(modal) modal.classList.remove('show');
+    window._mhCurrentMatch = null;
+  };
+
+  // ─── OPEN CHAT ───────────────────────────────────────────
+  window.mhOpenChat = function(p){
+    if(!p) return;
+    mhCloseMatchModal();
+    _mhCurrentChatId = p.id;
+    if(!_mhChats[p.id]) _mhChats[p.id] = [];
+
+    var panel = document.getElementById('mhChatPanel');
+    var av    = document.getElementById('mhChatAv');
+    var name  = document.getElementById('mhChatName');
+    var body  = document.getElementById('mhChatBody');
+    var input = document.getElementById('mhChatInput');
+    var sendBtn = document.getElementById('mhChatSendBtn');
+    var msgLeft = document.getElementById('mhChatMsgLeft');
+
+    if(av)   av.textContent = p.emoji;
+    if(name) name.textContent = p.name;
+    if(msgLeft) msgLeft.textContent = Math.max(0, MAX_MSGS - msgsUsed());
+
+    // Render messages
+    renderChat();
+
+    // Update send btn state
+    var left = MAX_MSGS - msgsUsed();
+    if(sendBtn) sendBtn.disabled = left <= 0;
+    if(input){
+      input.disabled = left <= 0;
+      input.placeholder = left > 0 ? 'Escribí un mensaje... ('+left+' restantes)' : 'Límite de mensajes alcanzado';
+    }
+
+    if(panel) panel.classList.add('show');
+  };
+
+  window.mhCloseChat = function(){
+    var panel = document.getElementById('mhChatPanel');
+    if(panel) panel.classList.remove('show');
+    _mhCurrentChatId = null;
+  };
+
+  function renderChat(){
+    var body = document.getElementById('mhChatBody');
+    if(!body || !_mhCurrentChatId) return;
+    var msgs = _mhChats[_mhCurrentChatId] || [];
+    if(msgs.length === 0){
+      body.innerHTML = '<div style="text-align:center;padding:40px 20px;color:var(--muted);font-family:Exo 2,sans-serif;font-size:.82rem;">💘 ¡Son un match! Rompé el hielo.</div>';
+      return;
+    }
+    body.innerHTML = msgs.map(function(m){
+      return '<div class="mh-bubble '+m.from+'">'+escHtml(m.text)+'</div>';
+    }).join('');
+    body.scrollTop = body.scrollHeight;
+  }
+
+  window.mhSendMsg = function(){
+    var left = MAX_MSGS - msgsUsed();
+    if(left <= 0) return;
+    var input = document.getElementById('mhChatInput');
+    if(!input || !_mhCurrentChatId) return;
+    var txt = input.value.trim();
+    if(!txt) return;
+
+    incMsgs();
+    if(!_mhChats[_mhCurrentChatId]) _mhChats[_mhCurrentChatId] = [];
+    _mhChats[_mhCurrentChatId].push({ from:'mine', text:txt });
+    input.value = '';
+    input.style.height = 'auto';
+
+    var newLeft = MAX_MSGS - msgsUsed();
+    var msgLeft = document.getElementById('mhChatMsgLeft');
+    var sendBtn = document.getElementById('mhChatSendBtn');
+    if(msgLeft) msgLeft.textContent = Math.max(0, newLeft);
+    if(sendBtn) sendBtn.disabled = newLeft <= 0;
+    if(input){
+      input.disabled = newLeft <= 0;
+      input.placeholder = newLeft > 0 ? 'Escribí un mensaje... ('+newLeft+' restantes)' : 'Límite de mensajes diarios alcanzado';
+    }
+    updateCounterUI();
+    renderChat();
+  };
+
+  // ─── VIEW PROFILE ────────────────────────────────────────
+  window.mhViewProfile = function(id){
+    var p = MH_PROFILES.find(function(x){ return x.id===id; });
+    if(!p) return;
+    if(_mhMatched[id]){
+      mhOpenChat(p);
+    }
+  };
+
+  // ─── TAB ─────────────────────────────────────────────────
+  window.mhSetTab = function(el, tab){
+    document.querySelectorAll('.mh-tab').forEach(function(t){ t.classList.remove('active'); });
+    el.classList.add('active');
+    _mhTab = tab;
+    renderGrid();
+  };
+
+  // ─── HELPER ──────────────────────────────────────────────
+  function escHtml(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  // ─── INIT ────────────────────────────────────────────────
+  function initMatchs(){
+    updateCounterUI();
+    renderGrid();
+  }
+
+  // Hook into gp() to init when page shows
+  var _origGp = window.gp;
+  function hookGp(){
+    if(typeof window.gp === 'function'){
+      var orig = window.gp;
+      window.gp = function(id){
+        orig(id);
+        if(id === 'matchs'){ setTimeout(initMatchs, 80); }
+      };
+    } else {
+      setTimeout(hookGp, 400);
+    }
+  }
+  hookGp();
+
+  // Also if page-matchs becomes visible manually
+  document.addEventListener('DOMContentLoaded', function(){
+    var obs = new MutationObserver(function(){
+      var pg = document.getElementById('page-matchs');
+      if(pg && pg.style.display !== 'none') initMatchs();
+    });
+    var pg = document.getElementById('page-matchs');
+    if(pg) obs.observe(pg, { attributes:true, attributeFilter:['style'] });
+  });
+
+})();
+</script>
+
 
 
 
@@ -8488,6 +9080,7 @@ const ROUTES = {
   '/tienda': 'shop',
   '/trofeos-resientes': 'trofeos-feed',
   '/reels': 'reels',
+  '/matchs': 'matchs',
   '/galeria': 'galeria',
   '/videos': 'videos',
   '/skill': 'skill',
@@ -8515,6 +9108,7 @@ const PAGE_TO_URL = {
   'trofeos-feed':  '/trofeos-resientes',
   'compartir-spot': '/compartir-spot',
   'reels':          '/reels',
+  'matchs':         '/matchs',
   'galeria':       '/galeria',
   'videos':        '/videos',
   'skill':         '/skill',
