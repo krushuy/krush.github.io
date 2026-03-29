@@ -7139,12 +7139,12 @@ import { getMessaging, getToken, onMessage } from 'https://www.gstatic.com/fireb
 import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-storage.js';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyA9oat9dd0S9vlxkg1osH4dW3XhRDGiOiw",
-  authDomain: "charlasrf4.firebaseapp.com",
-  projectId: "charlasrf4",
-  storageBucket: "charlasrf4.firebasestorage.app",
-  messagingSenderId: "345019626508",
-  appId: "1:345019626508:web:d099ca499acb29eac12a29"
+  apiKey: "AIzaSyD7wDuUvGwkwb6ekSfgqLpPdRucfHgV6Tk",
+  authDomain: "krush-8d3cf.firebaseapp.com",
+  projectId: "krush-8d3cf",
+  storageBucket: "krush-8d3cf.firebasestorage.app",
+  messagingSenderId: "760726538346",
+  appId: "1:760726538346:web:5e7cf7c8c97dc75184a213"
 };
 const app = initializeApp(firebaseConfig);
 
@@ -20415,7 +20415,7 @@ async function stopAndSendVoice(){
     const ext = mimeType.includes('ogg') ? 'ogg' : mimeType.includes('mp4') ? 'mp4' : 'webm';
     const formData = new FormData();
     formData.append('file', blob, 'voice_' + Date.now() + '.' + ext);
-    formData.append('upload_preset', 'charlasrf4_audio');
+    formData.append('upload_preset', 'krush_audio');
 
     const res = await fetch('https://api.cloudinary.com/v1_1/da0n5tg3g/video/upload', {
       method: 'POST',
@@ -23583,7 +23583,7 @@ window.responderSoporte    = responderSoporte;
 
 // ============================================================
 // WIKI TROFEOS — JavaScript Integration
-// Firebase: charlasrf4 · Colección: trofeosPendientes
+// Firebase: krush-8d3cf · Colección: trofeosPendientes
 // Todas las funciones prefijadas con wk_ para evitar conflictos
 // ============================================================
 
@@ -23630,7 +23630,7 @@ async function wkUpdateBannerCounts() {
     const total = statsSnap.exists() ? (statsSnap.data().totalTrophies||0) : 0;
     const el = document.getElementById('wkTotalTrophy');
     if(el) el.textContent = total||'—';
-    // Online count from presence (charlasrf4)
+    // Online count from presence (krush-8d3cf)
     const presSnap = await getDocs(query(collection(db,'presence'), limit(200)));
     const online = presSnap.docs.filter(d => {
       const t = d.data().lastSeen?.toMillis?.() || 0;
