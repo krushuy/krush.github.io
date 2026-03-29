@@ -2388,23 +2388,9 @@ document.addEventListener('DOMContentLoaded', function(){
     <div class="sidebar-left">
 
       
-      <div style="margin:4px 4px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:9px 12px;">
-        <div style="font-size:.6rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;display:flex;align-items:center;justify-content:space-between;">
-          <span>⏱ Hora dentro del Juego</span>
-          <span style="display:flex;align-items:center;gap:3px;font-size:.6rem;color:var(--green);font-weight:600;text-transform:none;"><span style="width:5px;height:5px;border-radius:50%;background:var(--green);display:inline-block;animation:slClockPulse 2s infinite;"></span>En vivo</span>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;">
-          <div id="slRF4Clock" style="font-family:'Orbitron',monospace;font-size:1.35rem;font-weight:900;color:var(--accent);letter-spacing:3px;min-width:72px;">--:--</div>
-          <div style="flex:1;">
-            <div id="slRF4Phase" style="font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:100px;background:rgba(46,196,182,.12);color:var(--accent);display:inline-block;margin-bottom:3px;">--</div>
-            <div id="slRF4Season" style="font-size:.62rem;color:var(--muted);">--</div>
-          </div>
-        </div>
-        <div style="margin-top:6px;height:3px;background:var(--bg4);border-radius:2px;overflow:hidden;">
-          <div id="slRF4Bar" style="height:100%;background:var(--accent);border-radius:2px;transition:width 1s linear;width:0%;"></div>
-        </div>
-      </div>
-      
+
+
+
 
       <div class="sl-profile" onclick="gp('profile')">
         <div class="sl-av" id="slAv">👤</div>
@@ -2424,13 +2410,6 @@ document.addEventListener('DOMContentLoaded', function(){
 
       <div class="divider"></div>
       
-      <div style="padding:0 6px 8px;">
-        <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 4px 6px;">
-          <span style="font-size:.72rem;font-weight:800;color:var(--accent);text-transform:uppercase;letter-spacing:.5px;">🕐 Última Conexión</span>
-          <span style="font-size:.65rem;color:var(--muted);cursor:pointer;font-weight:600;" onclick="renderNewFishers()">↻</span>
-        </div>
-        <div id="newFishersList"><div style="font-size:.72rem;color:var(--muted);padding:4px;">Cargando...</div></div>
-      </div>
       <div class="divider"></div>
       
       <div id="sidebarStreakWidget" style="display:none;margin:8px 8px 4px;background:linear-gradient(135deg,rgba(255,100,0,.1),rgba(255,60,0,.05));border:1px solid rgba(255,100,0,.25);border-radius:var(--r);padding:10px 12px;">
@@ -2530,16 +2509,7 @@ document.addEventListener('DOMContentLoaded', function(){
     <div class="sidebar-right">
 
       
-      <div id="trofeoSidebarWidget" style="margin-bottom:14px;">
-        <div class="sr-title" style="display:flex;align-items:center;justify-content:space-between;">
-          <span>🥇 Últimos Trofeos</span>
-          <span style="font-size:.72rem;color:var(--accent);cursor:pointer;font-weight:600;" onclick="gp('trofeos-feed')">Ver todos</span>
-        </div>
-        <div id="trofeoSidebarList"><div style="font-size:.75rem;color:var(--muted);padding:6px 4px;">Cargando...</div></div>
-      </div>
-
-      
-      <div class="adsense-unit" id="adSidebar" style="margin:10px 0;text-align:center;min-height:0;">
+           <div class="adsense-unit" id="adSidebar" style="margin:10px 0;text-align:center;min-height:0;">
         <ins class="adsbygoogle"
              style="display:block"
              data-ad-client="ca-pub-6245611726363291"
@@ -2644,7 +2614,6 @@ document.addEventListener('DOMContentLoaded', function(){
           <div id="upBio" style="font-size:.88rem;color:var(--muted);margin-top:6px;line-height:1.6;"></div>
           <div id="upMeta" style="font-size:.78rem;color:var(--muted);margin-top:4px;display:flex;gap:12px;flex-wrap:wrap;"></div>
           <div id="upLevel" style="margin-top:4px;"></div>
-          <div id="upLastSeen" style="margin-top:3px;"></div>
         </div>
 
         
@@ -9215,7 +9184,7 @@ window.navigateTo = navigateTo;
     if(tries <= 0) return;
     if(postId){
       if(typeof scrollToPost === 'function'){
-        gp && window.location.href='https://krushuy.github.io/krush.github.io/';
+        if(gp) window.location.href='https://krushuy.github.io/krush.github.io/';
         setTimeout(function(){ scrollToPost(postId); }, 600);
         return;
       }
@@ -11578,7 +11547,7 @@ function postHTML(p){
         <div id="pmenu_${p.id}" data-owner="${p.userId}" style="display:none;position:absolute;right:0;top:100%;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);min-width:150px;z-index:999;box-shadow:0 4px 20px rgba(0,0,0,.5);overflow:hidden;">
           ${!p.sharedFrom ? `<button onclick="togglePostMenu('${p.id}', event); _openEditPostSafe('${p.id}')" data-owner-only="true" data-edit-pid="${p.id}" style="display:flex;align-items:center;gap:10px;width:100%;background:none;border:none;color:var(--text);padding:12px 16px;cursor:pointer;font-size:.88rem;text-align:left;transition:background .15s;" onmouseover="this.style.background='var(--bg3)'" onmouseout="this.style.background='none'">✏️ Editar</button>` : ''}
           ${window.CU?.verified&&p.userId===window.CU?.id?`<button onclick="togglePostMenu('${p.id}',event);${p.id===window.CU?.pinnedPostId?'unpinPost()':"pinPost('${p.id}')"};" style="display:flex;align-items:center;gap:10px;width:100%;background:none;border:none;color:gold;padding:12px 16px;cursor:pointer;font-size:.88rem;text-align:left;" onmouseover="this.style.background='var(--bg3)'" onmouseout="this.style.background='none'">${p.id===window.CU?.pinnedPostId?'📌 Desfijar':'📌 Fijar en perfil'}</button>`:''}
-          <button onclick="togglePostMenu('${p.id}', event); deleteMyPost('${p.id}')" data-owner-only="true" style="display:flex;align-items:center;gap:10px;width:100%;background:none;border:none;color:var(--red);padding:12px 16px;cursor:pointer;font-size:.88rem;text-align:left;transition:background .15s;" onmouseover="this.style.background='var(--bg3)'" onmouseout="this.style.background='none'">🗑 Eliminar</button>
+          <button onclick="document.getElementById('pmenu_${p.id}').style.display='none'; deleteMyPost('${p.id}')" data-owner-only="true" style="display:flex;align-items:center;gap:10px;width:100%;background:none;border:none;color:var(--red);padding:12px 16px;cursor:pointer;font-size:.88rem;text-align:left;transition:background .15s;" onmouseover="this.style.background='var(--bg3)'" onmouseout="this.style.background='none'">🗑 Eliminar</button>
           <button onclick="togglePostMenu('${p.id}', event); reportPost('${p.id}','${esc(p.userNick)}')" data-other-only="true" style="display:flex;align-items:center;gap:10px;width:100%;background:none;border:none;color:var(--warn);padding:12px 16px;cursor:pointer;font-size:.88rem;text-align:left;transition:background .15s;" onmouseover="this.style.background='var(--bg3)'" onmouseout="this.style.background='none'">⚠️ Reportar</button>
         </div>
       </div>
@@ -13455,7 +13424,7 @@ function _loadProfileSidebarFromFirestore(){
 
 async function saveProfile(){
   if(!window.CU) return;
-
+  try {
   // --- Nick change: 90-day cooldown ---
   const newNick = document.getElementById('epNick').value.trim() || window.CU.nick;
   const oldNick = window.CU.nick || '';
@@ -13499,6 +13468,10 @@ async function saveProfile(){
   await updateDoc(doc(db, 'users', window.CU.id), window.CU);
   cm('mEditProfile'); updateNavUI(); renderProfile();
   toast('Perfil actualizado ✅','ok');
+  } catch(e) {
+    console.error('saveProfile error:', e);
+    toast('Error al guardar perfil: ' + (e.message||e), 'err');
+  }
 }
 
 function openEditProfile(){
@@ -14823,8 +14796,8 @@ function renderNotifs(){
 
     return `<div data-action="notif-click" data-postid="${postId}" data-bdayuid="${bdayUid}" data-bdaynick="${n.bdayNick||''}" data-storyid="${storyId}"
       style="display:flex;align-items:flex-start;gap:10px;padding:12px 14px;transition:background .15s;${rowBg}cursor:${clickable?'pointer':'default'};border-bottom:1px solid rgba(255,255,255,.04);position:relative;"
-      onmouseover="this.style.background='var(--bg3)';this.querySelector('.notif-del-btn')&&(this.querySelector('.notif-del-btn').style.opacity='1')"
-      onmouseout="this.style.background='${unreadBg}';this.querySelector('.notif-del-btn')&&(this.querySelector('.notif-del-btn').style.opacity='0')">
+      onmouseover="this.style.background='var(--bg3)';var _b=this.querySelector('.notif-del-btn');if(_b)_b.style.opacity='1';"
+      onmouseout="this.style.background='${unreadBg}';var _b=this.querySelector('.notif-del-btn');if(_b)_b.style.opacity='0';">
       ${!isRead ? `<div style="position:absolute;left:0;top:0;bottom:0;width:3px;background:${bg};border-radius:0 2px 2px 0;"></div>` : ''}
       <div style="position:relative;flex-shrink:0;">
         <div style="width:46px;height:46px;border-radius:50%;background:var(--bg3);overflow:hidden;border:2px solid ${isRead?'var(--border)':bg};display:flex;align-items:center;justify-content:center;font-size:1.1rem;">${avInner}</div>
@@ -17897,73 +17870,6 @@ async function renderSuggestedUsers(){
 // IDs descartados de sugerencias (solo en sesión)
 window._dismissedFishers = window._dismissedFishers || new Set();
 
-async function renderNewFishers(){
-  const el = document.getElementById('newFishersList');
-  if(!el) return;
-  try {
-    const snap = await getDocs(query(collection(db,'users'), orderBy('createdAt','desc'), limit(30)));
-    const myId = window.CU?.id;
-    const myFriends = window.CU?.friends || [];
-    const users = snap.docs
-      .map(d=>({id:d.id,...d.data()}))
-      .filter(u => u.id !== myId && !window._dismissedFishers.has(u.id))
-      .slice(0, 6);
-    if(!users.length){ el.innerHTML = '<div style="font-size:.72rem;color:var(--muted);padding:8px 4px;text-align:center;">Sin usuarios por ahora</div>'; return; }
-
-    // Cargar presencia en paralelo
-    const presenceMap = {};
-    await Promise.all(users.map(async u => {
-      try {
-        const pSnap = await getDoc(doc(db,'presence',u.id));
-        if(pSnap.exists()){
-          const pd = pSnap.data();
-          const ts = pd.last?.toMillis ? pd.last.toMillis() : (typeof pd.last === 'number' ? pd.last : 0);
-          presenceMap[u.id] = ts;
-        }
-      } catch(e){}
-    }));
-
-    // Ordenar por ultima conexion mas reciente
-    users.sort((a,b) => (presenceMap[b.id]||0) - (presenceMap[a.id]||0));
-
-    const fmtConn = (ts) => {
-      if(!ts) return '<span style="color:var(--muted);font-size:.62rem;">Sin datos</span>';
-      const diff = Date.now() - ts;
-      if(diff < 120000) return '<span style="color:var(--green);font-size:.62rem;font-weight:700;">● En línea</span>';
-      const min = Math.floor(diff/60000);
-      const h = Math.floor(diff/3600000);
-      const d = Math.floor(diff/86400000);
-      const txt = min < 2 ? 'Hace un momento' : min < 60 ? 'Hace '+min+' min' : h < 24 ? 'Hace '+h+'h' : 'Hace '+d+' día'+(d>1?'s':'');
-      return '<span style="color:var(--muted);font-size:.62rem;">🕐 '+txt+'</span>';
-    };
-
-    let html = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:2px 0 4px;">';
-    users.forEach(u => {
-      const isFriend = myFriends.includes(u.id);
-      const nick = esc(u.nick||'?');
-      const safenick = (u.nick||'').replace(/'/g, "\\'");
-      const connHtml = fmtConn(presenceMap[u.id]||0);
-      const addBtn = (!isFriend && !isAdminUser(u))
-        ? `<button onclick="sendFriendRequest('${u.id}','${safenick}','sidebar');this.textContent='✓ Enviado';this.style.background='var(--bg4)';this.style.color='var(--muted)';this.style.cursor='default';this.disabled=true;event.stopPropagation();" style="width:100%;padding:5px 0;background:rgba(46,196,182,.15);border:1px solid rgba(46,196,182,.4);border-radius:var(--rs);color:var(--accent);font-size:.7rem;font-weight:700;cursor:pointer;font-family:'Exo 2',sans-serif;">+ Agregar</button>`
-        : isFriend ? `<div style="font-size:.68rem;color:var(--green);text-align:center;font-weight:700;">✓ Amigos</div>` : '';
-      const dismissBtn = `<button onclick="window._dismissedFishers.add('${u.id}');const c=document.getElementById('fisher-card-${u.id}');if(c){c.style.opacity='0';c.style.transform='scale(.92)';c.style.transition='all .2s';setTimeout(()=>{c.remove();const g=document.querySelector('#newFishersList > div');if(g&&g.children.length===0)renderNewFishers();},200);}event.stopPropagation();" style="width:100%;padding:4px 0;background:transparent;border:1px solid var(--border);border-radius:var(--rs);color:var(--muted);font-size:.68rem;font-weight:600;cursor:pointer;font-family:'Exo 2',sans-serif;">Quitar</button>`;
-      html += `<div id="fisher-card-${u.id}" style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden;display:flex;flex-direction:column;transition:border-color .2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">`
-        + `<div onclick="openUserProfile('${u.id}','${safenick}')" style="width:100%;aspect-ratio:1/1;overflow:hidden;cursor:pointer;background:var(--bg3);">`
-        + `<img src="${u.av||getDefaultAv(u.gender||'')}" style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(u.nick||'?')}&background=21262d&color=2ec4b6&size=120'">`
-        + `</div>`
-        + `<div style="padding:7px 7px 8px;display:flex;flex-direction:column;gap:4px;flex:1;">`
-        + `<div onclick="openUserProfile('${u.id}','${safenick}')" style="font-size:.75rem;font-weight:700;color:var(--text);cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${nick}</div>`
-        + `<div>${connHtml}</div>`
-        + addBtn
-        + dismissBtn
-        + `</div></div>`;
-    });
-    html += '</div>';
-    el.innerHTML = html;
-  } catch(e){ el.innerHTML = '<div style="font-size:.72rem;color:var(--muted);padding:4px;"></div>'; }
-}
-
-
 async function renderSidebarFriends(){
   const el = document.getElementById('friendsListSidebar');
   if(!el) return;
@@ -18937,32 +18843,7 @@ async function _loadUserProfilePage(uid, nick){
     if(u.favFish) metaParts.push(`<span>🎣 <strong>${u.favFish}</strong></span>`);
     if(u.favMap)  metaParts.push(`<span>🗺️ <strong>${u.favMap}</strong></span>`);
     document.getElementById('upMeta').innerHTML = metaParts.join('');
-    // ── ÚLTIMA CONEXIÓN ──
-    const lastSeenEl = document.getElementById('upLastSeen');
-    if(lastSeenEl){
-      // Check presence collection for real-time last seen
-      try {
-        const presSnap = await getDoc(doc(db,'presence',uid));
-        if(presSnap.exists()){
-          const ts = presSnap.data().last?.toMillis?.() || 0;
-          const now = Date.now();
-          const isOnline = now - ts < 120000;
-          if(isOnline){
-            const dev = presSnap.data().device;
-            const devIcon = dev==='mobile' ? '📱 Celular' : '🖥️ PC';
-            lastSeenEl.innerHTML = '<span style="color:var(--green);font-size:.72rem;">● En línea ahora · '+devIcon+'</span>';
-          } else if(ts){
-            const dev2 = presSnap.data().device;
-            const devIcon2 = dev2==='mobile' ? ' · 📱' : ' · 🖥️';
-            lastSeenEl.innerHTML = '<span style="color:var(--muted);font-size:.72rem;">🕐 '+fmtLastSeen(ts)+devIcon2+'</span>';
-          } else {
-            lastSeenEl.innerHTML = '<span style="color:var(--muted);font-size:.72rem;">🕐 Sin datos</span>';
-          }
-        } else {
-          lastSeenEl.innerHTML = '<span style="color:var(--muted);font-size:.72rem;">🕐 Sin datos</span>';
-        }
-      } catch(e){ lastSeenEl.innerHTML=''; }
-    }
+
 
     // ── STATS ──
     let userPosts = [];
@@ -21208,7 +21089,7 @@ function toggleVoicePlay(btn, url){
   // Stop any other playing audio
   if(window._playingAudio && window._playingAudio !== btn._audio){
     window._playingAudio.pause();
-    window._playingAudio._btn && (window._playingAudio._btn.textContent='▶');
+    if(window._playingAudio._btn){ window._playingAudio._btn.textContent='▶'; }
   }
   if(!btn._audio){
     btn._audio = new Audio(url);
@@ -24801,7 +24682,7 @@ window.wkOpenDet = async (id) => {
           ${imgs.length>1?`<div style="position:absolute;top:8px;right:10px;background:rgba(0,0,0,.6);color:#fff;font-size:.72rem;font-weight:700;padding:2px 8px;border-radius:100px;">1 / ${imgs.length}</div>`:''}
           <div style="position:absolute;bottom:8px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.5);color:#fff;font-size:.68rem;padding:3px 10px;border-radius:100px;pointer-events:none;">🔍 Click para zoom · ← → para navegar</div>
         </div>
-        ${imgs.length>1?`<div style="display:flex;gap:5px;margin-bottom:12px;overflow-x:auto;">${imgs.map((img,i)=>`<div class="dth ${i===0?'on':''}" style="cursor:pointer;flex-shrink:0;" onclick="(function(el,i){el.parentElement.querySelectorAll('.dth').forEach(x=>x.classList.remove('on'));el.classList.add('on');var main=document.getElementById('wkDetMainImg');if(main)main.src='${img}';var cnt=main&&main.parentElement.querySelector('div[style*=\\'1 /\\']');if(cnt)cnt.textContent=(i+1)+' / ${imgs.length}';var lbBtn=main&&main.parentElement;if(lbBtn)lbBtn.onclick=function(){wkOpenLb('${img}',[${imgs.map(x=>"'"+x+"'").join(',')}],'${t.id}');};this.closest('[style*=aspect-ratio]')&&(this.closest('[style*=aspect-ratio]').onclick=function(){wkOpenLb('${img}',[${imgs.map(x=>"'"+x+"'").join(',')}],'${t.id}');});})(this,${i})"><img src="${img}" alt=""></div>`).join('')}</div>`:''}
+        ${imgs.length>1?`<div style="display:flex;gap:5px;margin-bottom:12px;overflow-x:auto;">${imgs.map((img,i)=>`<div class="dth ${i===0?'on':''}" style="cursor:pointer;flex-shrink:0;" onclick="(function(el,i){el.parentElement.querySelectorAll('.dth').forEach(x=>x.classList.remove('on'));el.classList.add('on');var main=document.getElementById('wkDetMainImg');if(main)main.src='${img}';var cnt=main&&main.parentElement.querySelector('div[style*=\\'1 /\\']');if(cnt)cnt.textContent=(i+1)+' / ${imgs.length}';var lbBtn=main&&main.parentElement;if(lbBtn)lbBtn.onclick=function(){wkOpenLb('${img}',[${imgs.map(x=>"'"+x+"'").join(',')}],'${t.id}');};var _asp=this.closest('[style*=aspect-ratio]');if(_asp)_asp.onclick=function(){wkOpenLb('${img}',[${imgs.map(x=>"'"+x+"'").join(',')}],'${t.id}');};})(this,${i})"><img src="${img}" alt=""></div>`).join('')}</div>`:''}
       `:'<div style="width:100%;height:180px;background:#101820;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:4rem;margin-bottom:14px">🐟</div>'}
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
         <div><div style="font-size:.7rem;color:var(--muted,#567890);text-transform:uppercase;letter-spacing:.4px">Mapa</div><div style="font-weight:600;margin-top:2px">${wkEsc(t.map||'?')}</div></div>
@@ -26711,11 +26592,26 @@ window.setBottomNav = function(id){
       <div style="font-family:'Orbitron',monospace;font-size:1.1rem;font-weight:900;color:#ffd700;">Krush Premium</div>
       <div style="font-size:.8rem;color:rgba(255,215,0,.6);margin-top:4px;">Solo $1 USD por mes</div>
     </div>
-    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px;">
-      <div style="display:flex;align-items:center;gap:10px;font-size:.82rem;color:#e6edf3;"><span style="color:#ffd700;">✓</span> Sin anuncios en todo el sitio</div>
-      <div style="display:flex;align-items:center;gap:10px;font-size:.82rem;color:#e6edf3;"><span style="color:#ffd700;">✓</span> Badge ⭐ Premium en tu perfil</div>
-      <div style="display:flex;align-items:center;gap:10px;font-size:.82rem;color:#e6edf3;"><span style="color:#ffd700;">✓</span> Ves quién vio tus historias</div>
-      <div style="display:flex;align-items:center;gap:10px;font-size:.82rem;color:#e6edf3;"><span style="color:#ffd700;">✓</span> Ayudanos a mantener viva a Krush.UY</div>
+    <!-- GRATIS -->
+    <div style="font-size:.65rem;font-weight:800;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;">🆓 Gratis para todos</div>
+    <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:14px;background:rgba(255,255,255,.04);border-radius:10px;padding:10px 12px;">
+      <div style="display:flex;align-items:center;gap:10px;font-size:.8rem;color:#b0bec5;"><span style="color:#8bc34a;">✓</span> 3 mensajes de Match por día</div>
+      <div style="display:flex;align-items:center;gap:10px;font-size:.8rem;color:#b0bec5;"><span style="color:#8bc34a;">✓</span> 5 Matches máximos activos</div>
+      <div style="display:flex;align-items:center;gap:10px;font-size:.8rem;color:#b0bec5;"><span style="color:#8bc34a;">✓</span> Historias estándar (24hs)</div>
+      <div style="display:flex;align-items:center;gap:10px;font-size:.8rem;color:#b0bec5;"><span style="color:#8bc34a;">✓</span> Publicaciones y trofeos</div>
+    </div>
+    <!-- PREMIUM -->
+    <div style="font-size:.65rem;font-weight:800;color:#ffd700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;">⭐ Con Premium — $1/mes</div>
+    <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:16px;background:rgba(255,215,0,.06);border:1px solid rgba(255,215,0,.2);border-radius:10px;padding:10px 12px;">
+      <div style="display:flex;align-items:center;gap:10px;font-size:.8rem;color:#e6edf3;"><span style="color:#ffd700;">⭐</span> Sin anuncios en todo el sitio</div>
+      <div style="display:flex;align-items:center;gap:10px;font-size:.8rem;color:#e6edf3;"><span style="color:#ffd700;">⭐</span> Badge ⭐ Premium en tu perfil</div>
+      <div style="display:flex;align-items:center;gap:10px;font-size:.8rem;color:#e6edf3;"><span style="color:#ffd700;">⭐</span> Ves quién vio tus historias</div>
+      <div style="display:flex;align-items:center;gap:10px;font-size:.8rem;color:#e6edf3;"><span style="color:#ffd700;">⭐</span> Mensajes Match ilimitados</div>
+      <div style="display:flex;align-items:center;gap:10px;font-size:.8rem;color:#e6edf3;"><span style="color:#ffd700;">⭐</span> Matches ilimitados activos</div>
+      <div style="display:flex;align-items:center;gap:10px;font-size:.8rem;color:#e6edf3;"><span style="color:#ffd700;">⭐</span> Aparecés primero en el Match</div>
+      <div style="display:flex;align-items:center;gap:10px;font-size:.8rem;color:#e6edf3;"><span style="color:#ffd700;">⭐</span> Subí videos gratis</div>
+      <div style="display:flex;align-items:center;gap:10px;font-size:.8rem;color:#e6edf3;"><span style="color:#ffd700;">⭐</span> Historias Premium (48hs)</div>
+      <div style="display:flex;align-items:center;gap:10px;font-size:.8rem;color:#e6edf3;"><span style="color:#ffd700;">⭐</span> Ayudás a mantener viva Krush.UY</div>
     </div>
     <div style="background:rgba(255,215,0,.06);border:1px solid rgba(255,215,0,.2);border-radius:10px;padding:12px;margin-bottom:16px;font-size:.75rem;color:rgba(255,255,255,.7);line-height:1.6;">
       1. Hacé clic en el botón de abajo para pagar $1 USD por PayPal.<br>
@@ -27243,32 +27139,7 @@ document.addEventListener('DOMContentLoaded', () => { setTimeout(updatePremiumBt
 
 
 
-<style>@keyframes slClockPulse{0%,100%{opacity:1}50%{opacity:.3}}</style>
-<script>
-(function(){
-  var P=[{s:0,e:4,n:'Madrugada',c:'#378ADD'},{s:4,e:7,n:'Amanecer',c:'#EF9F27'},{s:7,e:11,n:'Mañana',c:'#3fb950'},{s:11,e:14,n:'Mediodía',c:'#d4a017'},{s:14,e:18,n:'Tarde',c:'#3fb950'},{s:18,e:21,n:'Atardecer',c:'#f85149'},{s:21,e:24,n:'Noche',c:'#9370db'}];
-  var S=[{m:[12,1,2],n:'❄ Invierno'},{m:[3,4,5],n:'🌱 Primavera'},{m:[6,7,8],n:'☀ Verano'},{m:[9,10,11],n:'🍂 Otoño'}];
-  function pad(n){return String(n).padStart(2,'0');}
-  function tick(){
-    var now=new Date();
-    var u=now.getUTCHours()*3600+now.getUTCMinutes()*60+now.getUTCSeconds();
-    var gs=u%3600; var gh=Math.floor(gs/150); var gm=Math.floor((gs%150)/150*60);
-    var prog=Math.round(gs/3600*100);
-    var phase=P.find(function(p){return gh>=p.s&&gh<p.e;})||P[0];
-    var month=now.getUTCMonth()+1;
-    var season=S.find(function(s){return s.m.indexOf(month)>-1;})||S[0];
-    var c=document.getElementById('slRF4Clock');
-    var ph=document.getElementById('slRF4Phase');
-    var se=document.getElementById('slRF4Season');
-    var bar=document.getElementById('slRF4Bar');
-    if(c) c.textContent=pad(gh)+':'+pad(gm);
-    if(ph){ph.textContent=phase.n;ph.style.color=phase.c;}
-    if(se) se.textContent=season.n;
-    if(bar) bar.style.width=prog+'%';
-  }
-  tick(); setInterval(tick,1000);
-})();
-</script>
+
 
 
 
