@@ -3813,133 +3813,324 @@ document.addEventListener('DOMContentLoaded', function(){
 </div>
 
 
+<!-- ── MODAL EDITAR PERFIL — estilo Facebook ─────────────────────────── -->
+<style>
+#mEditProfile .modal { max-width:560px; padding:0; border-radius:14px; overflow:hidden; }
+
+/* Header fijo */
+#epHeader {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:14px 18px; border-bottom:1px solid var(--border);
+  background:var(--bg2); position:sticky; top:0; z-index:2;
+}
+#epHeader h2 { font-size:1.15rem; font-weight:800; margin:0; font-family:'Exo 2',sans-serif; }
+#epCloseBtn {
+  width:36px; height:36px; border-radius:50%; border:none;
+  background:var(--bg3); color:var(--text); font-size:1.1rem;
+  cursor:pointer; display:flex; align-items:center; justify-content:center;
+  transition:background .15s;
+}
+#epCloseBtn:hover { background:var(--bg4); }
+
+/* Tabs estilo FB */
+#epTabs {
+  display:flex; gap:0; border-bottom:1px solid var(--border);
+  background:var(--bg2); overflow-x:auto; scrollbar-width:none;
+}
+#epTabs::-webkit-scrollbar { display:none; }
+.ep-tab {
+  flex:1; min-width:90px; padding:13px 8px; text-align:center;
+  font-size:.8rem; font-weight:700; color:var(--muted);
+  border:none; background:none; cursor:pointer; border-bottom:3px solid transparent;
+  transition:all .15s; white-space:nowrap; font-family:'Exo 2',sans-serif;
+}
+.ep-tab.active { color:var(--accent); border-bottom-color:var(--accent); }
+.ep-tab:hover:not(.active) { background:var(--bg3); color:var(--text); }
+
+/* Contenido scrollable */
+#epBody { padding:18px; overflow-y:auto; max-height:65vh; }
+
+/* Secciones */
+.ep-panel { display:none; }
+.ep-panel.active { display:block; }
+
+/* Campos */
+.ep-field { margin-bottom:16px; }
+.ep-label {
+  display:block; font-size:.78rem; font-weight:700;
+  color:var(--muted); margin-bottom:6px; font-family:'Exo 2',sans-serif;
+}
+.ep-input {
+  width:100%; background:var(--bg3); border:1.5px solid var(--border);
+  border-radius:10px; padding:11px 13px; color:var(--text);
+  font-size:.9rem; font-family:'Exo 2',sans-serif;
+  transition:border-color .15s; box-sizing:border-box;
+}
+.ep-input:focus { outline:none; border-color:var(--accent); }
+.ep-input::placeholder { color:var(--muted); }
+textarea.ep-input { resize:vertical; min-height:80px; line-height:1.5; }
+select.ep-input { cursor:pointer; }
+.ep-input[readonly] { opacity:.55; cursor:default; }
+
+/* Fila de 2 columnas */
+.ep-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+@media(max-width:480px){ .ep-row { grid-template-columns:1fr; } }
+
+/* Privacidad correo */
+.ep-priv-wrap { display:flex; gap:6px; flex-wrap:wrap; margin-top:8px; }
+.ep-priv-opt {
+  display:flex; align-items:center; gap:5px; cursor:pointer;
+  font-size:.78rem; background:var(--bg3); border:1.5px solid var(--border);
+  border-radius:100px; padding:5px 12px; transition:all .15s;
+  font-family:'Exo 2',sans-serif; font-weight:600;
+}
+.ep-priv-opt:has(input:checked) {
+  border-color:var(--accent); background:rgba(46,196,182,.1); color:var(--accent);
+}
+.ep-priv-opt input { accent-color:var(--accent); }
+
+/* Cambiar email */
+#epEmailDisplay {
+  display:flex; align-items:center; gap:8px;
+  background:var(--bg3); border:1.5px solid var(--border);
+  border-radius:10px; padding:10px 13px;
+}
+#epEmailChangeBtn {
+  font-size:.75rem; font-weight:700; color:var(--accent);
+  background:none; border:none; cursor:pointer; padding:3px 8px;
+  border-radius:6px; transition:background .15s;
+}
+#epEmailChangeBtn:hover { background:rgba(46,196,182,.1); }
+#epEmailChangeForm {
+  margin-top:10px; background:var(--bg3);
+  border:1.5px solid var(--border); border-radius:10px; padding:14px;
+}
+
+/* Footer fijo con botón guardar */
+#epFooter {
+  padding:14px 18px; border-top:1px solid var(--border);
+  background:var(--bg2); position:sticky; bottom:0;
+}
+#epSaveBtn {
+  width:100%; padding:12px; border-radius:10px; border:none;
+  background:var(--accent); color:#0d1117; font-size:.95rem;
+  font-weight:800; cursor:pointer; font-family:'Exo 2',sans-serif;
+  transition:opacity .15s;
+}
+#epSaveBtn:hover { opacity:.88; }
+
+/* Char counter bio */
+#epBioCount { font-size:.65rem; color:var(--muted); text-align:right; margin-top:3px; }
+</style>
+
 <div class="mo" id="mEditProfile">
   <div class="modal modal-md">
-    <button class="mcx" onclick="cm('mEditProfile')">✕</button>
-    <div class="mt">✏ Editar Perfil</div>
 
-    
-    <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border);">👤 Datos básicos</div>
-    <div class="fg">
-      <label class="fl">Nick / Nombre *</label>
-      <input class="fi" id="epNick" placeholder="Tu nick en RF4">
-      <div id="epNickMsg" style="font-size:.68rem;margin-top:4px;display:none;"></div>
+    <!-- Header -->
+    <div id="epHeader">
+      <h2>Editar perfil</h2>
+      <button id="epCloseBtn" onclick="cm('mEditProfile')">✕</button>
     </div>
-    <div class="fg">
-      <label class="fl">✉️ Correo electrónico <span style="font-size:.7rem;color:var(--muted);font-weight:400;">(de tu cuenta)</span></label>
-      
-      <div id="epEmailDisplay" style="display:flex;align-items:center;gap:8px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--rs);padding:9px 12px;">
-        <span style="font-size:.88rem;color:var(--muted);">✉️</span>
-        <span id="epEmailMasked" style="font-size:.88rem;flex:1;color:var(--text);">—</span>
-        <button type="button" id="epEmailChangeBtn" onclick="startEmailChange()" style="font-size:.72rem;font-weight:700;color:var(--accent);background:none;border:none;cursor:pointer;padding:2px 6px;border-radius:6px;transition:background .15s;" onmouseover="this.style.background='var(--bg4)'" onmouseout="this.style.background='none'">✏ Cambiar</button>
-      </div>
-      
-      <div id="epEmailChangeForm" style="display:none;margin-top:8px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--rs);padding:12px;">
-        <div style="font-size:.75rem;font-weight:700;color:var(--accent);margin-bottom:8px;">🔐 Verificar correo actual primero</div>
-        <div style="font-size:.72rem;color:var(--muted);margin-bottom:8px;">Para cambiar tu correo, primero debés confirmar el actual haciendo clic en el enlace de verificación que te enviamos.</div>
-        <button type="button" onclick="sendVerifEmailForChange()" style="font-size:.75rem;font-weight:700;background:var(--accent);color:#000;border:none;border-radius:8px;padding:7px 14px;cursor:pointer;margin-bottom:8px;">📧 Enviar verificación al correo actual</button>
-        <div id="epEmailVerifStatus" style="font-size:.72rem;color:var(--muted);margin-bottom:8px;display:none;"></div>
-        <div id="epEmailNewGroup" style="display:none;">
-          <input class="fi" type="email" id="epEmailNew" placeholder="Nuevo correo electrónico" style="margin-bottom:6px;">
-          <button type="button" onclick="confirmEmailChange()" class="btn btn-p" style="width:100%;font-size:.8rem;">✅ Confirmar nuevo correo</button>
+
+    <!-- Tabs -->
+    <div id="epTabs">
+      <button class="ep-tab active" onclick="epSwitch('general',this)">👤 General</button>
+      <button class="ep-tab" onclick="epSwitch('contacto',this)">✉️ Contacto</button>
+      <button class="ep-tab" onclick="epSwitch('pesca',this)">🎣 Pesca</button>
+      <button class="ep-tab" onclick="epSwitch('redes',this)">🌐 Redes</button>
+    </div>
+
+    <!-- Body -->
+    <div id="epBody">
+
+      <!-- ── Panel: General ── -->
+      <div class="ep-panel active" id="ep-general">
+
+        <div class="ep-field">
+          <label class="ep-label">Nombre o Nick *</label>
+          <input class="ep-input" id="epNick" placeholder="Tu nombre o apodo">
+          <div id="epNickMsg" style="font-size:.68rem;margin-top:4px;color:var(--red);display:none;"></div>
         </div>
-        <button type="button" onclick="cancelEmailChange()" style="font-size:.72rem;color:var(--muted);background:none;border:none;cursor:pointer;margin-top:4px;text-decoration:underline;">Cancelar</button>
-      </div>
-      
-      <div style="margin-top:8px;">
-        <label class="fl" style="font-size:.7rem;margin-bottom:4px;">👁 ¿Quién puede ver tu correo?</label>
-        <div style="display:flex;gap:6px;flex-wrap:wrap;">
-          <label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:.78rem;background:var(--bg3);border:1px solid var(--border);border-radius:100px;padding:5px 11px;transition:all .15s;" id="epEmailPriv_all">
-            <input type="radio" name="epEmailPrivacy" value="all" style="accent-color:var(--accent);"> 🌐 Todos
-          </label>
-          <label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:.78rem;background:var(--bg3);border:1px solid var(--border);border-radius:100px;padding:5px 11px;transition:all .15s;" id="epEmailPriv_friends">
-            <input type="radio" name="epEmailPrivacy" value="friends"> 👥 Amigos
-          </label>
-          <label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:.78rem;background:var(--bg3);border:1px solid var(--border);border-radius:100px;padding:5px 11px;transition:all .15s;" id="epEmailPriv_only">
-            <input type="radio" name="epEmailPrivacy" value="only"> 🔒 Solo yo
-          </label>
+
+        <div class="ep-field">
+          <label class="ep-label">Biografía</label>
+          <textarea class="ep-input" id="epBio" placeholder="Contá algo sobre vos..." maxlength="150" oninput="document.getElementById('epBioCount').textContent=this.value.length+'/150'"></textarea>
+          <div id="epBioCount">0/150</div>
         </div>
-      </div>
-    </div>
-    <div class="fg"><label class="fl">Biografía</label><textarea class="fi" id="epBio" placeholder="Cuéntanos sobre tu experiencia en RF4..." style="min-height:70px;"></textarea></div>
-    <div class="frow">
-      <div class="fg"><label class="fl">País</label>
-        <select class="fi" id="epCountry">
-          <option value="">País...</option>
-          <option>🇦🇷 Argentina</option><option>🇲🇽 México</option><option>🇪🇸 España</option>
-          <option>🇨🇴 Colombia</option><option>🇨🇱 Chile</option><option>🇵🇪 Perú</option>
-          <option>🇻🇪 Venezuela</option><option>🇺🇾 Uruguay</option><option>🇧🇷 Brasil</option>
-        </select>
-      </div>
-      <div class="fg"><label class="fl">Ciudad</label><input class="fi" id="epCity" placeholder="Ej: Buenos Aires"></div>
-    </div>
-    <div class="frow">
-      <div class="fg">
-        <label class="fl">Edad <span style="font-size:.65rem;color:var(--muted);font-weight:400;">(calculada automáticamente)</span></label>
-        <input class="fi" type="text" id="epAge" placeholder="Se calcula desde tu fecha de nacimiento" readonly style="cursor:default;opacity:.7;">
-      </div>
-      <div class="fg">
-        <label class="fl">🎂 Fecha de nacimiento</label>
-        <input class="fi" type="date" id="epBirthdate" style="color-scheme:dark;" oninput="calcAgeFromBirthdate()">
-        <div style="font-size:.65rem;color:var(--muted);margin-top:3px;">Tus amigos serán notificados el día de tu cumpleaños 🎉</div>
-      </div>
-      <div class="fg"><label class="fl">Género</label>
-        <select class="fi" id="epGender">
-          <option value="">Prefiero no decir</option>
-          <option>Masculino</option><option>Femenino</option><option>Otro</option>
-        </select>
-      </div>
+
+        <div class="ep-row">
+          <div class="ep-field">
+            <label class="ep-label">País</label>
+            <select class="ep-input" id="epCountry">
+              <option value="">Seleccioná tu país...</option>
+              <option>🇦🇷 Argentina</option><option>🇲🇽 México</option><option>🇪🇸 España</option>
+              <option>🇨🇴 Colombia</option><option>🇨🇱 Chile</option><option>🇵🇪 Perú</option>
+              <option>🇻🇪 Venezuela</option><option>🇺🇾 Uruguay</option><option>🇧🇷 Brasil</option>
+            </select>
+          </div>
+          <div class="ep-field">
+            <label class="ep-label">Ciudad</label>
+            <input class="ep-input" id="epCity" placeholder="Ej: Montevideo">
+          </div>
+        </div>
+
+        <div class="ep-row">
+          <div class="ep-field">
+            <label class="ep-label">🎂 Fecha de nacimiento</label>
+            <input class="ep-input" type="date" id="epBirthdate" style="color-scheme:dark;" oninput="calcAgeFromBirthdate()">
+            <div style="font-size:.65rem;color:var(--muted);margin-top:3px;">Tus amigos serán notificados 🎉</div>
+          </div>
+          <div class="ep-field">
+            <label class="ep-label">Edad</label>
+            <input class="ep-input" type="text" id="epAge" placeholder="Se calcula sola" readonly>
+          </div>
+        </div>
+
+        <div class="ep-field">
+          <label class="ep-label">Género</label>
+          <select class="ep-input" id="epGender">
+            <option value="">Prefiero no decir</option>
+            <option>Masculino</option><option>Femenino</option><option>Otro</option>
+          </select>
+        </div>
+
+      </div><!-- /ep-general -->
+
+      <!-- ── Panel: Contacto ── -->
+      <div class="ep-panel" id="ep-contacto">
+
+        <div class="ep-field">
+          <label class="ep-label">✉️ Correo electrónico <span style="font-weight:400;color:var(--muted);font-size:.7rem;">(de tu cuenta)</span></label>
+          <div id="epEmailDisplay">
+            <span style="font-size:.9rem;color:var(--muted);">✉️</span>
+            <span id="epEmailMasked" style="font-size:.88rem;flex:1;">—</span>
+            <button type="button" id="epEmailChangeBtn" onclick="startEmailChange()">✏ Cambiar</button>
+          </div>
+          <div id="epEmailChangeForm" style="display:none;">
+            <div style="font-size:.75rem;font-weight:700;color:var(--accent);margin-bottom:8px;">🔐 Verificar correo actual primero</div>
+            <div style="font-size:.72rem;color:var(--muted);margin-bottom:8px;">Confirmá tu correo actual antes de cambiarlo.</div>
+            <button type="button" onclick="sendVerifEmailForChange()" style="font-size:.75rem;font-weight:700;background:var(--accent);color:#000;border:none;border-radius:8px;padding:7px 14px;cursor:pointer;margin-bottom:8px;">📧 Enviar verificación</button>
+            <div id="epEmailVerifStatus" style="font-size:.72rem;color:var(--muted);margin-bottom:8px;display:none;"></div>
+            <div id="epEmailNewGroup" style="display:none;">
+              <input class="ep-input" type="email" id="epEmailNew" placeholder="Nuevo correo electrónico" style="margin-bottom:8px;">
+              <button type="button" onclick="confirmEmailChange()" class="btn btn-p" style="width:100%;font-size:.8rem;">✅ Confirmar nuevo correo</button>
+            </div>
+            <button type="button" onclick="cancelEmailChange()" style="font-size:.72rem;color:var(--muted);background:none;border:none;cursor:pointer;margin-top:6px;text-decoration:underline;">Cancelar</button>
+          </div>
+        </div>
+
+        <div class="ep-field">
+          <label class="ep-label">👁 ¿Quién puede ver tu correo?</label>
+          <div class="ep-priv-wrap">
+            <label class="ep-priv-opt" id="epEmailPriv_all">
+              <input type="radio" name="epEmailPrivacy" value="all"> 🌐 Todos
+            </label>
+            <label class="ep-priv-opt" id="epEmailPriv_friends">
+              <input type="radio" name="epEmailPrivacy" value="friends"> 👥 Amigos
+            </label>
+            <label class="ep-priv-opt" id="epEmailPriv_only">
+              <input type="radio" name="epEmailPrivacy" value="only"> 🔒 Solo yo
+            </label>
+          </div>
+        </div>
+
+      </div><!-- /ep-contacto -->
+
+      <!-- ── Panel: Pesca ── -->
+      <div class="ep-panel" id="ep-pesca">
+
+        <div class="ep-row">
+          <div class="ep-field">
+            <label class="ep-label">Pez favorito</label>
+            <input class="ep-input" id="epFish" list="rf4FishDatalist" autocomplete="off" placeholder="Ej: Carpa, Siluro...">
+          </div>
+          <div class="ep-field">
+            <label class="ep-label">Mapa favorito</label>
+            <select class="ep-input" id="epMap">
+              <option value="">Seleccionar...</option>
+              <option>Belaya River</option><option>Volkhov River</option><option>Akhtuba River</option>
+              <option>Ladoga Lake</option><option>Sura River</option><option>Bear Lake</option>
+              <option>Mosquito Lake</option><option>Amber Lake</option><option>Yama River</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="ep-row">
+          <div class="ep-field">
+            <label class="ep-label">Técnica favorita</label>
+            <select class="ep-input" id="epTech">
+              <option value="">Seleccionar...</option>
+              <option>Spinning</option><option>Fondo</option><option>Flote</option>
+              <option>Jigging</option><option>Feeder</option><option>Pesca en hielo</option>
+              <option>Fly fishing</option><option>Carp fishing</option>
+            </select>
+          </div>
+          <div class="ep-field">
+            <label class="ep-label">Nivel de experiencia</label>
+            <select class="ep-input" id="epExp">
+              <option value="">Seleccionar...</option>
+              <option>Principiante</option><option>Intermedio</option><option>Avanzado</option>
+              <option>Experto</option><option>Profesional</option>
+            </select>
+          </div>
+        </div>
+
+      </div><!-- /ep-pesca -->
+
+      <!-- ── Panel: Redes ── -->
+      <div class="ep-panel" id="ep-redes">
+
+        <div class="ep-row">
+          <div class="ep-field">
+            <label class="ep-label">📘 Facebook</label>
+            <input class="ep-input" id="epFB" placeholder="tu.usuario">
+          </div>
+          <div class="ep-field">
+            <label class="ep-label">📸 Instagram</label>
+            <input class="ep-input" id="epIG" placeholder="tu.usuario">
+          </div>
+        </div>
+        <div class="ep-row">
+          <div class="ep-field">
+            <label class="ep-label">🎵 TikTok</label>
+            <input class="ep-input" id="epTT" placeholder="tu.usuario">
+          </div>
+          <div class="ep-field">
+            <label class="ep-label">💬 Discord</label>
+            <input class="ep-input" id="epDC" placeholder="usuario#1234">
+          </div>
+        </div>
+        <div class="ep-row">
+          <div class="ep-field">
+            <label class="ep-label">▶️ YouTube</label>
+            <input class="ep-input" id="epYT" placeholder="URL del canal">
+          </div>
+          <div class="ep-field">
+            <label class="ep-label">🎮 Twitch</label>
+            <input class="ep-input" id="epTW" placeholder="tu.usuario">
+          </div>
+        </div>
+
+      </div><!-- /ep-redes -->
+
+    </div><!-- /epBody -->
+
+    <!-- Footer -->
+    <div id="epFooter">
+      <button id="epSaveBtn" onclick="saveProfile()">Guardar cambios</button>
     </div>
 
-    
-    <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin:14px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--border);">🎣 Pesca</div>
-    <div class="frow">
-      <div class="fg"><label class="fl">Pez favorito</label><input class="fi" id="epFish" list="rf4FishDatalist" autocomplete="off" placeholder="Ej: Carpa, Siluro..."></div>
-      <div class="fg"><label class="fl">Mapa favorito</label>
-        <select class="fi" id="epMap">
-          <option value="">Seleccionar...</option>
-          <option>Belaya River</option><option>Volkhov River</option><option>Akhtuba River</option>
-          <option>Ladoga Lake</option><option>Sura River</option><option>Bear Lake</option>
-          <option>Mosquito Lake</option><option>Amber Lake</option><option>Yama River</option>
-        </select>
-      </div>
-    </div>
-    <div class="frow">
-      <div class="fg"><label class="fl">Técnica favorita</label>
-        <select class="fi" id="epTech">
-          <option value="">Seleccionar...</option>
-          <option>Spinning</option><option>Fondo</option><option>Flote</option>
-          <option>Jigging</option><option>Feeder</option><option>Pesca en hielo</option>
-          <option>Fly fishing</option><option>Carp fishing</option>
-        </select>
-      </div>
-      <div class="fg"><label class="fl">Nivel de experiencia</label>
-        <select class="fi" id="epExp">
-          <option value="">Seleccionar...</option>
-          <option>Principiante</option><option>Intermedio</option><option>Avanzado</option>
-          <option>Experto</option><option>Profesional</option>
-        </select>
-      </div>
-    </div>
-
-    
-    <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin:14px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--border);">🌐 Redes y Contacto</div>
-    <div class="frow">
-      <div class="fg"><label class="fl">📘 Facebook</label><input class="fi" id="epFB" placeholder="tu usuario (ej: ruizgustavo12)"></div>
-      <div class="fg"><label class="fl">📸 Instagram</label><input class="fi" id="epIG" placeholder="tu usuario (ej: ruizgustavo12)"></div>
-    </div>
-    <div class="frow">
-      <div class="fg"><label class="fl">🎵 TikTok</label><input class="fi" id="epTT" placeholder="tu usuario (ej: ruizgustavo12)"></div>
-      <div class="fg"><label class="fl">💬 Discord</label><input class="fi" id="epDC" placeholder="usuario o usuario#1234"></div>
-    </div>
-    <div class="frow">
-      <div class="fg"><label class="fl">▶️ YouTube</label><input class="fi" id="epYT" placeholder="URL del canal..."></div>
-      <div class="fg"><label class="fl">🎮 Twitch</label><input class="fi" id="epTW" placeholder="URL o usuario de Twitch"></div>
-    </div>
-
-    <button class="btn btn-p btn-full" style="margin-top:6px;" onclick="saveProfile()">💾 Guardar cambios</button>
   </div>
 </div>
+
+<script>
+function epSwitch(panel, btn){
+  document.querySelectorAll('.ep-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.ep-tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('ep-'+panel).classList.add('active');
+  btn.classList.add('active');
+}
+</script>
 
 
 
