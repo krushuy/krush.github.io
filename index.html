@@ -6762,7 +6762,7 @@ function initShopCoinsDisplay(){
   // ── Carga desde cafe.json (igual que records.json) ───────
   async function load(){
     var bust = Math.floor(Date.now() / (60*1000)); // cache bust cada 1 min
-    var urls = ['/krush.github.io/cafe.json?v='+bust, 'https://krushuy.github.io/krush.github.io/cafe.json?v='+bust];
+    var urls = ['https://krushuy.github.io/krush.github.io/cafe.json?v='+bust];
     for(var i=0;i<urls.length;i++){
       try{
         var res = await fetch(urls[i]);
