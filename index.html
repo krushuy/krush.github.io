@@ -383,41 +383,57 @@ img{object-fit:cover;}
 /* ===== PROFILE PAGE ===== */
 #profilePage{max-width:680px;margin:0 auto;padding-bottom:40px;}
 .profile-cover{
-  width:100%;height:200px;border-radius:var(--radius);overflow:hidden;
+  width:100%;height:220px;border-radius:var(--radius);overflow:hidden;
   background:linear-gradient(135deg,var(--accent),var(--accent3));
-  position:relative;margin-bottom:60px;
+  position:relative;margin-bottom:70px;
 }
-.profile-cover img{width:100%;height:100%;}
+.profile-cover img{width:100%;height:100%;object-fit:cover;}
+.profile-cover-placeholder{
+  width:100%;height:100%;
+  background:linear-gradient(135deg,var(--accent) 0%,var(--accent3) 50%,var(--accent2) 100%);
+  opacity:.7;
+}
 .profile-av-wrap{
-  position:absolute;bottom:-50px;left:24px;
+  position:absolute;bottom:-55px;left:24px;
 }
 .profile-av-wrap img{
-  width:100px;height:100px;border-radius:50%;
+  width:110px;height:110px;border-radius:50%;
   border:4px solid var(--bg);object-fit:cover;
+  background:var(--bg3);
+  box-shadow:0 4px 20px rgba(0,0,0,.5);
 }
 .profile-info{padding:0 24px;}
-.profile-name{font-family:var(--font);font-size:1.4rem;font-weight:800;}
+.profile-name{font-family:var(--font);font-size:1.5rem;font-weight:800;margin-bottom:4px;}
 .profile-handle{color:var(--muted);font-size:.85rem;margin-bottom:10px;}
-.profile-bio{font-size:.9rem;line-height:1.6;color:rgba(240,240,245,.8);margin-bottom:16px;}
-.profile-stats{display:flex;gap:24px;margin-bottom:20px;}
-.profile-stat{text-align:center;}
-.profile-stat-num{font-family:var(--font);font-size:1.3rem;font-weight:700;}
-.profile-stat-label{font-size:.72rem;color:var(--muted);}
-.profile-actions{display:flex;gap:10px;margin-bottom:24px;}
+.profile-bio{font-size:.9rem;line-height:1.6;color:rgba(240,240,245,.8);margin-bottom:16px;font-style:italic;}
+.profile-bio:empty::before{content:'Sin bio todavía.';color:var(--muted);}
+.profile-stats{display:flex;gap:0;margin-bottom:20px;background:var(--bg3);border-radius:14px;overflow:hidden;border:1px solid var(--border);}
+.profile-stat{text-align:center;flex:1;padding:14px 8px;position:relative;}
+.profile-stat:not(:last-child)::after{content:'';position:absolute;right:0;top:20%;bottom:20%;width:1px;background:var(--border);}
+.profile-stat-num{font-family:var(--font);font-size:1.4rem;font-weight:800;color:var(--text);}
+.profile-stat-label{font-size:.72rem;color:var(--muted);margin-top:2px;}
+.profile-actions{display:flex;gap:10px;margin-bottom:24px;flex-wrap:wrap;}
 .btn-edit,.btn-follow,.btn-msg-profile{
-  padding:10px 24px;border-radius:12px;font-family:var(--font);
+  padding:10px 20px;border-radius:12px;font-family:var(--font);
   font-weight:700;font-size:.85rem;transition:.2s;
 }
 .btn-edit{background:var(--bg3);border:1px solid var(--border);color:var(--text);}
+.btn-edit:hover{background:var(--bg4);border-color:var(--accent);}
 .btn-follow{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;}
 .btn-msg-profile{background:var(--bg3);border:1px solid var(--border);color:var(--text);}
 .profile-grid{
   display:grid;grid-template-columns:repeat(3,1fr);gap:4px;
   border-radius:12px;overflow:hidden;
 }
+.profile-grid-empty{
+  grid-column:1/-1;text-align:center;padding:40px 20px;color:var(--muted);
+  font-size:.9rem;
+}
 .profile-grid-item{aspect-ratio:1;overflow:hidden;cursor:pointer;position:relative;}
 .profile-grid-item img{width:100%;height:100%;transition:.2s;}
 .profile-grid-item:hover img{transform:scale(1.05);}
+.profile-interests{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;}
+.interest-tag{background:rgba(124,92,252,.15);color:var(--accent3);border:1px solid rgba(124,92,252,.3);border-radius:20px;padding:4px 12px;font-size:.78rem;font-weight:600;}
 
 /* EDIT PROFILE MODAL */
 .modal-overlay{
@@ -715,7 +731,7 @@ img{object-fit:cover;}
         <div class="stories-bar" id="storiesBar">
           <div class="story-item" onclick="openNewStory()">
             <div class="story-add-btn">＋</div>
-            <div class="story-name">Tu historia</div>
+            <div class="story-name" id="myStoryLabel">Tu historia</div>
           </div>
         </div>
         <!-- Composer -->
@@ -789,7 +805,8 @@ img{object-fit:cover;}
       <!-- PROFILE PAGE -->
       <div class="page" id="profilePage">
         <div class="profile-cover" id="profileCover">
-          <img id="profileCoverImg" src="" style="display:none;">
+          <div class="profile-cover-placeholder" id="profileCoverPlaceholder"></div>
+          <img id="profileCoverImg" src="" style="display:none;position:absolute;inset:0;">
           <div class="profile-av-wrap">
             <img id="profileAv" src="" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%2322222f%22/><text x=%2250%22 y=%2264%22 font-size=%2248%22 text-anchor=%22middle%22>👤</text></svg>'">
           </div>
@@ -798,6 +815,7 @@ img{object-fit:cover;}
           <div class="profile-name" id="profileName">—</div>
           <div class="profile-handle" id="profileHandle">—</div>
           <div class="profile-bio" id="profileBio"></div>
+          <div class="profile-interests" id="profileInterests"></div>
           <div class="profile-stats">
             <div class="profile-stat"><div class="profile-stat-num" id="statPosts">0</div><div class="profile-stat-label">Posts</div></div>
             <div class="profile-stat"><div class="profile-stat-num" id="statMatches">0</div><div class="profile-stat-label">Matches</div></div>
@@ -808,6 +826,7 @@ img{object-fit:cover;}
             <label class="btn-edit" style="cursor:pointer;">🖼️ Foto<input type="file" accept="image/*" style="display:none" onchange="changeAvatar(this)"></label>
             <label class="btn-edit" style="cursor:pointer;">🌅 Portada<input type="file" accept="image/*" style="display:none" onchange="changeCover(this)"></label>
           </div>
+          <div class="section-label" id="profileGridLabel" style="margin-top:8px;">Posts</div>
           <div class="profile-grid" id="profileGrid"></div>
         </div>
       </div>
@@ -825,6 +844,14 @@ img{object-fit:cover;}
     <div class="inp-group"><label>Bio</label><textarea id="epBio" placeholder="Contate algo..." style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:12px;color:var(--text);resize:none;" rows="3"></textarea></div>
     <div class="inp-group"><label>Ciudad</label><input type="text" id="epCity" placeholder="¿Dónde vivís?"></div>
     <div class="inp-group"><label>Edad</label><input type="number" id="epAge" placeholder="Edad" min="18" max="99"></div>
+    <div class="inp-group"><label>Género</label>
+      <select id="epGender">
+        <option value="">Seleccioná...</option>
+        <option value="m">Hombre</option>
+        <option value="f">Mujer</option>
+        <option value="o">Otro</option>
+      </select>
+    </div>
     <div class="inp-group"><label>Intereses (separados por coma)</label><input type="text" id="epInterests" placeholder="viajes, música, cocina..."></div>
     <button class="btn-primary" onclick="saveProfile()">Guardar cambios</button>
   </div>
@@ -1315,8 +1342,8 @@ async function loadStories() {
       const el = document.createElement('div');
       el.className = 'story-item';
       el.onclick = () => openStoryViewer(sts, ud);
-      const storyName = ud.name || (uid === CU.id ? CU.name : 'Usuario');
-      const storyAv = ud.av || (uid === CU.id ? CU.av : '');
+      const storyName = (ud.name || (uid === CU.id ? CU.name : null) || 'Usuario');
+      const storyAv = (ud.av || (uid === CU.id ? CU.av : '')) || '';
       el.innerHTML = `<div class="story-avatar"><img src="${storyAv}" onerror="this.style.background='var(--bg4)'"></div>
         <div class="story-name">${storyName}</div>`;
       bar.appendChild(el);
@@ -1766,19 +1793,40 @@ function renderProfileData(u, uid) {
   document.getElementById('profileName').textContent = u.name || (isMe ? (CU.name||'Sin nombre') : 'Usuario');
   document.getElementById('profileHandle').textContent =
     `${u.age||'?'} años · ${u.city||''} · ${u.gender==='f'?'♀ Mujer':u.gender==='m'?'♂ Hombre':'⚧ Otro'}`;
-  document.getElementById('profileBio').textContent = u.bio || 'Sin bio todavía.';
+  document.getElementById('profileBio').textContent = u.bio || '';
   document.getElementById('statPosts').textContent = u.posts || 0;
   document.getElementById('statMatches').textContent = u.matches || 0;
   document.getElementById('statLikes').textContent = u.likes || 0;
-  const av = u.av || CU.av || '';
-  document.getElementById('profileAv').src = av;
+
+  // Avatar
+  const av = u.av || (isMe ? CU.av : '') || '';
+  const avEl = document.getElementById('profileAv');
+  if(av) avEl.src = av;
+  else avEl.src = "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%2322222f'/><text x='50' y='64' font-size='48' text-anchor='middle'>👤</text></svg>";
+
+  // Cover
   const cover = document.getElementById('profileCoverImg');
-  if(u.cover) { cover.src = u.cover; cover.style.display = 'block'; }
-  else cover.style.display = 'none';
+  const placeholder = document.getElementById('profileCoverPlaceholder');
+  if(u.cover) {
+    cover.src = u.cover;
+    cover.style.display = 'block';
+    if(placeholder) placeholder.style.display = 'none';
+  } else {
+    cover.style.display = 'none';
+    if(placeholder) placeholder.style.display = 'block';
+  }
+
+  // Interests
+  const interestsEl = document.getElementById('profileInterests');
+  if(interestsEl) {
+    const ints = u.interests || [];
+    interestsEl.innerHTML = ints.length > 0
+      ? ints.map(i => `<span class="interest-tag">${escHtml(i)}</span>`).join('')
+      : '';
+  }
 
   const acts = document.getElementById('profilePage').querySelector('.profile-actions');
   if(isMe) {
-    // Always restore own edit buttons (in case they were replaced by a previous other-profile view)
     acts.innerHTML = `
       <button class="btn-edit" onclick="openEditProfile()">✏️ Editar perfil</button>
       <label class="btn-edit" style="cursor:pointer;">🖼️ Foto<input type="file" accept="image/*" style="display:none" onchange="changeAvatar(this)"></label>
@@ -1795,13 +1843,17 @@ function renderProfileData(u, uid) {
 
 async function loadUserPosts(uid) {
   const grid = document.getElementById('profileGrid');
+  grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:20px;"><div class="spinner"></div></div>';
   const q = query(collection(db,'posts'), where('uid','==',uid), limit(12));
   const snap = await getDocs(q);
-  grid.innerHTML = snap.docs.map(d => {
+  const items = snap.docs.map(d => {
     const p = d.data();
     if(!p.mediaUrl) return '';
     return `<div class="profile-grid-item"><img src="${p.mediaUrl}" loading="lazy"></div>`;
-  }).filter(Boolean).join('');
+  }).filter(Boolean);
+  grid.innerHTML = items.length > 0
+    ? items.join('')
+    : '<div class="profile-grid-empty">📷 Sin publicaciones todavía</div>';
 }
 
 window.swipeOnUser = async (uid, action) => {
@@ -1816,6 +1868,7 @@ window.openEditProfile = () => {
   document.getElementById('epBio').value = CU.bio || '';
   document.getElementById('epCity').value = CU.city || '';
   document.getElementById('epAge').value = CU.age || '';
+  document.getElementById('epGender').value = CU.gender || '';
   document.getElementById('epInterests').value = (CU.interests||[]).join(', ');
   openModal('editProfileModal');
 };
@@ -1825,10 +1878,11 @@ window.saveProfile = async () => {
   const bio = document.getElementById('epBio').value.trim();
   const city = document.getElementById('epCity').value.trim();
   const age = parseInt(document.getElementById('epAge').value)||CU.age;
+  const gender = document.getElementById('epGender').value || CU.gender || '';
   const interests = document.getElementById('epInterests').value.split(',').map(s=>s.trim()).filter(Boolean);
   try {
-    await updateDoc(doc(db,'users',CU.id),{name,bio,city,age,interests});
-    CU = {...CU,name,bio,city,age,interests};
+    await updateDoc(doc(db,'users',CU.id),{name,bio,city,age,gender,interests});
+    CU = {...CU,name,bio,city,age,gender,interests};
     closeModal('editProfileModal');
     renderMyProfile();
     updateNavUI();
