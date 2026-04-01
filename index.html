@@ -13497,6 +13497,7 @@ async function saveProfile(){
   window.CU.social_tt = (document.getElementById('epTT').value.trim()).replace(/^@/,'').replace(/^https?:\/\/(www\.)?tiktok\.com\/@?/,'').replace(/\/$/,'');
   const profileUpdate = {
     nick: window.CU.nick || '',
+    nickLower: (window.CU.nick || '').toLowerCase(),
     nickLastChanged: window.CU.nickLastChanged || '',
     bio: window.CU.bio || '',
     favFish: window.CU.favFish || '',
@@ -13517,9 +13518,14 @@ async function saveProfile(){
     social_ig: window.CU.social_ig || '',
     social_tt: window.CU.social_tt || '',
   };
-  await updateDoc(doc(db, 'users', window.CU.id), profileUpdate);
-  cm('mEditProfile'); updateNavUI(); renderProfile();
-  toast('Perfil actualizado ✅','ok');
+  try {
+    await updateDoc(doc(db, 'users', window.CU.id), profileUpdate);
+    cm('mEditProfile'); updateNavUI(); renderProfile();
+    toast('Perfil actualizado ✅','ok');
+  } catch(e) {
+    console.error('Error guardando perfil:', e);
+    toast('Error al guardar el perfil. Intentá de nuevo.','err');
+  }
 }
 
 function openEditProfile(){
