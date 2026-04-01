@@ -1041,8 +1041,16 @@ function friendlyErr(e) {
 onAuthStateChanged(auth, async (user) => {
   if(user) {
     const snap = await getDoc(doc(db,'users',user.uid));
-    if(!snap.exists()) { await signOut(auth); return; }
-    CU = { id: user.uid, ...snap.data() };
+    if(!snap.exists()) {
+      // Doc may not exist yet for new Google users completing profile
+      // Wait briefly and retry once
+      await new Promise(r => setTimeout(r, 1500));
+      const snap2 = await getDoc(doc(db,'users',user.uid));
+      if(!snap2.exists()) { await signOut(auth); return; }
+      CU = { id: user.uid, ...snap2.data() };
+    } else {
+      CU = { id: user.uid, ...snap.data() };
+    }
     await updateDoc(doc(db,'users',CU.id),{online:true}).catch(()=>{});
     document.getElementById('authScreen').style.display = 'none';
     document.getElementById('app').classList.add('visible');
@@ -1058,21 +1066,28 @@ onAuthStateChanged(auth, async (user) => {
 
 // ===== INIT APP =====
 function initApp() {
+  console.log('initApp - CU:', JSON.stringify({id:CU?.id, name:CU?.name, email:CU?.email}));
   updateNavUI();
-  setPage('feed');
   loadStories();
-  loadMatchProfiles();
   loadChats();
   loadExplore();
+  setPage('feed'); // calls loadFeed via setPage
 }
 
 function updateNavUI() {
-  const av = CU?.av || '';
+  if(!CU) return;
+  const av = CU.av || '';
   const thumb = document.getElementById('myAvThumb');
   const emoji = document.getElementById('myAvEmoji');
   if(av) { thumb.src=av; thumb.style.display='block'; emoji.style.display='none'; }
   else { thumb.style.display='none'; emoji.style.display='block'; }
-  document.getElementById('compAv').src = av;
+  const compAv = document.getElementById('compAv');
+  if(compAv) compAv.src = av;
+  // Update sidebar user info if present
+  const sidebarName = document.getElementById('sidebarUserName');
+  if(sidebarName) sidebarName.textContent = CU.name || 'Usuario';
+  const sidebarRole = document.getElementById('sidebarUserRole');
+  if(sidebarRole) sidebarRole.textContent = CU.city || '';
 }
 
 // ===== NAVIGATION =====
@@ -1106,19 +1121,42 @@ function loadFeed() {
   const list = document.getElementById('feedList');
   list.innerHTML = '<div class="spinner"></div>';
   if(feedUnsub) feedUnsub();
-  const q = query(collection(db,'posts'), limit(50));
-  feedUnsub = onSnapshot(q, async (snap) => {
-    if(snap.empty) { list.innerHTML='<div style="text-align:center;color:var(--muted);padding:40px;">Sé el primero en publicar 👋</div>'; return; }
-    const posts = snap.docs.map(d => ({id:d.id,...d.data()})).sort((a,b)=>{ const ta=a.time?.toMillis?a.time.toMillis():0; const tb=b.time?.toMillis?b.time.toMillis():0; return tb-ta; });
-    // Fetch user data for posts
-    const uids = [...new Set(posts.map(p=>p.uid))];
-    const users = {};
-    await Promise.all(uids.map(async uid => {
-      const u = await getDoc(doc(db,'users',uid));
-      if(u.exists()) users[uid] = u.data();
-    }));
-    list.innerHTML = posts.map(p => postHTML(p, users[p.uid]||{})).join('');
-  });
+  try {
+    const q = query(collection(db,'posts'), limit(50));
+    feedUnsub = onSnapshot(q, async (snap) => {
+      try {
+        if(snap.empty) {
+          list.innerHTML='<div style="text-align:center;color:var(--muted);padding:40px;">Sé el primero en publicar 👋</div>';
+          return;
+        }
+        const posts = snap.docs.map(d => ({id:d.id,...d.data()}))
+          .sort((a,b)=>{
+            const ta = a.time?.toMillis ? a.time.toMillis() : (a.time || 0);
+            const tb = b.time?.toMillis ? b.time.toMillis() : (b.time || 0);
+            return tb - ta;
+          });
+        // Fetch user data for each unique uid
+        const uids = [...new Set(posts.map(p=>p.uid).filter(Boolean))];
+        const users = {};
+        await Promise.all(uids.map(async uid => {
+          try {
+            const u = await getDoc(doc(db,'users',uid));
+            if(u.exists()) users[uid] = u.data();
+          } catch(e) { console.warn('Error fetching user',uid,e); }
+        }));
+        list.innerHTML = posts.map(p => postHTML(p, users[p.uid]||{})).join('');
+      } catch(e) {
+        console.error('Feed render error:', e);
+        list.innerHTML = '<div style="color:#ff6b6b;padding:20px;text-align:center;">Error al cargar posts: ' + e.message + '</div>';
+      }
+    }, (err) => {
+      console.error('Feed snapshot error:', err);
+      list.innerHTML = '<div style="color:#ff6b6b;padding:20px;text-align:center;">Error: ' + err.message + '</div>';
+    });
+  } catch(e) {
+    console.error('loadFeed error:', e);
+    list.innerHTML = '<div style="color:#ff6b6b;padding:20px;text-align:center;">Error: ' + e.message + '</div>';
+  }
 }
 
 function postHTML(p, u) {
@@ -1277,8 +1315,10 @@ async function loadStories() {
       const el = document.createElement('div');
       el.className = 'story-item';
       el.onclick = () => openStoryViewer(sts, ud);
-      el.innerHTML = `<div class="story-avatar"><img src="${ud.av||''}" onerror="this.style.background='var(--bg4)'"></div>
-        <div class="story-name">${ud.name||'Usuario'}</div>`;
+      const storyName = ud.name || (uid === CU.id ? CU.name : 'Usuario');
+      const storyAv = ud.av || (uid === CU.id ? CU.av : '');
+      el.innerHTML = `<div class="story-avatar"><img src="${storyAv}" onerror="this.style.background='var(--bg4)'"></div>
+        <div class="story-name">${storyName}</div>`;
       bar.appendChild(el);
     }
   });
@@ -1552,6 +1592,7 @@ function loadChats() {
   const q = query(collection(db,'chats'), where('users','array-contains',CU.id));
   onSnapshot(q, async (snap) => {
     const items = document.getElementById('chatListItems');
+    if(!items) return;
     if(snap.empty) { items.innerHTML='<div style="padding:20px;color:var(--muted);font-size:.85rem;">No tenés chats todavía.<br>¡Hacé un match para empezar! 🔥</div>'; return; }
     items.innerHTML = '';
     for(const d of snap.docs) {
@@ -1709,9 +1750,15 @@ window.viewProfile = async (uid) => {
 };
 
 async function renderMyProfile() {
-  const snap = await getDoc(doc(db,'users',CU.id));
-  if(snap.exists()) { CU = {id:CU.id,...snap.data()}; }
-  renderProfileData(CU, CU.id);
+  if(!CU) return;
+  try {
+    const snap = await getDoc(doc(db,'users',CU.id));
+    if(snap.exists()) { CU = {id:CU.id,...snap.data()}; }
+    renderProfileData(CU, CU.id);
+    updateNavUI();
+  } catch(e) {
+    console.error('renderMyProfile error:', e);
+  }
 }
 
 function renderProfileData(u, uid) {
