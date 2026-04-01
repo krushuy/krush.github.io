@@ -7861,11 +7861,11 @@ function initShopCoinsDisplay(){
 
 
 <script>
-const _q = [];
+window._q = window._q || [];
 function _stub(name){ return function(){ 
   // Si ya existe la función real en window, llamarla directamente
   if(window['_real_'+name]) return window['_real_'+name](...arguments);
-  _q.push([name, arguments]); 
+  window._q.push([name, arguments]); 
 }; }
 // Todas las funciones que se llaman desde onclick del HTML
 ['doLogin','doReg','showReg','showLogin','submitPost','submitStory','submitComment','handleMentionInput','insertMention','searchMentionedUser','handlePostMentionInput','insertPostMention','focusPostTextAndAt','showTerms',
