@@ -2803,7 +2803,7 @@ document.addEventListener('DOMContentLoaded', function(){
         
         <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding-bottom:16px;">
           <button class="btn btn-p" onclick="om('mCreatePost')" style="display:flex;align-items:center;gap:6px;padding:8px 18px;font-size:.86rem;font-weight:700;">✏️ Publicar</button>
-          <button class="btn btn-s" onclick="openEditProfile()" style="display:flex;align-items:center;gap:6px;padding:8px 18px;font-size:.86rem;font-weight:700;">⚙️ Editar perfil</button>
+          <button class="btn btn-s" onclick="if(typeof openEditProfile==='function'){openEditProfile();}else{document.getElementById('mEditProfile').classList.add('open');}" style="display:flex;align-items:center;gap:6px;padding:8px 18px;font-size:.86rem;font-weight:700;">⚙️ Editar perfil</button>
           <a href="https://ko-fi.com/krush" target="_blank" style="display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:var(--rs);background:rgba(255,94,91,.15);border:1px solid rgba(255,94,91,.4);color:#ff5e5b;font-family:'Exo 2',sans-serif;font-size:.86rem;font-weight:700;text-decoration:none;transition:all .2s;" onmouseover="this.style.background='rgba(255,94,91,.25)'" onmouseout="this.style.background='rgba(255,94,91,.15)'">☕ Ko-fi</a>
         </div>
       </div>
@@ -2867,7 +2867,7 @@ document.addEventListener('DOMContentLoaded', function(){
           <div class="pac-item" id="profDCRow" style="display:none">💬 Discord: <strong id="profDC">—</strong></div>
           <div class="pac-item" id="profYTRow" style="display:none">▶️ YouTube: <a id="profYT" style="color:var(--accent);word-break:break-all;" target="_blank" rel="noopener">—</a></div>
           <div class="pac-item" id="profTWRow" style="display:none">🎮 Twitch: <a id="profTW" style="color:var(--accent);" target="_blank" rel="noopener">—</a></div>
-          <button class="btn btn-s" style="width:100%;margin-top:12px;font-size:.8rem" onclick="openEditProfile()">✏ Editar información</button>
+          <button class="btn btn-s" style="width:100%;margin-top:12px;font-size:.8rem" onclick="if(typeof openEditProfile==='function'){openEditProfile();}else{document.getElementById('mEditProfile').classList.add('open');}">✏ Editar información</button>
         </div>
       </div>
       
@@ -7862,7 +7862,11 @@ function initShopCoinsDisplay(){
 
 <script>
 const _q = [];
-function _stub(name){ return function(){ _q.push([name, arguments]); }; }
+function _stub(name){ return function(){ 
+  // Si ya existe la función real en window, llamarla directamente
+  if(window['_real_'+name]) return window['_real_'+name](...arguments);
+  _q.push([name, arguments]); 
+}; }
 // Todas las funciones que se llaman desde onclick del HTML
 ['doLogin','doReg','showReg','showLogin','submitPost','submitStory','submitComment','handleMentionInput','insertMention','searchMentionedUser','handlePostMentionInput','insertPostMention','focusPostTextAndAt','showTerms',
  'doReact','quickReact','saveProfile','openEditProfile','changeCover','changeAvatar',
@@ -23933,7 +23937,7 @@ async function deleteChatConfirm(uid, nick){
 }
 
 
-Object.entries(_expose).forEach(([k,v])=>{ window[k]=v; });
+Object.entries(_expose).forEach(([k,v])=>{ window[k]=v; window['_real_'+k]=v; });
 // Replay any calls that happened before module loaded
 if(window._q) window._q.forEach(([name,args])=>{ if(window[name]) window[name](...args); });
 
