@@ -99,6 +99,18 @@ img{object-fit:cover;}
 .btn-primary:active{transform:translateY(0);}
 .auth-err{color:#ff6b6b;font-size:.8rem;text-align:center;margin-top:10px;display:none;}
 
+
+/* GOOGLE BTN */
+.btn-google{
+  width:100%;padding:12px;border-radius:12px;margin-top:10px;
+  background:#fff;color:#3c3c3c;font-family:var(--font);font-weight:700;font-size:.9rem;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  border:1px solid rgba(255,255,255,.15);transition:.2s;
+}
+.btn-google:hover{background:#f5f5f5;transform:translateY(-1px);}
+.auth-divider{display:flex;align-items:center;gap:10px;margin:14px 0 4px;color:var(--muted);font-size:.8rem;}
+.auth-divider::before,.auth-divider::after{content:'';flex:1;height:1px;background:var(--border);}
+
 /* ===== MAIN APP ===== */
 #app{display:none;height:100vh;flex-direction:column;}
 #app.visible{display:flex;}
@@ -641,6 +653,8 @@ img{object-fit:cover;}
         <div class="inp-group"><label>Email</label><input type="email" id="loginEmail" placeholder="tu@email.com"></div>
         <div class="inp-group"><label>Contraseña</label><input type="password" id="loginPass" placeholder="••••••••"></div>
         <button class="btn-primary" onclick="doLogin()">Entrar 🔥</button>
+        <div class="auth-divider"><span>o</span></div>
+        <button class="btn-google" onclick="doGoogleLogin()"><img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20">Continuar con Google</button>
       </div>
       <!-- REGISTER -->
       <div id="regForm" style="display:none;">
@@ -658,6 +672,8 @@ img{object-fit:cover;}
         <div class="inp-group"><label>Edad</label><input type="number" id="regAge" placeholder="18" min="18" max="99"></div>
         <div class="inp-group"><label>Ciudad</label><input type="text" id="regCity" placeholder="¿Dónde vivís?"></div>
         <button class="btn-primary" onclick="doReg()">Crear cuenta ✨</button>
+        <div class="auth-divider"><span>o</span></div>
+        <button class="btn-google" onclick="doGoogleLogin()"><img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20">Continuar con Google</button>
       </div>
       <div class="auth-err" id="authErr"></div>
     </div>
@@ -877,7 +893,7 @@ img{object-fit:cover;}
 <!-- FIREBASE + APP LOGIC -->
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js';
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js';
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, GoogleAuthProvider, signInWithPopup } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js';
 import { getFirestore, collection, doc, setDoc, getDoc, getDocs, updateDoc, addDoc, deleteDoc, onSnapshot, query, orderBy, limit, where, serverTimestamp, arrayUnion, arrayRemove, increment } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js';
 
 const FIREBASE_CONFIG = {
@@ -940,7 +956,7 @@ window.doReg = async () => {
   try {
     const cred = await createUserWithEmailAndPassword(auth, em, pw);
     const uid = cred.user.uid;
-    await setDoc(doc(db,'spark_users',uid), {
+    await setDoc(doc(db,'users',uid), {
       id: uid, name, email: em, gender, age: parseInt(age), city,
       bio: '', av: '', cover: '', interests: [],
       posts: 0, likes: 0, matches: 0,
@@ -952,8 +968,59 @@ window.doReg = async () => {
   }
 };
 
+
+// ===== GOOGLE AUTH =====
+let pendingGoogleUser = null;
+
+window.doGoogleLogin = async () => {
+  try {
+    const provider = new GoogleAuthProvider();
+    const cred = await signInWithPopup(auth, provider);
+    const user = cred.user;
+    const snap = await getDoc(doc(db,'users',user.uid));
+    if(snap.exists()) {
+      // Already registered, onAuthStateChanged will handle it
+      return;
+    }
+    // New Google user — ask for extra profile info
+    pendingGoogleUser = user;
+    document.getElementById('completeProfileModal').classList.add('open');
+  } catch(e) {
+    if(e.code !== 'auth/popup-closed-by-user') showAuthErr(friendlyErr(e));
+  }
+};
+
+window.saveGoogleProfile = async () => {
+  const gender = document.getElementById('gpGender').value;
+  const age = parseInt(document.getElementById('gpAge').value);
+  const city = document.getElementById('gpCity').value.trim();
+  const errEl = document.getElementById('gpErr');
+  if(!gender||!age||!city) { errEl.textContent='Completá todos los campos'; errEl.style.display='block'; return; }
+  if(age < 18) { errEl.textContent='Debés tener al menos 18 años'; errEl.style.display='block'; return; }
+  const user = pendingGoogleUser;
+  if(!user) return;
+  try {
+    await setDoc(doc(db,'users',user.uid), {
+      id: user.uid,
+      name: user.displayName || 'Usuario',
+      email: user.email,
+      av: user.photoURL || '',
+      gender, age, city,
+      bio: '', cover: '', interests: [],
+      posts: 0, likes: 0, matches: 0,
+      joined: Date.now(), online: true,
+      likedBy: [], passedBy: [], matchedWith: []
+    });
+    pendingGoogleUser = null;
+    document.getElementById('completeProfileModal').classList.remove('open');
+    // onAuthStateChanged will detect the user and init the app
+  } catch(e) {
+    errEl.textContent = e.message; errEl.style.display='block';
+  }
+};
+
 window.doLogout = async () => {
-  if(CU) await updateDoc(doc(db,'spark_users',CU.id),{online:false}).catch(()=>{});
+  if(CU) await updateDoc(doc(db,'users',CU.id),{online:false}).catch(()=>{});
   await signOut(auth);
 };
 
@@ -973,10 +1040,10 @@ function friendlyErr(e) {
 // ===== AUTH STATE =====
 onAuthStateChanged(auth, async (user) => {
   if(user) {
-    const snap = await getDoc(doc(db,'spark_users',user.uid));
+    const snap = await getDoc(doc(db,'users',user.uid));
     if(!snap.exists()) { await signOut(auth); return; }
     CU = { id: user.uid, ...snap.data() };
-    await updateDoc(doc(db,'spark_users',CU.id),{online:true}).catch(()=>{});
+    await updateDoc(doc(db,'users',CU.id),{online:true}).catch(()=>{});
     document.getElementById('authScreen').style.display = 'none';
     document.getElementById('app').classList.add('visible');
     initApp();
@@ -1034,7 +1101,7 @@ function loadFeed() {
   const list = document.getElementById('feedList');
   list.innerHTML = '<div class="spinner"></div>';
   if(feedUnsub) feedUnsub();
-  const q = query(collection(db,'spark_posts'), orderBy('time','desc'), limit(30));
+  const q = query(collection(db,'posts'), orderBy('time','desc'), limit(30));
   feedUnsub = onSnapshot(q, async (snap) => {
     if(snap.empty) { list.innerHTML='<div style="text-align:center;color:var(--muted);padding:40px;">Sé el primero en publicar 👋</div>'; return; }
     const posts = snap.docs.map(d => ({id:d.id,...d.data()}));
@@ -1042,7 +1109,7 @@ function loadFeed() {
     const uids = [...new Set(posts.map(p=>p.uid))];
     const users = {};
     await Promise.all(uids.map(async uid => {
-      const u = await getDoc(doc(db,'spark_users',uid));
+      const u = await getDoc(doc(db,'users',uid));
       if(u.exists()) users[uid] = u.data();
     }));
     list.innerHTML = posts.map(p => postHTML(p, users[p.uid]||{})).join('');
@@ -1082,7 +1149,7 @@ function postHTML(p, u) {
 }
 
 window.toggleLike = async (postId) => {
-  const ref = doc(db,'spark_posts',postId);
+  const ref = doc(db,'posts',postId);
   const snap = await getDoc(ref);
   if(!snap.exists()) return;
   const liked = (snap.data().likedBy||[]).includes(CU.id);
@@ -1091,7 +1158,7 @@ window.toggleLike = async (postId) => {
   });
   // Update post owner likes count
   if(!liked && snap.data().uid !== CU.id) {
-    await updateDoc(doc(db,'spark_users',snap.data().uid),{likes:increment(1)}).catch(()=>{});
+    await updateDoc(doc(db,'users',snap.data().uid),{likes:increment(1)}).catch(()=>{});
   }
 };
 
@@ -1105,7 +1172,7 @@ window.toggleComments = (postId) => {
 async function loadComments(postId) {
   const list = document.getElementById('cmtList_'+postId);
   list.innerHTML = '';
-  const q = query(collection(db,'spark_posts',postId,'comments'), orderBy('time','asc'), limit(20));
+  const q = query(collection(db,'posts',postId,'comments'), orderBy('time','asc'), limit(20));
   const snap = await getDocs(q);
   snap.forEach(d => {
     const c = d.data();
@@ -1121,7 +1188,7 @@ window.sendComment = async (postId) => {
   const text = inp.value.trim();
   if(!text) return;
   inp.value = '';
-  await addDoc(collection(db,'spark_posts',postId,'comments'), {
+  await addDoc(collection(db,'posts',postId,'comments'), {
     uid: CU.id, name: CU.name, av: CU.av||'', text, time: serverTimestamp()
   });
   loadComments(postId);
@@ -1163,11 +1230,11 @@ window.submitPost = async () => {
       const res = await uploadMedia(postMediaFile);
       mediaUrl = res.url; mediaType = res.type;
     }
-    await addDoc(collection(db,'spark_posts'), {
+    await addDoc(collection(db,'posts'), {
       uid: CU.id, text, mediaUrl, mediaType,
       likedBy: [], time: serverTimestamp()
     });
-    await updateDoc(doc(db,'spark_users',CU.id),{posts:increment(1)});
+    await updateDoc(doc(db,'users',CU.id),{posts:increment(1)});
     document.getElementById('postText').value = '';
     clearPreview();
     toast('¡Post publicado! 🎉','ok');
@@ -1188,7 +1255,7 @@ async function loadStories() {
   const addBtn = bar.querySelector('.story-item');
   // Listen realtime
   const cutoff = new Date(Date.now() - 24*60*60*1000);
-  const q = query(collection(db,'spark_stories'), where('time','>',cutoff), orderBy('time','desc'), limit(20));
+  const q = query(collection(db,'stories'), where('time','>',cutoff), orderBy('time','desc'), limit(20));
   onSnapshot(q, async (snap) => {
     // Remove old story items
     while(bar.children.length > 1) bar.removeChild(bar.lastChild);
@@ -1200,7 +1267,7 @@ async function loadStories() {
       byUser[s.uid].push(s);
     });
     for(const [uid, sts] of Object.entries(byUser)) {
-      const u = await getDoc(doc(db,'spark_users',uid));
+      const u = await getDoc(doc(db,'users',uid));
       const ud = u.exists() ? u.data() : {};
       const el = document.createElement('div');
       el.className = 'story-item';
@@ -1241,7 +1308,7 @@ window.submitStory = async () => {
       const res = await uploadMedia(storyMediaFile);
       mediaUrl = res.url; mediaType = res.type;
     }
-    await addDoc(collection(db,'spark_stories'), {
+    await addDoc(collection(db,'stories'), {
       uid: CU.id, text, mediaUrl, mediaType, time: new Date(), viewers: []
     });
     closeModal('newStoryModal');
@@ -1307,7 +1374,7 @@ window.replyToStory = async () => {
 
 // ===== MATCH =====
 async function loadMatchProfiles() {
-  const meSnap = await getDoc(doc(db,'spark_users',CU.id));
+  const meSnap = await getDoc(doc(db,'users',CU.id));
   const me = meSnap.data();
   const likedBy = me.likedBy || [];
   const passedBy = me.passedBy || [];
@@ -1315,7 +1382,7 @@ async function loadMatchProfiles() {
   const seen = [...likedBy, ...passedBy, ...matchedWith, CU.id];
 
   // Load users of opposite/preferred gender
-  const q = query(collection(db,'spark_users'), limit(50));
+  const q = query(collection(db,'users'), limit(50));
   const snap = await getDocs(q);
   matchProfiles = snap.docs
     .map(d => ({id:d.id,...d.data()}))
@@ -1417,24 +1484,24 @@ window.swipeCard = async (action) => {
     setTimeout(()=>card.remove(), 400);
   }
   if(action==='like'||action==='super') {
-    await updateDoc(doc(db,'spark_users',CU.id),{ likedBy: arrayUnion(user.id) }).catch(()=>{});
+    await updateDoc(doc(db,'users',CU.id),{ likedBy: arrayUnion(user.id) }).catch(()=>{});
     // Check mutual
-    const theirSnap = await getDoc(doc(db,'spark_users',user.id));
+    const theirSnap = await getDoc(doc(db,'users',user.id));
     const theirData = theirSnap.data();
     if((theirData.likedBy||[]).includes(CU.id)) {
       // MATCH!
-      await updateDoc(doc(db,'spark_users',CU.id),{ matchedWith: arrayUnion(user.id), matches: increment(1) });
-      await updateDoc(doc(db,'spark_users',user.id),{ matchedWith: arrayUnion(CU.id), matches: increment(1) });
+      await updateDoc(doc(db,'users',CU.id),{ matchedWith: arrayUnion(user.id), matches: increment(1) });
+      await updateDoc(doc(db,'users',user.id),{ matchedWith: arrayUnion(CU.id), matches: increment(1) });
       // Create chat
       const chatId = [CU.id, user.id].sort().join('_');
-      await setDoc(doc(db,'spark_chats',chatId),{
+      await setDoc(doc(db,'chats',chatId),{
         users:[CU.id,user.id], lastMsg:'¡Match! Di hola 👋', time:serverTimestamp(),
         unread:{[CU.id]:0,[user.id]:1}
       }, {merge:true});
       showMatchPopup(user);
     }
   } else {
-    await updateDoc(doc(db,'spark_users',CU.id),{ passedBy: arrayUnion(user.id) }).catch(()=>{});
+    await updateDoc(doc(db,'users',CU.id),{ passedBy: arrayUnion(user.id) }).catch(()=>{});
   }
   currentMatchIdx++;
   setTimeout(renderMatchStack, 300);
@@ -1457,14 +1524,14 @@ window.openMatchChat = () => {
 };
 
 async function loadMyMatches() {
-  const meSnap = await getDoc(doc(db,'spark_users',CU.id));
+  const meSnap = await getDoc(doc(db,'users',CU.id));
   const me = meSnap.data();
   const matchIds = me.matchedWith || [];
   const list = document.getElementById('matchesList');
   if(matchIds.length===0) { list.innerHTML='<span style="color:var(--muted);font-size:.82rem;">Todavía no tenés matches</span>'; return; }
   list.innerHTML = '';
   for(const uid of matchIds.slice(0,10)) {
-    const u = await getDoc(doc(db,'spark_users',uid));
+    const u = await getDoc(doc(db,'users',uid));
     if(!u.exists()) continue;
     const ud = u.data();
     const el = document.createElement('div');
@@ -1477,7 +1544,7 @@ async function loadMyMatches() {
 
 // ===== CHAT =====
 function loadChats() {
-  const q = query(collection(db,'spark_chats'), where('users','array-contains',CU.id), orderBy('time','desc'));
+  const q = query(collection(db,'chats'), where('users','array-contains',CU.id), orderBy('time','desc'));
   onSnapshot(q, async (snap) => {
     const items = document.getElementById('chatListItems');
     if(snap.empty) { items.innerHTML='<div style="padding:20px;color:var(--muted);font-size:.85rem;">No tenés chats todavía.<br>¡Hacé un match para empezar! 🔥</div>'; return; }
@@ -1485,7 +1552,7 @@ function loadChats() {
     for(const d of snap.docs) {
       const chat = {id:d.id,...d.data()};
       const otherId = chat.users.find(u=>u!==CU.id);
-      const other = await getDoc(doc(db,'spark_users',otherId));
+      const other = await getDoc(doc(db,'users',otherId));
       const od = other.exists() ? other.data() : {};
       const el = document.createElement('div');
       el.className = 'chat-list-item' + (currentChatId===chat.id?' active':'');
@@ -1507,11 +1574,11 @@ function loadChats() {
 
 window.openChatWithUser = async (uid) => {
   const chatId = [CU.id, uid].sort().join('_');
-  await setDoc(doc(db,'spark_chats',chatId),{
+  await setDoc(doc(db,'chats',chatId),{
     users:[CU.id,uid], time:serverTimestamp(), lastMsg:'',
     unread:{[CU.id]:0,[uid]:0}
   },{merge:true});
-  const u = await getDoc(doc(db,'spark_users',uid));
+  const u = await getDoc(doc(db,'users',uid));
   const ud = u.exists() ? u.data() : {};
   openChat(chatId, uid, ud);
   setPage('chat');
@@ -1540,7 +1607,7 @@ function openChat(chatId, otherId, od) {
   document.querySelectorAll('.chat-list-item').forEach(el => el.classList.remove('active'));
 
   // Listen messages
-  const q = query(collection(db,'spark_chats',chatId,'messages'), orderBy('time','asc'), limit(100));
+  const q = query(collection(db,'chats',chatId,'messages'), orderBy('time','asc'), limit(100));
   chatUnsub = onSnapshot(q, (snap) => {
     const msgs = document.getElementById('chatMsgs');
     if(!msgs) return;
@@ -1570,10 +1637,10 @@ window.sendMsg = async () => {
   const text = inp.value.trim();
   if(!text || !currentChatId) return;
   inp.value = '';
-  await addDoc(collection(db,'spark_chats',currentChatId,'messages'),{
+  await addDoc(collection(db,'chats',currentChatId,'messages'),{
     uid:CU.id, text, time:serverTimestamp()
   });
-  await updateDoc(doc(db,'spark_chats',currentChatId),{
+  await updateDoc(doc(db,'chats',currentChatId),{
     lastMsg: text, time:serverTimestamp()
   });
 };
@@ -1583,10 +1650,10 @@ window.sendMediaMsg = async (inp) => {
   if(!file||!currentChatId) return;
   toast('Subiendo...','ok');
   const res = await uploadMedia(file);
-  await addDoc(collection(db,'spark_chats',currentChatId,'messages'),{
+  await addDoc(collection(db,'chats',currentChatId,'messages'),{
     uid:CU.id, mediaUrl:res.url, mediaType:res.type, text:'', time:serverTimestamp()
   });
-  await updateDoc(doc(db,'spark_chats',currentChatId),{
+  await updateDoc(doc(db,'chats',currentChatId),{
     lastMsg:'📷 Imagen', time:serverTimestamp()
   });
 };
@@ -1594,7 +1661,7 @@ window.sendMediaMsg = async (inp) => {
 // ===== EXPLORE =====
 async function loadExplore() {
   const grid = document.getElementById('exploreGrid');
-  const q = query(collection(db,'spark_users'), limit(30));
+  const q = query(collection(db,'users'), limit(30));
   const snap = await getDocs(q);
   const users = snap.docs.map(d=>({id:d.id,...d.data()})).filter(u=>u.id!==CU.id);
   if(users.length===0) { grid.innerHTML='<p style="color:var(--muted)">No hay usuarios aún</p>'; return; }
@@ -1614,7 +1681,7 @@ async function loadExplore() {
 window.searchUsers = async (q) => {
   if(!q) { loadExplore(); return; }
   const grid = document.getElementById('exploreGrid');
-  const snap = await getDocs(collection(db,'spark_users'));
+  const snap = await getDocs(collection(db,'users'));
   const users = snap.docs.map(d=>({id:d.id,...d.data()}))
     .filter(u => u.id!==CU.id && (u.name||'').toLowerCase().includes(q.toLowerCase()));
   grid.innerHTML = users.length===0
@@ -1629,7 +1696,7 @@ window.searchUsers = async (q) => {
 window.viewProfile = async (uid) => {
   if(uid === CU.id) { setPage('profile'); renderMyProfile(); return; }
   // Could open a modal or navigate to a profile page
-  const u = await getDoc(doc(db,'spark_users',uid));
+  const u = await getDoc(doc(db,'users',uid));
   if(!u.exists()) return;
   const ud = u.data();
   setPage('profile');
@@ -1637,7 +1704,7 @@ window.viewProfile = async (uid) => {
 };
 
 async function renderMyProfile() {
-  const snap = await getDoc(doc(db,'spark_users',CU.id));
+  const snap = await getDoc(doc(db,'users',CU.id));
   if(snap.exists()) { CU = {id:CU.id,...snap.data()}; }
   renderProfileData(CU, CU.id);
 }
@@ -1667,7 +1734,7 @@ function renderProfileData(u, uid) {
 
 async function loadUserPosts(uid) {
   const grid = document.getElementById('profileGrid');
-  const q = query(collection(db,'spark_posts'), where('uid','==',uid), orderBy('time','desc'), limit(12));
+  const q = query(collection(db,'posts'), where('uid','==',uid), orderBy('time','desc'), limit(12));
   const snap = await getDocs(q);
   grid.innerHTML = snap.docs.map(d => {
     const p = d.data();
@@ -1677,7 +1744,7 @@ async function loadUserPosts(uid) {
 }
 
 window.swipeOnUser = async (uid, action) => {
-  await updateDoc(doc(db,'spark_users',CU.id),{likedBy:arrayUnion(uid)}).catch(()=>{});
+  await updateDoc(doc(db,'users',CU.id),{likedBy:arrayUnion(uid)}).catch(()=>{});
   toast('Like enviado ❤️','ok');
 };
 
@@ -1698,7 +1765,7 @@ window.saveProfile = async () => {
   const age = parseInt(document.getElementById('epAge').value)||CU.age;
   const interests = document.getElementById('epInterests').value.split(',').map(s=>s.trim()).filter(Boolean);
   try {
-    await updateDoc(doc(db,'spark_users',CU.id),{name,bio,city,age,interests});
+    await updateDoc(doc(db,'users',CU.id),{name,bio,city,age,interests});
     CU = {...CU,name,bio,city,age,interests};
     closeModal('editProfileModal');
     renderMyProfile();
@@ -1714,7 +1781,7 @@ window.changeAvatar = async (inp) => {
   toast('Subiendo foto...','ok');
   try {
     const {url} = await uploadMedia(file);
-    await updateDoc(doc(db,'spark_users',CU.id),{av:url});
+    await updateDoc(doc(db,'users',CU.id),{av:url});
     CU.av = url;
     updateNavUI();
     renderMyProfile();
@@ -1727,7 +1794,7 @@ window.changeCover = async (inp) => {
   toast('Subiendo portada...','ok');
   try {
     const {url} = await uploadMedia(file);
-    await updateDoc(doc(db,'spark_users',CU.id),{cover:url});
+    await updateDoc(doc(db,'users',CU.id),{cover:url});
     CU.cover = url;
     renderMyProfile();
     toast('Portada actualizada 🌅','ok');
@@ -1780,5 +1847,25 @@ window.setPage = (name) => {
 };
 
 </script>
+
+<!-- COMPLETE PROFILE MODAL (for new Google users) -->
+<div class="modal-overlay" id="completeProfileModal">
+  <div class="modal-box">
+    <div class="modal-title">¡Casi listo! Completá tu perfil</div>
+    <div class="inp-group"><label>Género</label>
+      <select id="gpGender">
+        <option value="">Seleccioná...</option>
+        <option value="m">Hombre</option>
+        <option value="f">Mujer</option>
+        <option value="o">Otro</option>
+      </select>
+    </div>
+    <div class="inp-group"><label>Edad</label><input type="number" id="gpAge" placeholder="18" min="18" max="99"></div>
+    <div class="inp-group"><label>Ciudad</label><input type="text" id="gpCity" placeholder="¿Dónde vivís?"></div>
+    <div class="auth-err" id="gpErr" style="display:none;margin-top:8px;"></div>
+    <button class="btn-primary" onclick="saveGoogleProfile()" style="margin-top:8px;">Guardar y entrar ✨</button>
+  </div>
+</div>
+
 </body>
 </html>
