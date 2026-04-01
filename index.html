@@ -13497,7 +13497,7 @@ async function saveProfile(){
 }
 
 function openEditProfile(){
-  if(!window.CU) return;
+  if(!window.CU){ setTimeout(openEditProfile, 500); return; }
   // Nick field: check 90-day cooldown
   const nickEl = document.getElementById('epNick');
   const nickMsgEl = document.getElementById('epNickMsg');
