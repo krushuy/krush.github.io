@@ -13495,7 +13495,29 @@ async function saveProfile(){
   window.CU.social_fb = (document.getElementById('epFB').value.trim()).replace(/^@/,'').replace(/^https?:\/\/(www\.)?facebook\.com\/?/,'').replace(/\/$/,'');
   window.CU.social_ig = (document.getElementById('epIG').value.trim()).replace(/^@/,'').replace(/^https?:\/\/(www\.)?instagram\.com\/?/,'').replace(/\/$/,'');
   window.CU.social_tt = (document.getElementById('epTT').value.trim()).replace(/^@/,'').replace(/^https?:\/\/(www\.)?tiktok\.com\/@?/,'').replace(/\/$/,'');
-  await updateDoc(doc(db, 'users', window.CU.id), window.CU);
+  const profileUpdate = {
+    nick: window.CU.nick || '',
+    nickLastChanged: window.CU.nickLastChanged || '',
+    bio: window.CU.bio || '',
+    favFish: window.CU.favFish || '',
+    favMap: window.CU.favMap || '',
+    country: window.CU.country || '',
+    city: window.CU.city || '',
+    emailPrivacy: window.CU.emailPrivacy || 'only',
+    birthdate: window.CU.birthdate || '',
+    birthdayMMDD: window.CU.birthdayMMDD || '',
+    age: window.CU.age || '',
+    gender: window.CU.gender || '',
+    favTech: window.CU.favTech || '',
+    experience: window.CU.experience || '',
+    social_yt: window.CU.social_yt || '',
+    social_dc: window.CU.social_dc || '',
+    social_tw: window.CU.social_tw || '',
+    social_fb: window.CU.social_fb || '',
+    social_ig: window.CU.social_ig || '',
+    social_tt: window.CU.social_tt || '',
+  };
+  await updateDoc(doc(db, 'users', window.CU.id), profileUpdate);
   cm('mEditProfile'); updateNavUI(); renderProfile();
   toast('Perfil actualizado ✅','ok');
 }
