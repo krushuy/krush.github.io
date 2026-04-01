@@ -432,7 +432,7 @@ img{object-fit:cover;}
   border-radius:24px;padding:28px;width:100%;max-width:480px;
   max-height:85vh;overflow-y:auto;
 }
-.modal-box h3{font-family:var(--font);font-size:1.2rem;font-weight:700;margin-bottom:20px;}
+.modal-box h3,.modal-title{font-family:var(--font);font-size:1.2rem;font-weight:700;margin-bottom:20px;}
 .modal-close{float:right;background:none;color:var(--muted);font-size:1.2rem;}
 
 /* ===== CHAT ===== */
@@ -820,7 +820,7 @@ img{object-fit:cover;}
 <div class="modal-overlay" id="editProfileModal">
   <div class="modal-box">
     <button class="modal-close" onclick="closeModal('editProfileModal')">✕</button>
-    <h3>Editar perfil</h3>
+    <div class="modal-title">✏️ Editar perfil</div>
     <div class="inp-group"><label>Nombre</label><input type="text" id="epName" placeholder="Tu nombre"></div>
     <div class="inp-group"><label>Bio</label><textarea id="epBio" placeholder="Contate algo..." style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:12px;color:var(--text);resize:none;" rows="3"></textarea></div>
     <div class="inp-group"><label>Ciudad</label><input type="text" id="epCity" placeholder="¿Dónde vivís?"></div>
@@ -1763,24 +1763,33 @@ async function renderMyProfile() {
 
 function renderProfileData(u, uid) {
   const isMe = uid === CU.id;
-  document.getElementById('profileName').textContent = u.name||'Usuario';
-  document.getElementById('profileHandle').textContent = `${u.age||'?'} años · ${u.city||''} · ${u.gender==='f'?'♀ Mujer':u.gender==='m'?'♂ Hombre':'⚧ Otro'}`;
-  document.getElementById('profileBio').textContent = u.bio||'Sin bio todavía.';
-  document.getElementById('statPosts').textContent = u.posts||0;
-  document.getElementById('statMatches').textContent = u.matches||0;
-  document.getElementById('statLikes').textContent = u.likes||0;
-  document.getElementById('profileAv').src = u.av||'';
+  document.getElementById('profileName').textContent = u.name || (isMe ? (CU.name||'Sin nombre') : 'Usuario');
+  document.getElementById('profileHandle').textContent =
+    `${u.age||'?'} años · ${u.city||''} · ${u.gender==='f'?'♀ Mujer':u.gender==='m'?'♂ Hombre':'⚧ Otro'}`;
+  document.getElementById('profileBio').textContent = u.bio || 'Sin bio todavía.';
+  document.getElementById('statPosts').textContent = u.posts || 0;
+  document.getElementById('statMatches').textContent = u.matches || 0;
+  document.getElementById('statLikes').textContent = u.likes || 0;
+  const av = u.av || CU.av || '';
+  document.getElementById('profileAv').src = av;
   const cover = document.getElementById('profileCoverImg');
-  if(u.cover) { cover.src=u.cover; cover.style.display='block'; } else cover.style.display='none';
+  if(u.cover) { cover.src = u.cover; cover.style.display = 'block'; }
+  else cover.style.display = 'none';
+
   const acts = document.getElementById('profilePage').querySelector('.profile-actions');
   if(isMe) {
+    // Always restore own edit buttons (in case they were replaced by a previous other-profile view)
+    acts.innerHTML = `
+      <button class="btn-edit" onclick="openEditProfile()">✏️ Editar perfil</button>
+      <label class="btn-edit" style="cursor:pointer;">🖼️ Foto<input type="file" accept="image/*" style="display:none" onchange="changeAvatar(this)"></label>
+      <label class="btn-edit" style="cursor:pointer;">🌅 Portada<input type="file" accept="image/*" style="display:none" onchange="changeCover(this)"></label>`;
     acts.style.display = 'flex';
   } else {
     acts.innerHTML = `
       <button class="btn-follow" onclick="openChatWithUser('${uid}');setPage('chat')">💬 Escribir</button>
       <button class="btn-msg-profile" onclick="swipeOnUser('${uid}','like')">❤️ Like</button>`;
+    acts.style.display = 'flex';
   }
-  // Load their posts
   loadUserPosts(uid);
 }
 
@@ -1802,10 +1811,11 @@ window.swipeOnUser = async (uid, action) => {
 
 // EDIT PROFILE
 window.openEditProfile = () => {
-  document.getElementById('epName').value = CU.name||'';
-  document.getElementById('epBio').value = CU.bio||'';
-  document.getElementById('epCity').value = CU.city||'';
-  document.getElementById('epAge').value = CU.age||'';
+  if(!CU) return;
+  document.getElementById('epName').value = CU.name || '';
+  document.getElementById('epBio').value = CU.bio || '';
+  document.getElementById('epCity').value = CU.city || '';
+  document.getElementById('epAge').value = CU.age || '';
   document.getElementById('epInterests').value = (CU.interests||[]).join(', ');
   openModal('editProfileModal');
 };
