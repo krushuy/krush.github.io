@@ -13530,8 +13530,9 @@ async function saveProfile(){
 
 function openEditProfile(){
   if(!window.CU){ setTimeout(openEditProfile, 500); return; }
-  // Nick field: check 90-day cooldown
   const nickEl = document.getElementById('epNick');
+  if(!nickEl){ setTimeout(openEditProfile, 300); return; }
+  // Nick field: check 90-day cooldown
   const nickMsgEl = document.getElementById('epNickMsg');
   nickEl.value = window.CU.nick||'';
   const last = window.CU.nickLastChanged ? new Date(window.CU.nickLastChanged) : null;
