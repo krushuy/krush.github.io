@@ -31,7 +31,21 @@
   });
 
   // ── 3. DESHABILITAR SELECCIÓN Y COPIA DE TEXTO ───────────────────────────
-  document.addEventListener('selectstart', function(e){ e.preventDefault(); return false; });
+  document.addEventListener('selectstart', function(e){
+    if(e.target.tagName === 'BUTTON' ||
+       e.target.tagName === 'INPUT' ||
+       e.target.tagName === 'TEXTAREA' ||
+       e.target.tagName === 'A' ||
+       e.target.closest('button') ||
+       e.target.closest('a') ||
+       e.target.closest('[onclick]') ||
+       e.target.closest('.mo') ||
+       e.target.closest('.modal')){
+      return true;
+    }
+    e.preventDefault();
+    return false;
+  });
   document.addEventListener('copy',        function(e){ e.preventDefault(); return false; });
   document.addEventListener('cut',         function(e){ e.preventDefault(); return false; });
   document.addEventListener('dragstart',   function(e){ e.preventDefault(); return false; });
